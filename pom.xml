@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.milyn.cartridges.javabean</groupId>
-    <artifactId>smooks-javabean-cartridges</artifactId>
+    <artifactId>smooks-javabean-cartridge</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <build>
