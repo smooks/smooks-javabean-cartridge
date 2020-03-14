@@ -1,0 +1,1 @@
+# smooks-javabean-cartridge
