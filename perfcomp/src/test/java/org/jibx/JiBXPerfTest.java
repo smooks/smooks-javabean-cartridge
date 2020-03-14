@@ -13,7 +13,7 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.smooks.jibx;
+package org.jibx;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,7 +23,7 @@ import org.jibx.runtime.IBindingFactory;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 import org.smooks.Order;
-import org.smooks.TestConstants;
+import org.TestConstants;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

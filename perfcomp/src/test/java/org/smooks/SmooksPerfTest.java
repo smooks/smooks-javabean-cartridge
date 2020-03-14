@@ -13,25 +13,26 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.smooks.smooks;
+package org.smooks;
 
 import java.io.IOException;
 
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import org.smooks.Order;
 import org.smooks.Smooks;
-import org.smooks.TestConstants;
+import org.TestConstants;
 import org.smooks.container.ExecutionContext;
-import org.smooks.cartridges.javabean.context.BeanContext;
-import org.smooks.cartridges.javabean.context.BeanIdStore;
-import org.smooks.cartridges.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.smooks.cartridges.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.cartridges.javabean.lifecycle.BeanLifecycle;
-import org.smooks.cartridges.javabean.repository.BeanId;
+import org.smooks.javabean.context.BeanContext;
+import org.smooks.javabean.context.BeanIdStore;
+import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
+import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.javabean.lifecycle.BeanLifecycle;
+import org.smooks.javabean.repository.BeanId;
 import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
@@ -44,7 +45,7 @@ public class SmooksPerfTest {
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
 
-        for(int i = 0; i < TestConstants.NUM_WARMUPS; i++) {
+        for (int i = 0; i < TestConstants.NUM_WARMUPS; i++) {
             JavaResult javaResult = new JavaResult();
             smooks.filterSource(new StreamSource(TestConstants.getMessageReader()), javaResult);
         }
@@ -52,34 +53,34 @@ public class SmooksPerfTest {
         long start = System.currentTimeMillis();
         JavaResult javaResult = null;
         NoddyObserver nobserver = new NoddyObserver();
-        for(int i = 0; i < TestConstants.NUM_ITERATIONS; i++) {
-        	ExecutionContext execContext = smooks.createExecutionContext();
-        	BeanContext beanCtx = execContext.getBeanContext();
-        	
-        	for(int ii = 0; ii < 15; ii++) {
-        		beanCtx.addObserver(nobserver);
-        	}
-        	
+        for (int i = 0; i < TestConstants.NUM_ITERATIONS; i++) {
+            ExecutionContext execContext = smooks.createExecutionContext();
+            BeanContext beanCtx = execContext.getBeanContext();
+
+            for (int ii = 0; ii < 15; ii++) {
+                beanCtx.addObserver(nobserver);
+            }
+
             javaResult = new JavaResult();
             smooks.filterSource(execContext, new StreamSource(TestConstants.getMessageReader()), javaResult);
         }
-        
+
         System.out.println("Smooks took: " + (System.currentTimeMillis() - start));
         Order order = (Order) javaResult.getBean("order");
-        if(order != null) {
-        	System.out.println("Num order items: " + order.getOrderItems().size());
+        if (order != null) {
+            System.out.println("Num order items: " + order.getOrderItems().size());
         }
     }
-    
+
     class NoddyObserver implements BeanContextLifecycleObserver {
 
-    	private BeanId beanId = new BeanId((BeanIdStore)null, 0, null);
-    	
-		public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
-			if(event.getBeanId() == beanId && event.getLifecycle() == BeanLifecycle.ADD) {
-				int s = beanId.getIndex();
-				s = s++;
-			}
-		}    	
+        private BeanId beanId = new BeanId(null, 0, null);
+
+        public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
+            if (event.getBeanId() == beanId && event.getLifecycle() == BeanLifecycle.ADD) {
+                int s = beanId.getIndex();
+                s++;
+            }
+        }
     }
 }

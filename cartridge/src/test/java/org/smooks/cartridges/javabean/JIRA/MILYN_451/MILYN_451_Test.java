@@ -26,22 +26,22 @@ import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
- * 
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class MILYN_451_Test {
 
-        @Test
-	public void test() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
-		ExecutionContext execCtx = smooks.createExecutionContext();
-		BeanContext beanContext = execCtx.getBeanContext();
-		JavaResult jResult = new JavaResult();
-		
-		smooks.filterSource(execCtx, new StreamSource(getClass().getResourceAsStream("message.xml")), jResult);
-		assertEquals(3, jResult.getResultMap().size());
-	}
+    @Test
+    public void test() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
+        ExecutionContext execCtx = smooks.createExecutionContext();
+        BeanContext beanContext = execCtx.getBeanContext();
+        JavaResult jResult = new JavaResult();
+
+        smooks.filterSource(execCtx, new StreamSource(getClass().getResourceAsStream("message.xml")), jResult);
+        assertEquals(3, jResult.getResultMap().size());
+    }
 }

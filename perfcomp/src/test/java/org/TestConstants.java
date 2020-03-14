@@ -13,7 +13,7 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.smooks;
+package org;
 
 import java.io.InputStreamReader;
 

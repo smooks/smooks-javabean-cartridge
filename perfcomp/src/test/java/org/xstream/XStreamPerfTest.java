@@ -13,14 +13,14 @@
 	See the GNU Lesser General Public License for more details:
 	http://www.gnu.org/licenses/lgpl.txt
 */
-package org.smooks.xstream;
+package org.xstream;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.smooks.Order;
 import org.smooks.OrderItem;
-import org.smooks.TestConstants;
+import org.TestConstants;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
