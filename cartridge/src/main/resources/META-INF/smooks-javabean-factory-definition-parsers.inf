@@ -1,0 +1,2 @@
+org.smooks.cartridges.javabean.factory.BasicFactoryDefinitionParser
+org.smooks.cartridges.javabean.factory.MVELFactoryDefinitionParser
