@@ -10,5 +10,17 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>smooks-javabean-cartridge</artifactId>
-    
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>4.2.1</version>
+                <extensions>true</extensions>
+                <inherited>true</inherited>
+            </plugin>
+        </plugins>
+    </build>
 </project>
