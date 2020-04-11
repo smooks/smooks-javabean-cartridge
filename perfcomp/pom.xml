@@ -6,11 +6,11 @@
 
     <parent>
         <artifactId>smooks-javabean-pom</artifactId>
-        <groupId>org.milyn.cartridges</groupId>
+        <groupId>org.smooks.cartridges</groupId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.milyn</groupId>
+    <groupId>org.smooks</groupId>
     <artifactId>smooks-javabean-perfcomp</artifactId>
 
     <properties>
@@ -19,7 +19,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.milyn.cartridges</groupId>
+            <groupId>org.smooks.cartridges</groupId>
             <artifactId>smooks-javabean-cartridge</artifactId>
             <version>${project.version}</version>
         </dependency>
