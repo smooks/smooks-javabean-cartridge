@@ -63,10 +63,8 @@
                     <licenseResolver>file://${maven.multiModuleProjectDirectory}/license</licenseResolver>
                     <inceptionYear>2020</inceptionYear>
                     <organizationName>Smooks</organizationName>
-                    <processStartTag>========================LICENSE_START=================================
-                    </processStartTag>
-                    <processEndTag>=========================LICENSE_END==================================
-                    </processEndTag>
+                    <processStartTag>========================LICENSE_START=================================</processStartTag>
+                    <processEndTag>=========================LICENSE_END==================================</processEndTag>
                 </configuration>
                 <executions>
                     <execution>
