@@ -118,7 +118,7 @@ public class XMLBindingTest {
     }
 
     private void test_pre_created_Smooks(String config) throws IOException, SAXException {
-        String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"));
+        String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"), "UTF-8");
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
         XMLBinding xmlBinding = new XMLBinding(smooks);
         xmlBinding.intiailize();
@@ -129,7 +129,7 @@ public class XMLBindingTest {
     }
 
     private void test_post_created_Smooks(String config) throws IOException, SAXException {
-        String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"));
+        String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"), "UTF-8");
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
         xmlBinding.intiailize();
 

@@ -63,7 +63,7 @@ public class ConfigGeneratortTest {
 
         generator.generate();
 
-        String expected = org.smooks.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"));
+        String expected = org.smooks.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"), "UTF-8");
         assertTrue("Generated config not as expected.", org.smooks.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
     }
 

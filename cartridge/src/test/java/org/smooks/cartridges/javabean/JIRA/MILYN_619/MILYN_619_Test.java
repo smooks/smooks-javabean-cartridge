@@ -70,7 +70,7 @@ public class MILYN_619_Test {
 
         smooks.filterSource(new JavaSource(rootObj), res);
 
-        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"));
+        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"), "UTF-8");
         XMLUnit.setIgnoreWhitespace(true);
         XMLAssert.assertXMLEqual(expected, res.getResult());
     }

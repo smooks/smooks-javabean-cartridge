@@ -62,14 +62,14 @@ public class GenerateXML {
 
 		boolean simple = false;
 
-		Configuration cfg = new Configuration(Configuration.VERSION_2_3_21);
+		Configuration cfg = new Configuration(Configuration.VERSION_2_3_30);
 		// Specify the data source where the template files come from.
 		// Here I set a file directory for it:
 		cfg.setDirectoryForTemplateLoading(new File("src/test/resources/templates"));
 
 		// Specify how templates will see the data-model. This is an advanced topic...
 		// but just use this:
-		cfg.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_21).build());
+		cfg.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_30).build());
 
 		Template temp;
 		String name;
