@@ -63,7 +63,7 @@ public class POTypeTest {
         XMLBinding xmlBinding =
                 new XMLBinding().add(getClass().getResourceAsStream("POType-binding.xml")).intiailize();
 
-        String poXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream("po.xml"));
+        String poXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream("po.xml"), "UTF-8");
         POType po = xmlBinding.fromXML(new StringSource(poXML), POType.class);
 
         StringWriter writer = new StringWriter();

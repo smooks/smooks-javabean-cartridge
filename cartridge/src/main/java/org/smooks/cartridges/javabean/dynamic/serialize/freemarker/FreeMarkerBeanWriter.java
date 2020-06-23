@@ -42,6 +42,8 @@
  */
 package org.smooks.cartridges.javabean.dynamic.serialize.freemarker;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.smooks.cdr.annotation.AppContext;
 import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.container.ApplicationContext;
@@ -86,16 +88,19 @@ public class FreeMarkerBeanWriter implements BeanWriter {
 
     @Initialize
     public void intialize() {
-        String trimmedTemplateConfig = templateConfig.trim();
+        final String trimmedTemplateConfig = templateConfig.trim();
 
         // Only attempt to load as a template resource URI if the configured 'template'
         // value is all on one line.  If it has line breaks then we know it's not an
         // external resource...
-        if(trimmedTemplateConfig.trim().indexOf('\n') == -1) {
+        if (trimmedTemplateConfig.trim().indexOf('\n') == -1) {
             try {
-                InputStream templateStream = appContext.getResourceLocator().getResource(trimmedTemplateConfig);
-                if(templateStream != null) {
-                    templateConfig = StreamUtils.readStreamAsString(templateStream);                    
+                final InputStream templateStream = appContext.getResourceLocator().getResource(trimmedTemplateConfig);
+                if (templateStream != null) {
+                    templateStream.close();
+                    final Configuration ftlConfiguration = new Configuration(Configuration.VERSION_2_3_30);
+                    ftlConfiguration.setClassLoaderForTemplateLoading(appContext.getClassLoader(), "/");
+                    templateConfig = ftlConfiguration.getTemplate(trimmedTemplateConfig).toString();
                 }
             } catch (IOException e) {
                 LOGGER.debug("'template' configuration value '" + trimmedTemplateConfig + "' does not resolve to an external FreeMarker template.  Using configured value as the actual template.");
@@ -106,11 +111,11 @@ public class FreeMarkerBeanWriter implements BeanWriter {
         template = new FreeMarkerTemplate(templateConfig);
     }
 
-    public void write(Object bean, Writer writer, Model model) throws BeanRegistrationException, IOException {
-        Map<String, Object> templateContext = new HashMap<String, Object>();
-        BeanMetadata beanMetadata = model.getBeanMetadata(bean);
+    public void write(final Object bean, final Writer writer, final Model model) throws BeanRegistrationException, IOException {
+        final Map<String, Object> templateContext = new HashMap<>();
+        final BeanMetadata beanMetadata = model.getBeanMetadata(bean);
 
-        if(beanMetadata == null) {
+        if (beanMetadata == null) {
             BeanRegistrationException.throwUnregisteredBeanInstanceException(bean);
         }
 
