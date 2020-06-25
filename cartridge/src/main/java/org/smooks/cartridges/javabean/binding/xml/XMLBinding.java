@@ -376,7 +376,7 @@ public class XMLBinding extends AbstractBinding {
         String selector = config.getSelector();
 
         if(selector != null) {
-            if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR) || selector.contains(SmooksResourceConfiguration.LEGACY_DOCUMENT_FRAGMENT_SELECTOR)) {
+            if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
             if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {

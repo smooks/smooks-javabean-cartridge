@@ -57,16 +57,16 @@ import java.io.IOException;
  */
 public class MILYN_444_Test {
 
-        @Test
-	public void test() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
-		JavaResult jResult = new JavaResult();
+    @Test
+    public void test() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
+        JavaResult jResult = new JavaResult();
 
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("message.xml")), jResult);
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("message.xml")), jResult);
 
         X x = jResult.getBean(X.class);
         assertEquals("456", x.getVal1()); // default will be overridden by value in the message
         assertEquals(987, x.getVal2()); // default will be applied
-        assertEquals(99.65d, (double)x.getVal3(), 0d); // default will be applied
-	}
+        assertEquals(99.65d, (double) x.getVal3(), 0d); // default will be applied
+    }
 }

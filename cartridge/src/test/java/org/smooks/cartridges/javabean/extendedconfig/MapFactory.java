@@ -52,7 +52,7 @@ import java.util.Map;
 public class MapFactory {
 
 	public static <K, V> Map<K, V> newMap() {
-		return new HashMap<K, V>();
+		return new HashMap<>();
 	}
 
 }
