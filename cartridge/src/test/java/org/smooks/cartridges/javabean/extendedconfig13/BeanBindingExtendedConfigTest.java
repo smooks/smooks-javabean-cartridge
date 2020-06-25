@@ -85,15 +85,15 @@ public class BeanBindingExtendedConfigTest {
         ExtendedOrder order = (ExtendedOrder) result.getBean("order");
         assertOrderOK(order, true);
 
-        Map<String,String> headerHash = (Map) result.getBean("headerBeanHash");
-        assertThat(headerHash, hasEntry("date","Wed Nov 15 13:45:28 EST 2006"));
-        assertThat(headerHash, hasEntry("privatePerson",""));
-        assertThat(headerHash, hasEntry("customer","Joe"));
+        Map<String, String> headerHash = (Map) result.getBean("headerBeanHash");
+        assertThat(headerHash, hasEntry("date", "Wed Nov 15 13:45:28 EST 2006"));
+        assertThat(headerHash, hasEntry("privatePerson", ""));
+        assertThat(headerHash, hasEntry("customer", "Joe"));
     }
 
-	private InputStream getInput(String file) {
-		return ClassUtil.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
-	}
+    private InputStream getInput(String file) {
+        return ClassUtil.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
+    }
 
     public static void assertOrderOK(ExtendedOrder order, boolean checkArrays) {
 
@@ -118,17 +118,17 @@ public class BeanBindingExtendedConfigTest {
         assertEquals(222, order.getOrderItems().get(1).getProductId());
         assertEquals(new Integer(7), order.getOrderItems().get(1).getQuantity());
 
-        if(checkArrays) {
-	        // OrderItems array...
-	        assertEquals(2, order.getOrderItemsArray().length);
-	        assertTrue(order == order.getOrderItemsArray()[0].getOrder());
-	        assertEquals(8.9d, order.getOrderItemsArray()[0].getPrice(), 0d);
-	        assertEquals(111, order.getOrderItemsArray()[0].getProductId());
-	        assertEquals(new Integer(2), order.getOrderItemsArray()[0].getQuantity());
-	        assertTrue(order == order.getOrderItemsArray()[1].getOrder());
-	        assertEquals(5.2d, order.getOrderItemsArray()[1].getPrice(), 0d);
-	        assertEquals(222, order.getOrderItemsArray()[1].getProductId());
-	        assertEquals(new Integer(7), order.getOrderItemsArray()[1].getQuantity());
+        if (checkArrays) {
+            // OrderItems array...
+            assertEquals(2, order.getOrderItemsArray().length);
+            assertTrue(order == order.getOrderItemsArray()[0].getOrder());
+            assertEquals(8.9d, order.getOrderItemsArray()[0].getPrice(), 0d);
+            assertEquals(111, order.getOrderItemsArray()[0].getProductId());
+            assertEquals(new Integer(2), order.getOrderItemsArray()[0].getQuantity());
+            assertTrue(order == order.getOrderItemsArray()[1].getOrder());
+            assertEquals(5.2d, order.getOrderItemsArray()[1].getPrice(), 0d);
+            assertEquals(222, order.getOrderItemsArray()[1].getProductId());
+            assertEquals(new Integer(7), order.getOrderItemsArray()[1].getQuantity());
         }
     }
 
@@ -137,7 +137,7 @@ public class BeanBindingExtendedConfigTest {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_02.xml"));
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("'wiring' binding specifies a 'property' attribute.  This is not valid for a Collection target.", e.getCause().getMessage());
         }
     }
@@ -147,7 +147,7 @@ public class BeanBindingExtendedConfigTest {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_03.xml"));
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("'wiring' binding specifies a 'property' attribute.  This is not valid for an Array target.", e.getCause().getMessage());
         }
     }
@@ -157,7 +157,7 @@ public class BeanBindingExtendedConfigTest {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_04.xml"));
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("'wiring' binding for bean class 'org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder' must specify a 'property' or 'setterMethod' attribute.", e.getCause().getMessage());
         }
     }
@@ -167,36 +167,36 @@ public class BeanBindingExtendedConfigTest {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_10.xml"));
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("'wiring' binding specifies a 'property' and a 'setterMethod' attribute.  Only one of both may be set.", e.getCause().getMessage());
         }
     }
 
     @Test
     public void test_order_update() throws IOException, SAXException {
-    	 Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_05.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_05.xml"));
 
-    	 ExtendedOrder inExtendedOrder = new ExtendedOrder();
-    	 List<OrderItem> inOrderItems = new ArrayList<OrderItem>();
-    	 Header inHeader = new Header();
+        ExtendedOrder inExtendedOrder = new ExtendedOrder();
+        List<OrderItem> inOrderItems = new ArrayList<OrderItem>();
+        Header inHeader = new Header();
 
-         JavaResult result = new JavaResult();
-    	 result.getResultMap().put("order", inExtendedOrder);
-    	 result.getResultMap().put("orderItemList", inOrderItems);
-    	 result.getResultMap().put("headerBean", inHeader);
+        JavaResult result = new JavaResult();
+        result.getResultMap().put("order", inExtendedOrder);
+        result.getResultMap().put("orderItemList", inOrderItems);
+        result.getResultMap().put("headerBean", inHeader);
 
-         ExecutionContext execContext = smooks.createExecutionContext();
+        ExecutionContext execContext = smooks.createExecutionContext();
 
-         //execContext.setEventListener(new HtmlReportGenerator("/target/report.html"));
-         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        //execContext.setEventListener(new HtmlReportGenerator("/target/report.html"));
+        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-         ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
 
-         assertSame(inExtendedOrder, order);
-         assertSame(inOrderItems, order.getOrderItems());
-         assertSame(inHeader, order.getHeader());
+        assertSame(inExtendedOrder, order);
+        assertSame(inOrderItems, order.getOrderItems());
+        assertSame(inHeader, order.getHeader());
 
-         assertOrderOK(order, false);
+        assertOrderOK(order, false);
     }
 
     @Test
@@ -204,91 +204,90 @@ public class BeanBindingExtendedConfigTest {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_06.xml"));
             fail("Expected SmooksException");
-        } catch(SmooksException e) {
+        } catch (SmooksException e) {
             assertEquals("The bindings attribute 'createOnElement' and wiring attribute 'wireOnElement' are both not set. " +
-            		"One of them must at least be set. If the result of this binding should be a new populated Object then " +
-            		"you need to set the 'createOnElement' bindings attribute. If you want to update an existing object in " +
-            		"the bean context then you must set the 'wireOnElement' attribute.", e.getCause().getMessage());
+                    "One of them must at least be set. If the result of this binding should be a new populated Object then " +
+                    "you need to set the 'createOnElement' bindings attribute. If you want to update an existing object in " +
+                    "the bean context then you must set the 'wireOnElement' attribute.", e.getCause().getMessage());
         }
     }
 
     @Test
     public void test_flat_xml_set_in_binding() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_07.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_07.xml"));
 
-		JavaResult result = new JavaResult();
+        JavaResult result = new JavaResult();
 
-		ExecutionContext execContext = smooks.createExecutionContext();
+        ExecutionContext execContext = smooks.createExecutionContext();
 
-		//execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-		smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), result);
+        //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
+        smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), result);
 
-		assertFlatResult(result);
-	}
+        assertFlatResult(result);
+    }
 
     @Test
     public void test_flat_xml_set_global() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_08.xml"));
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_08.xml"));
 
-		JavaResult result = new JavaResult();
+        JavaResult result = new JavaResult();
 
-		ExecutionContext execContext = smooks.createExecutionContext();
+        ExecutionContext execContext = smooks.createExecutionContext();
 
-		//execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-		smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), result);
+        //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
+        smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), result);
 
-		assertFlatResult(result);
-	}
-
-	private void assertFlatResult(JavaResult result) {
-		@SuppressWarnings("unchecked")
-    	ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
-
-		assertNotNull("root should not be null", root);
-
-		assertEquals(2, root.size());
-		assertEquals(3, root.get(0).size());
-		assertEquals(3, root.get(1).size());
+        assertFlatResult(result);
     }
 
-        @Test
-	public void test_profile() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_09.xml"));
+    private void assertFlatResult(JavaResult result) {
+        @SuppressWarnings("unchecked")
+        ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
 
-		JavaResult result = new JavaResult();
+        assertNotNull("root should not be null", root);
 
-		ExecutionContext execContext = smooks.createExecutionContext("A");
+        assertEquals(2, root.size());
+        assertEquals(3, root.get(0).size());
+        assertEquals(3, root.get(1).size());
+    }
 
-		//execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+    @Test
+    public void test_profile() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_09.xml"));
 
-		ExtendedOrder order =  (ExtendedOrder) result.getBean("order");
-		assertEquals(2d, order.getTotal(), 0d);
+        JavaResult result = new JavaResult();
 
-		execContext = smooks.createExecutionContext("B");
+        ExecutionContext execContext = smooks.createExecutionContext("A");
 
-		//execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
+        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-		order =  (ExtendedOrder) result.getBean("order");
-		assertEquals(4d, order.getTotal(), 0d);
+        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        assertEquals(2d, order.getTotal(), 0d);
 
-	}
+        execContext = smooks.createExecutionContext("B");
 
-        @Test
-	public void test_condition() throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_11.xml"));
+        //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
+        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-		JavaResult result = new JavaResult();
+        order = (ExtendedOrder) result.getBean("order");
+        assertEquals(4d, order.getTotal(), 0d);
+    }
 
-		ExecutionContext execContext = smooks.createExecutionContext();
+    @Test
+    public void test_condition() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_11.xml"));
 
-		//execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        JavaResult result = new JavaResult();
 
-		ExtendedOrder order =  (ExtendedOrder) result.getBean("order");
-		assertEquals(2d, order.getTotal(), 0d);
-	}
+        ExecutionContext execContext = smooks.createExecutionContext();
+
+        //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
+        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+
+        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        assertEquals(2d, order.getTotal(), 0d);
+    }
 
     @Test
     public void test_expression_initVal() throws IOException, SAXException {
@@ -301,7 +300,7 @@ public class BeanBindingExtendedConfigTest {
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-        Map order =  (Map) result.getBean("orderItem");
+        Map order = (Map) result.getBean("orderItem");
         assertEquals(154.2d, (Double) order.get("total"), 0d);
     }
 
@@ -316,7 +315,7 @@ public class BeanBindingExtendedConfigTest {
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-        Map<?, ?> order =  (Map<?, ?>) result.getBean("order");
+        Map<?, ?> order = (Map<?, ?>) result.getBean("order");
 
         assertTrue(order instanceof HashMap);
     }
@@ -332,10 +331,10 @@ public class BeanBindingExtendedConfigTest {
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-        Map<?, ?> order1 =  (Map<?, ?>) result.getBean("default_order");
-        Map<?, ?> order2 =  (Map<?, ?>) result.getBean("mvel_order");
-        Map<?, ?> order3 =  (Map<?, ?>) result.getBean("mvel_class_order");
-        Map<?, ?> order4 =  (Map<?, ?>) result.getBean("basic_order");
+        Map<?, ?> order1 = (Map<?, ?>) result.getBean("default_order");
+        Map<?, ?> order2 = (Map<?, ?>) result.getBean("mvel_order");
+        Map<?, ?> order3 = (Map<?, ?>) result.getBean("mvel_class_order");
+        Map<?, ?> order4 = (Map<?, ?>) result.getBean("basic_order");
 
         assertTrue(order1 instanceof HashMap);
         assertTrue(order2 instanceof HashMap);
@@ -354,7 +353,7 @@ public class BeanBindingExtendedConfigTest {
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
 
-        Map<?, ?> order =  (Map<?, ?>) result.getBean("order");
+        Map<?, ?> order = (Map<?, ?>) result.getBean("order");
 
         assertTrue(order instanceof HashMap);
     }
