@@ -42,16 +42,16 @@
  */
 package org.smooks.cartridges.javabean.programatic;
 
-import javax.xml.transform.stream.StreamSource;
-
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Value;
-import org.smooks.javabean.decoders.BooleanDecoder;
-import org.smooks.javabean.decoders.IntegerDecoder;
+import org.smooks.converter.factory.system.BooleanConverterFactory;
+import org.smooks.converter.factory.system.StringToIntegerConverterFactory;
 import org.smooks.payload.JavaResult;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javax.xml.transform.stream.StreamSource;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Programmatic Binding config test for the Value class.
@@ -61,16 +61,16 @@ import static org.junit.Assert.*;
  */
 public class ProgrammaticValueConfigTest {
 
-        @Test
+	@Test
 	public void test_01() {
 
 		Smooks smooks = new Smooks();
 
 		smooks.addVisitor(new Value("customerName", "customer"));
 		smooks.addVisitor(new Value("customerNumber", "customer/@number")
-								.setDecoder(new IntegerDecoder()));
+								.setTypeConverter(new StringToIntegerConverterFactory().createTypeConverter()));
 		smooks.addVisitor(new Value("privatePerson", "privatePerson")
-								.setDecoder(new BooleanDecoder())
+								.setTypeConverter(new BooleanConverterFactory().createTypeConverter())
 								.setDefaultValue("true"));
 
 		JavaResult result = new JavaResult();
@@ -81,7 +81,7 @@ public class ProgrammaticValueConfigTest {
 		assertEquals(Boolean.TRUE, result.getBean("privatePerson"));
 	}
 
-        @Test
+	@Test
 	public void test_02() {
 
 		Smooks smooks = new Smooks();

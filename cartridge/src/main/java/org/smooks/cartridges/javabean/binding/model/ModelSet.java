@@ -48,10 +48,13 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
+import org.smooks.cdr.registry.lookup.UserDefinedSmooksResourceConfigurationList;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.SelectorStepBuilder;
 import org.smooks.container.ApplicationContext;
-import org.smooks.javabean.DataDecoder;
+import org.smooks.converter.TypeConverter;
+import org.smooks.delivery.ContentHandlerFactory;
 import org.smooks.util.DollarBraceDecoder;
 import org.smooks.xml.NamespaceMappings;
 
@@ -88,8 +91,8 @@ public class ModelSet {
      */
     private Boolean isBindingOnlyConfig;
 
-    private ModelSet(SmooksResourceConfigurationList userConfigList) throws SmooksConfigurationException {
-        createBaseBeanMap(userConfigList);
+    private ModelSet(SmooksResourceConfigurationList userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigurationException {
+        createBaseBeanMap(userConfigList, javaContentHandlerFactory);
         createExpandedModels();
         resolveModelSelectors(userConfigList);
     }
@@ -115,34 +118,39 @@ public class ModelSet {
         return isBindingOnlyConfig;
     }
 
-    private void createBaseBeanMap(SmooksResourceConfigurationList userConfigList) {
-        for(int i = 0; i < userConfigList.size(); i++) {
-            SmooksResourceConfiguration config = userConfigList.get(i);
-            Object javaResource = config.getJavaResourceObject();
+    private void createBaseBeanMap(final SmooksResourceConfigurationList smooksResourceConfigurationList, final ContentHandlerFactory<?> contentHandlerFactory) {
+        for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
+            final SmooksResourceConfiguration smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
+            final Object javaResource;
+            if (smooksResourceConfiguration.isJavaResource()) {
+                javaResource = contentHandlerFactory.create(smooksResourceConfiguration);
+            } else {
+                javaResource = null;
+            }
 
-            if(javaResource instanceof BeanInstanceCreator) {
+            if (javaResource instanceof BeanInstanceCreator) {
                 BeanInstanceCreator beanCreator = (BeanInstanceCreator) javaResource;
                 Bean bean = new Bean(beanCreator).setCloneable(true);
 
                 baseBeans.put(bean.getBeanId(), bean);
 
-                if(isBindingOnlyConfig == null) {
+                if (isBindingOnlyConfig == null) {
                     isBindingOnlyConfig = true;
                 }
-            } else if(javaResource instanceof BeanInstancePopulator) {
+            } else if (javaResource instanceof BeanInstancePopulator) {
                 BeanInstancePopulator beanPopulator = (BeanInstancePopulator) javaResource;
                 Bean bean = baseBeans.get(beanPopulator.getBeanId());
 
-                if(bean == null) {
+                if (bean == null) {
                     throw new SmooksConfigurationException("Unexpected binding configuration exception.  Unknown parent beanId '' for binding configuration.");
                 }
 
-                if(beanPopulator.isBeanWiring()) {
+                if (beanPopulator.isBeanWiring()) {
                     bean.getBindings().add(new WiredBinding(beanPopulator));
                 } else {
                     bean.getBindings().add(new DataBinding(beanPopulator));
                 }
-            } else if(isNonBindingResource(javaResource) && !isGlobalParamsConfig(config)) {
+            } else if (isNonBindingResource(javaResource) && !isGlobalParamsConfig(smooksResourceConfiguration)) {
                 // The user has configured something other than a bean binding config.
                 isBindingOnlyConfig = false;
             }
@@ -150,7 +158,7 @@ public class ModelSet {
     }
 
     private boolean isNonBindingResource(Object javaResource) {
-        if(javaResource instanceof DataDecoder) {
+        if(javaResource instanceof TypeConverter) {
             return false;
         }
 
@@ -239,12 +247,12 @@ public class ModelSet {
     public static void build(ApplicationContext appContext) {
         ModelSet modelSet = get(appContext);
         if(modelSet == null) {
-            modelSet = new ModelSet(appContext.getStore().getUserDefinedResourceList());
-            appContext.setAttribute(ModelSet.class, modelSet);
+            modelSet = new ModelSet(appContext.getRegistry().lookup(new UserDefinedSmooksResourceConfigurationList(appContext.getRegistry())), appContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")));
+            appContext.getRegistry().registerObject(ModelSet.class, modelSet);
         }
     }
 
     public static ModelSet get(ApplicationContext appContext) {
-        return (ModelSet) appContext.getAttribute(ModelSet.class);
+        return (ModelSet) appContext.getRegistry().lookup(ModelSet.class);
     }
 }

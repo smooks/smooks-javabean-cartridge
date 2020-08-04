@@ -78,7 +78,7 @@
     </jb:bean>
 
     <jb:bean beanId="header" class="org.smooks.cartridges.javabean.Header" createOnElement="$TODO$">
-        <jb:value property="date" decoder="$TODO$" data="$TODO$" />
+        <jb:value property="date" decoder="Date" data="$TODO$" />
         <jb:value property="customerNumber" decoder="Long" data="$TODO$" />
         <jb:value property="customerName" decoder="String" data="$TODO$" />
         <jb:value property="privatePerson" decoder="Boolean" data="$TODO$" />

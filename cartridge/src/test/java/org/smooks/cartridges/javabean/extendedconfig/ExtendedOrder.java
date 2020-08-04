@@ -49,13 +49,13 @@ import org.smooks.cartridges.javabean.Order;
  */
 public class ExtendedOrder extends Order {
 
-    private double total;
-
-    public double getTotal() {
+    private Double total = 0.0;
+    
+    public Double getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 }

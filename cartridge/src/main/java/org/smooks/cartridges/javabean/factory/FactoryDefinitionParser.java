@@ -43,11 +43,12 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.apache.commons.lang.StringUtils;
-import org.smooks.container.ApplicationContext;
-import org.smooks.javabean.DataDecodeException;
-import org.smooks.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.cdr.registry.lookup.GlobalParamsLookup;
+import org.smooks.container.ApplicationContext;
+import org.smooks.converter.TypeConverterException;
+import org.smooks.util.ClassUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,7 +100,7 @@ public interface FactoryDefinitionParser {
 
     		String className;
             if(StringUtils.isEmpty(alias) || alias.equals(DEFAULT_ALIAS)) {
-                className = applicationContext.getStore().getGlobalParams().getStringParameter(GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
+                className = applicationContext.getRegistry().lookup(new GlobalParamsLookup(applicationContext.getRegistry())).getParameterValue(GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, String.class, DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
             } else {
                 loadAliasToClassMap();
 
@@ -155,7 +156,7 @@ public interface FactoryDefinitionParser {
             return Collections.unmodifiableMap(aliasToClassMap);
         }
 
-        private synchronized static void loadAliasToClassMap() throws DataDecodeException {
+        private synchronized static void loadAliasToClassMap() throws TypeConverterException {
             if(aliasToClassMap == null) {
                 synchronized (FactoryDefinitionParserFactory.class) {
                     if(aliasToClassMap == null) {

@@ -63,7 +63,7 @@ import java.util.Map;
  */
 public class PropertyChecker implements DOMVisitBefore {
 
-    private static enum BeanType {
+    private enum BeanType {
         ARRAY,
         COLLECTION,
         MAP,
@@ -121,7 +121,7 @@ public class PropertyChecker implements DOMVisitBefore {
         try {
             beanClass = ClassUtil.forName(beanClassName, getClass());
         } catch (ClassNotFoundException e) {
-            throw new SmooksConfigurationException("Bean class '" + beanClassName + "' not avilable on classpath.");
+            throw new SmooksConfigurationException("Bean class '" + beanClassName + "' not available on classpath.");
         }
         return beanClass;
     }

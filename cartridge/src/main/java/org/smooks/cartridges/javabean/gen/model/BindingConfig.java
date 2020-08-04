@@ -42,14 +42,19 @@
  */
 package org.smooks.cartridges.javabean.gen.model;
 
-import org.smooks.javabean.DataDecoder;
+import org.smooks.converter.TypeConverterDescriptor;
+import org.smooks.converter.TypeConverterFactoryLoader;
+import org.smooks.converter.factory.TypeConverterFactory;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BindingConfig {
+    private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 
     private Field property;
     private String wireBeanId;
@@ -90,20 +95,15 @@ public class BindingConfig {
     public String getType() {
         Class type = property.getType();
 
-        if(type.isArray()) {
+        if (type.isArray()) {
             return "$DELETE:NOT-APPLICABLE$";
         }
 
-        Class<? extends DataDecoder> decoder = DataDecoder.Factory.getInstance(type);
-
-        if(type.isPrimitive() || type.getPackage().equals(String.class.getPackage())) {
-            String typeAlias = decoder.getSimpleName();
-
-            if(typeAlias.endsWith("Decoder")) {
-                return typeAlias.substring(0, typeAlias.length() - "Decoder".length());
-            }
+        final TypeConverterFactory<?, ?> typeConverterFactory = TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type));
+        if (typeConverterFactory != null && typeConverterFactory.getClass().isAnnotationPresent(Resource.class) && !typeConverterFactory.getClass().getAnnotation(Resource.class).name().equals("")) {
+            return typeConverterFactory.getClass().getAnnotation(Resource.class).name();
+        } else {
+            return "$TODO$";
         }
-
-        return "$TODO$";
     }
 }

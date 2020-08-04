@@ -43,10 +43,15 @@
 package org.smooks.cartridges.javabean;
 
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.delivery.VisitorConfigMap;
-import org.smooks.javabean.DataDecoder;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
+import org.smooks.converter.TypeConverterFactoryLoader;
+import org.smooks.converter.factory.TypeConverterFactory;
+import org.smooks.delivery.VisitorConfigMap;
+
+import java.util.Map;
 
 /**
  * Programmatic Value Configurator.
@@ -102,13 +107,15 @@ import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
  */
 public class Value extends BindingAppender {
 
+	private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+	
 	private String dataSelector;
 
 	private String targetNamespace;
 
 	private String defaultValue;
 
-	private DataDecoder decoder;
+	private TypeConverter<String, ?> typeConverter;
 
 	/**
      * Create a Value binding configuration.
@@ -135,7 +142,8 @@ public class Value extends BindingAppender {
 		this(beanId, data);
 		AssertArgument.isNotNull(type, "type");
 
-		this.decoder = DataDecoder.Factory.create(type);
+		
+		this.typeConverter = (TypeConverter<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type)).createTypeConverter();
 	}
 
 	/**
@@ -169,7 +177,7 @@ public class Value extends BindingAppender {
 	 * @return <code>this</code> Value configuration instance.
 	 */
 	public Value setType(Class<?> type) {
-		this.decoder = DataDecoder.Factory.create(type);
+		this.typeConverter = (TypeConverter<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type)).createTypeConverter();
 
 		return this;
 	}
@@ -181,8 +189,8 @@ public class Value extends BindingAppender {
 	 * @param targetNamespace The {@link org.smooks.cartridges.javabean.DataDecoder}
 	 * @return <code>this</code> Value configuration instance.
 	 */
-	public Value setDecoder(DataDecoder dataDecoder) {
-		this.decoder = dataDecoder;
+	public Value setTypeConverter(TypeConverter<String, ?> typeConverter) {
+		this.typeConverter = typeConverter;
 
 		return this;
 	}
@@ -197,9 +205,9 @@ public class Value extends BindingAppender {
 
 		SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
 
-		binder.setDecoder(decoder);
+		binder.setTypeConverter(typeConverter);
 		binder.setDefaultValue(defaultValue);
-		binder.setValueAttributeName(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME));
+		binder.setValueAttributeName(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
 
 		visitorMap.addVisitor(binder, populatorConfig.getSelector(), targetNamespace, true);
 	}

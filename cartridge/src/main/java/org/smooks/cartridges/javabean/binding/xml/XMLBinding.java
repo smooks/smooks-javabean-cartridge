@@ -47,20 +47,24 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.cartridges.javabean.binding.AbstractBinding;
+import org.smooks.cartridges.javabean.binding.BeanSerializationException;
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.*;
+import org.smooks.cartridges.javabean.binding.model.get.ConstantGetter;
+import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
+import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.SelectorStepBuilder;
-import org.smooks.javabean.DataDecoder;
-import org.smooks.javabean.DataEncoder;
-import org.smooks.cartridges.javabean.binding.BeanSerializationException;
-import org.smooks.cartridges.javabean.binding.model.get.ConstantGetter;
-import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
+import org.smooks.config.Configurable;
+import org.smooks.converter.TypeConverter;
+import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.payload.StringSource;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.util.ClassUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -70,6 +74,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -96,7 +101,7 @@ public class XMLBinding extends AbstractBinding {
      * Public constructor.
      * <p/>
      * Must be followed by calls to the {@link #add(java.io.InputStream)} (or {@link #add(String)}) method
-     * and then the {@link #intiailize()} method.
+     * and then the {@link #intialise()} method.
      */
     public XMLBinding() {
         super();
@@ -131,8 +136,8 @@ public class XMLBinding extends AbstractBinding {
     }
 
     @Override
-    public XMLBinding intiailize() {
-        super.intiailize();
+    public XMLBinding intialise() {
+        super.intialise();
 
         beanModelSet = ModelSet.get(getSmooks().getApplicationContext());
         graphs = createExpandedXMLOutputGraphs(getUserDefinedResourceList());
@@ -254,9 +259,15 @@ public class XMLBinding extends AbstractBinding {
                 XMLSerializationNode node = serializer.findNode(populator.getConfig().getSelectorSteps());
                 if(node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
-                    DataDecoder bindingDecoder = binding.getPopulator().getDecoder(getSmooks().createExecutionContext().getDeliveryConfig());
-                    if(bindingDecoder instanceof DataEncoder) {
-                        node.setEncoder((DataEncoder) bindingDecoder);
+                    Method getterMethodByProperty = ClassUtil.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
+                    TypeConverter<String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getDeliveryConfig());
+                    TypeConverterFactory<?, String> xmlBindingTypeFactory = getSmooks().getApplicationContext().getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(getterMethodByProperty.getReturnType(), String.class));
+                    if (xmlBindingTypeFactory != null) {
+                        TypeConverter<?, String> xmlBindingTypeConverter = xmlBindingTypeFactory.createTypeConverter();
+                        if (xmlBindingTypeConverter instanceof Configurable && beanPopulatorTypeConverter instanceof Configurable) {
+                            ((Configurable) xmlBindingTypeConverter).setConfiguration(((Configurable) beanPopulatorTypeConverter).getConfiguration());
+                        }
+                        node.setTypeConverter(xmlBindingTypeConverter);
                     }
                 }
             } else if(binding instanceof WiredBinding) {
@@ -305,7 +316,7 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private void addNamespaceAttributes(XMLElementSerializationNode serializer) {
-        Properties namespaces = NamespaceMappings.getMappings(getSmooks().getApplicationContext());
+        Properties namespaces = getSmooks().getApplicationContext().getRegistry().lookup(new NamespaceMappingsLookup());
         if(namespaces != null) {
             Enumeration<String> namespacePrefixes = (Enumeration<String>) namespaces.propertyNames();
             while(namespacePrefixes.hasMoreElements()) {
@@ -320,19 +331,24 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(SmooksResourceConfigurationList userConfigList) {
-        List<XMLElementSerializationNode> graphRoots = new ArrayList<XMLElementSerializationNode>();
+    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final SmooksResourceConfigurationList smooksResourceConfigurationList) {
+        final List<XMLElementSerializationNode> graphRoots = new ArrayList<XMLElementSerializationNode>();
 
-        for(int i = 0; i < userConfigList.size(); i++) {
-            SmooksResourceConfiguration config = userConfigList.get(i);
-            Object javaResource = config.getJavaResourceObject();
+        for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
+            final SmooksResourceConfiguration smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
+            final Object javaResource;
+            if (smooksResourceConfiguration.isJavaResource()) {
+                javaResource = getSmooks().getApplicationContext().getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(smooksResourceConfiguration);
+            } else {
+                javaResource = null;
+            }
 
-            if(javaResource instanceof BeanInstanceCreator) {
-                assertSelectorOK(config);
-                constructNodePath(config.getSelectorSteps(), graphRoots);
-            } else if(javaResource instanceof BeanInstancePopulator) {
-                assertSelectorOK(config);
-                constructNodePath(config.getSelectorSteps(), graphRoots);
+            if (javaResource instanceof BeanInstanceCreator) {
+                assertSelectorOK(smooksResourceConfiguration);
+                constructNodePath(smooksResourceConfiguration.getSelectorSteps(), graphRoots);
+            } else if (javaResource instanceof BeanInstancePopulator) {
+                assertSelectorOK(smooksResourceConfiguration);
+                constructNodePath(smooksResourceConfiguration.getSelectorSteps(), graphRoots);
             }
         }
 

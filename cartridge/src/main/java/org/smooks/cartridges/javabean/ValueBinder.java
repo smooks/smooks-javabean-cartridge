@@ -42,15 +42,16 @@
  */
 package org.smooks.cartridges.javabean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.annotation.AnnotationConstants;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.ConfigParam;
+import org.smooks.cdr.registry.lookup.NameTypeConverterFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterException;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.SAXElement;
@@ -59,18 +60,18 @@ import org.smooks.delivery.sax.SAXVisitAfter;
 import org.smooks.delivery.sax.SAXVisitBefore;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.javabean.DataDecodeException;
-import org.smooks.javabean.DataDecoder;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.repository.BeanId;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -138,26 +139,29 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ValueBinder.class);
 
-    @ConfigParam(name="beanId")
+    @Inject
+	@Named("beanId")
     private String beanIdName;
 
-    @ConfigParam(defaultVal = AnnotationConstants.NULL_STRING)
-    private String valueAttributeName;
+    @Inject
+    private Optional<String> valueAttributeName;
 
-    @ConfigParam(name="default", defaultVal = AnnotationConstants.NULL_STRING)
-    private String defaultValue;
+    @Inject
+	@Named("default")
+    private Optional<String> defaultValue;
 
-    @ConfigParam(name="type", defaultVal = "String")
-    private String typeAlias;
+    @Inject
+	@Named("type")
+    private String typeAlias = "String";
 
     private BeanId beanId;
 
-    @AppContext
+    @Inject
     private ApplicationContext appContext;
 
     private boolean isAttribute;
 
-    private DataDecoder decoder;
+    private TypeConverter<String, ?> typeConverter;
 
     /**
      *
@@ -190,28 +194,28 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 	 * @return the valueAttributeName
 	 */
 	public String getValueAttributeName() {
-		return valueAttributeName;
+		return valueAttributeName.orElse(null);
 	}
 
 	/**
 	 * @param valueAttributeName the valueAttributeName to set
 	 */
 	public void setValueAttributeName(String valueAttributeName) {
-		this.valueAttributeName = valueAttributeName;
+		this.valueAttributeName = Optional.ofNullable(valueAttributeName);
 	}
 
 	/**
 	 * @return the defaultValue
 	 */
 	public String getDefaultValue() {
-		return defaultValue;
+		return defaultValue.orElse(null);
 	}
 
 	/**
 	 * @param defaultValue the defaultValue to set
 	 */
 	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+		this.defaultValue = Optional.ofNullable(defaultValue);
 	}
 
 	/**
@@ -231,24 +235,24 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 	/**
 	 * @return the decoder
 	 */
-	public DataDecoder getDecoder() {
-		return decoder;
+	public TypeConverter<String, ?> getTypeConverter() {
+		return typeConverter;
 	}
 
 	/**
 	 * @param decoder the decoder to set
 	 */
-	public void setDecoder(DataDecoder decoder) {
-		this.decoder = decoder;
+	public void setTypeConverter(TypeConverter<String, ?> typeConverter) {
+		this.typeConverter = typeConverter;
 	}
 
 	/**
      * Set the resource configuration on the bean populator.
      * @throws SmooksConfigurationException Incorrectly configured resource.
      */
-    @Initialize
+    @PostConstruct
     public void initialize() throws SmooksConfigurationException {
-    	isAttribute = (valueAttributeName != null);
+    	isAttribute = (valueAttributeName.isPresent());
 
         beanId = appContext.getBeanIdStore().register(beanIdName);
 
@@ -260,7 +264,7 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 	public void visitBefore(Element element, ExecutionContext executionContext)
 			throws SmooksException {
 		if(isAttribute) {
-			bindValue(DomUtils.getAttributeValue(element, valueAttributeName), executionContext, new Fragment(element));
+			bindValue(DomUtils.getAttributeValue(element, valueAttributeName.orElse(null)), executionContext, new Fragment(element));
 		}
 	}
 
@@ -275,7 +279,7 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 			ExecutionContext executionContext) throws SmooksException,
 			IOException {
 		if(isAttribute) {
-			bindValue(SAXUtil.getAttribute(valueAttributeName, element.getAttributes()), executionContext, new Fragment(element));
+			bindValue(SAXUtil.getAttribute(valueAttributeName.orElse(null), element.getAttributes()), executionContext, new Fragment(element));
 		} else {
             // Turn on Text Accumulation...
             element.accumulateText();
@@ -305,35 +309,35 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 		return CollectionsUtil.toSet(beanIdName);
 	}
 
-	private Object decodeDataString(String dataString, ExecutionContext executionContext) throws DataDecodeException {
-        if((dataString == null || dataString.length() == 0) && defaultValue != null) {
-        	if(defaultValue.equals("null")) {
+	private Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {
+        if((dataString == null || dataString.length() == 0) && defaultValue.isPresent()) {
+        	if(defaultValue.get().equals("null")) {
         		return null;
         	}
-            dataString = defaultValue;
+            dataString = defaultValue.get();
         }
 
         try {
-            return getDecoder(executionContext).decode(dataString);
-        } catch(DataDecodeException e) {
-            throw new DataDecodeException("Failed to decode the value '" + dataString + "' for the bean id '" + beanIdName +"'.", e);
+            return getTypeConverter(executionContext).convert(dataString);
+        } catch(TypeConverterException e) {
+            throw new TypeConverterException("Failed to convert the value '" + dataString + "' for the bean id '" + beanIdName +"'.", e);
         }
     }
 
-	private DataDecoder getDecoder(ExecutionContext executionContext) throws DataDecodeException {
-		if(decoder == null) {
+	private TypeConverter<String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
+		if(typeConverter == null) {
 			@SuppressWarnings("unchecked")
 			List decoders = executionContext.getDeliveryConfig().getObjects("decoder:" + typeAlias);
 
 	        if (decoders == null || decoders.isEmpty()) {
-	            decoder = DataDecoder.Factory.create(typeAlias);
-	        } else if (!(decoders.get(0) instanceof DataDecoder)) {
-	            throw new DataDecodeException("Configured decoder '" + typeAlias + ":" + decoders.get(0).getClass().getName() + "' is not an instance of " + DataDecoder.class.getName());
+	            typeConverter = (TypeConverter<String, ?>) appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup(typeAlias)).createTypeConverter();
+	        } else if (!(decoders.get(0) instanceof TypeConverter)) {
+	            throw new TypeConverterException("Configured type converter '" + typeAlias + ":" + decoders.get(0).getClass().getName() + "' is not an instance of " + TypeConverter.class.getName());
 	        } else {
-	            decoder = (DataDecoder) decoders.get(0);
+	            typeConverter = (TypeConverter<String, ?>) decoders.get(0);
 	        }
 		}
-        return decoder;
+        return typeConverter;
     }
 
 }

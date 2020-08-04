@@ -42,24 +42,21 @@
  */
 package org.smooks.cartridges.javabean.v14.getbytype;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.transform.stream.StreamSource;
-
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
 import org.smooks.cartridges.javabean.extendedconfig13.BeanBindingExtendedConfigTest;
-import org.smooks.container.ExecutionContext;
-import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
 import org.smooks.cartridges.javabean.v14.retain_bean.RetainBeanTest;
+import org.smooks.container.ExecutionContext;
 import org.smooks.payload.JavaResult;
 import org.smooks.util.ClassUtil;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * 
@@ -83,6 +80,7 @@ public class GetBeanByTypeTest {
         assertNotNull(order);
         BeanBindingExtendedConfigTest.assertOrderOK(order, true);
     }
+    
 	private InputStream getInput(String file) {
 		return ClassUtil.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
 	}

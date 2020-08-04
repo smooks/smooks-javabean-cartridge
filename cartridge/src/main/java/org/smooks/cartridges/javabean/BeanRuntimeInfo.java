@@ -42,12 +42,15 @@
  */
 package org.smooks.cartridges.javabean;
 
-import org.smooks.cdr.*;
-import org.smooks.container.*;
+import org.smooks.cdr.SmooksConfigurationException;
+import org.smooks.container.ApplicationContext;
 import org.smooks.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Java bean runtime info.
@@ -209,11 +212,11 @@ public class BeanRuntimeInfo {
 
     @SuppressWarnings("unchecked")
 	private static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
-        Map<String, BeanRuntimeInfo> runtimeInfoMap = (Map<String, BeanRuntimeInfo>) appContext.getAttribute(CONTEXT_KEY);
+        Map<String, BeanRuntimeInfo> runtimeInfoMap = (Map<String, BeanRuntimeInfo>) appContext.getRegistry().lookup(CONTEXT_KEY);
 
         if(runtimeInfoMap == null) {
-            runtimeInfoMap = new HashMap<String, BeanRuntimeInfo>();
-            appContext.setAttribute(CONTEXT_KEY, runtimeInfoMap);
+            runtimeInfoMap = new HashMap<>();
+            appContext.getRegistry().registerObject(CONTEXT_KEY, runtimeInfoMap);
         }
 
         return runtimeInfoMap;

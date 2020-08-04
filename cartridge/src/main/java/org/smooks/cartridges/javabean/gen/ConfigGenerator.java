@@ -45,7 +45,9 @@ package org.smooks.cartridges.javabean.gen;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.gen.model.BindingConfig;
 import org.smooks.cartridges.javabean.gen.model.ClassConfig;
-import org.smooks.javabean.DataDecoder;
+import org.smooks.converter.TypeConverterDescriptor;
+import org.smooks.converter.TypeConverterFactoryLoader;
+import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.util.FreeMarkerTemplate;
 
 import java.io.*;
@@ -77,6 +79,8 @@ import java.util.*;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ConfigGenerator {
+
+    private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 
     public static final String ROOT_BEAN_CLASS = "root.beanClass";
     public static final String PACKAGES_INCLUDED = "packages.included";
@@ -160,9 +164,10 @@ public class ConfigGenerator {
 
             for(Field field : fields) {
                 Class<?> type = field.getType();
-                Class<? extends DataDecoder> decoder = DataDecoder.Factory.getInstance(type);
 
-                if(decoder != null) {
+                TypeConverterFactory<?, ?> typeConverterFactory = TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type));
+
+                if(typeConverterFactory != null) {
                     bindings.add(new BindingConfig(field));
                 } else {
                     if(type.isArray()) {

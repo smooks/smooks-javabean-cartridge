@@ -44,19 +44,19 @@ package org.smooks.cartridges.javabean.programatic;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
-import org.smooks.event.ExecutionEvent;
-import org.smooks.event.ExecutionEventListener;
-import org.smooks.event.types.ElementPresentEvent;
-import org.smooks.event.types.ElementVisitEvent;
-import org.smooks.javabean.decoders.DoubleDecoder;
-import org.smooks.javabean.decoders.IntegerDecoder;
 import org.smooks.cartridges.javabean.Bean;
 import org.smooks.cartridges.javabean.Header;
 import org.smooks.cartridges.javabean.Order;
 import org.smooks.cartridges.javabean.OrderItem;
 import org.smooks.cartridges.javabean.factory.Factory;
 import org.smooks.cartridges.javabean.factory.MVELFactory;
+import org.smooks.container.ExecutionContext;
+import org.smooks.converter.factory.system.StringToDoubleConverterFactory;
+import org.smooks.converter.factory.system.StringToIntegerConverterFactory;
+import org.smooks.event.ExecutionEvent;
+import org.smooks.event.ExecutionEventListener;
+import org.smooks.event.types.ElementPresentEvent;
+import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
@@ -208,7 +208,7 @@ public class ProgrammaticBeanConfigTest {
 
         orderBean.bindTo("header",
                 orderBean.newBean(HashMap.class, "/order")
-                    .bindTo("customerNumber", "header/customer/@number", new IntegerDecoder())
+                    .bindTo("customerNumber", "header/customer/@number", new StringToIntegerConverterFactory().createTypeConverter())
                     .bindTo("customerName", "header/customer")
                     .bindTo("privatePerson", "header/privatePerson")
                 ).bindTo("orderItems",
@@ -216,7 +216,7 @@ public class ProgrammaticBeanConfigTest {
                         .bindTo(orderBean.newBean(HashMap.class, "order-item")
                             .bindTo("productId", "order-item/product")
                             .bindTo("quantity", "order-item/quantity")
-                            .bindTo("price", "order-item/price", new DoubleDecoder()))
+                            .bindTo("price", "order-item/price", new StringToDoubleConverterFactory().createTypeConverter()))
                 );
 
         smooks.addVisitor(orderBean);
@@ -283,7 +283,7 @@ public class ProgrammaticBeanConfigTest {
 
         assertEquals("Order:" + identity + "[header[null]\n" +
                      "orderItems[null]\n" +
-                     "norderItemsArray[[{productId: 111, quantity: null, price: 0.0}, {productId: 222, quantity: null, price: 0.0}]]]", order.toString());
+                     "norderItemsArray[[{productId: 111, quantity: null, price: null}, {productId: 222, quantity: null, price: null}]]]", order.toString());
     }
 
     private class ExecListener implements ExecutionEventListener {

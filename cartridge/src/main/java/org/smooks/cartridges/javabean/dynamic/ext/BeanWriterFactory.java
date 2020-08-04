@@ -46,14 +46,15 @@ import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.Config;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.cdr.annotation.Configurator;
+import org.smooks.cdr.injector.Scope;
+import org.smooks.cdr.lifecycle.phase.PostConstructLifecyclePhase;
+import org.smooks.cdr.registry.lookup.LifecycleManagerLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
-import org.smooks.delivery.annotation.Initialize;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -66,23 +67,24 @@ import java.util.Map;
 @SuppressWarnings({ "WeakerAccess", "unchecked" })
 public class BeanWriterFactory implements ContentHandler {
 
-    @ConfigParam
+    @Inject
     private String beanId;
-    @ConfigParam(name = "class")
+    @Inject
+    @Named("class")
     private Class<? extends BeanWriter> beanWriterClass;
-    @ConfigParam(name = BeanConfigUtil.BEAN_CLASS_CONFIG)
+    @Inject
+    @Named(BeanConfigUtil.BEAN_CLASS_CONFIG)
     private Class<?> beanClass;
-    @Config
+    @Inject
     private SmooksResourceConfiguration config;
-    @AppContext
+    @Inject
     private ApplicationContext appContext;
 
-    @Initialize
+    @PostConstruct
     public void createBeanWriter() {
         try {
             BeanWriter beanWriter = beanWriterClass.newInstance();
-
-            Configurator.configure(beanWriter, config, appContext);
+            appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(beanWriter, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), config, beanWriter)));
             getBeanWriters(beanClass, appContext).put(config.getSelectorNamespaceURI(), beanWriter);
         } catch (InstantiationException e) {
             throw new SmooksConfigurationException("Unable to create BeanWriter instance.", e);
@@ -104,11 +106,11 @@ public class BeanWriterFactory implements ContentHandler {
     }
 
     public static Map<Class<?>, Map<String, BeanWriter>> getBeanWriters(ApplicationContext appContext) {
-        Map<Class<?>, Map<String, BeanWriter>> beanWriters = (Map<Class<?>, Map<String, BeanWriter>>) appContext.getAttribute(BeanWriter.class);
+        Map<Class<?>, Map<String, BeanWriter>> beanWriters = (Map<Class<?>, Map<String, BeanWriter>>) appContext.getRegistry().lookup(BeanWriter.class);
 
         if(beanWriters == null) {
-            beanWriters = new HashMap<Class<?>, Map<String, BeanWriter>>();
-            appContext.setAttribute(BeanWriter.class, beanWriters);
+            beanWriters = new HashMap<>();
+            appContext.getRegistry().registerObject(BeanWriter.class, beanWriters);
         }
 
         return beanWriters;

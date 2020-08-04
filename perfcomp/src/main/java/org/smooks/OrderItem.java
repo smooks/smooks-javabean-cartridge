@@ -48,16 +48,16 @@ import java.math.BigDecimal;
  * @author
  */
 public class OrderItem {
-	public int position;
+	public Integer position;
 	public Long quantity;
 	public BigDecimal price;
 	public String title;
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 

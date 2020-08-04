@@ -42,12 +42,12 @@
  */
 package org.smooks.cartridges.javabean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ExecutionContext;
 import org.smooks.util.ClassUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -78,7 +78,7 @@ public abstract class BeanUtils {
 
             // Try it as a List using the plural name...
             beanSetterMethod = ClassUtil.getSetterMethod(setterNamePlural, bean, setterParamType);
-            if(beanSetterMethod == null) {
+            if (beanSetterMethod == null) {
                 // Try it as an array using the non-plural name...
             }
         }

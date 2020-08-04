@@ -44,14 +44,15 @@ package org.smooks.cartridges.javabean.binding;
 
 import org.smooks.Smooks;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
-import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.container.ExecutionContext;
-import org.smooks.event.report.HtmlReportGenerator;
 import org.smooks.cartridges.javabean.binding.model.Bean;
 import org.smooks.cartridges.javabean.binding.model.DataBinding;
 import org.smooks.cartridges.javabean.binding.model.WiredBinding;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
+import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
+import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.registry.lookup.UserDefinedSmooksResourceConfigurationList;
+import org.smooks.container.ExecutionContext;
+import org.smooks.event.report.HtmlReportGenerator;
 import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
@@ -131,7 +132,7 @@ public class AbstractBinding {
     /**
      * Initialize the binding instance.
      */
-    public AbstractBinding intiailize() {
+    public AbstractBinding intialise() {
         assertNotInitialized();
         smooks.createExecutionContext();
         this.allConfigsAdded = true;
@@ -190,7 +191,7 @@ public class AbstractBinding {
     }
 
     protected SmooksResourceConfigurationList getUserDefinedResourceList() {
-        return smooks.getApplicationContext().getStore().getUserDefinedResourceList();
+        return smooks.getApplicationContext().getRegistry().lookup(new UserDefinedSmooksResourceConfigurationList(smooks.getApplicationContext().getRegistry()));
     }
 
     protected GetterGraph constructContextualGetter(DataBinding binding) {
