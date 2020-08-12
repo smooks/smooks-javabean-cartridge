@@ -25,7 +25,13 @@
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-             
+ 
+    <scm>
+        <connection>scm:git:git@github.com:smooks/smooks-javabean-cartridge.git</connection>
+        <developerConnection>scm:git:git@github.com:smooks/smooks-javabean-cartridge.git</developerConnection>
+        <url>git@github.com:smooks/smooks-javabean-cartridge.git</url>
+    </scm>
+           
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
