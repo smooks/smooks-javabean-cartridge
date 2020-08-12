@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <name>Smooks JavaBean Cartridge</name>
+    <url>https://www.smooks.org</url>
 
     <description>The Smooks JavaBean Cartridge allows you to create and populate Java objects from your message data
         (i.e. bind data to).
@@ -31,7 +32,14 @@
         <developerConnection>scm:git:git@github.com:smooks/smooks-javabean-cartridge.git</developerConnection>
         <url>git@github.com:smooks/smooks-javabean-cartridge.git</url>
     </scm>
-           
+
+    <developers>
+        <developer>
+            <name>Smooks Developers</name>
+            <email>smooks-dev@googlegroups.com</email>
+        </developer>
+    </developers>
+         
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
