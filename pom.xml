@@ -9,6 +9,23 @@
     <version>2.0.0-M1</version>
     <packaging>pom</packaging>
 
+    <name>Smooks JavaBean Cartridge</name>
+
+    <description>The Smooks JavaBean Cartridge allows you to create and populate Java objects from your message data
+        (i.e. bind data to).
+    </description>
+
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>https://www.gnu.org/licenses/lgpl.txt</url>
+        </license>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+             
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
