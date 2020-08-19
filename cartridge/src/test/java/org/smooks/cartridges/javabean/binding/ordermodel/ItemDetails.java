@@ -49,14 +49,14 @@ import java.util.Date;
  */
 public class ItemDetails {
 
-    private int quantityInStock;
+    private Integer quantityInStock = 0;
     private Date useBy;
 
     public int getQuantityInStock() {
         return quantityInStock;
     }
 
-    public void setQuantityInStock(int quantityInStock) {
+    public void setQuantityInStock(Integer quantityInStock) {
         this.quantityInStock = quantityInStock;
     }
 

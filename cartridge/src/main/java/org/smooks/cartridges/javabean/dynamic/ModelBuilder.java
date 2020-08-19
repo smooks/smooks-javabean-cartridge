@@ -42,24 +42,24 @@
  */
 package org.smooks.cartridges.javabean.dynamic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
+import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
+import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Fragment;
 import org.smooks.event.report.HtmlReportGenerator;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
-import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.payload.JavaResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -169,8 +169,8 @@ public class ModelBuilder {
         }
 
 		executionContext.getBeanContext().addObserver(beanTracker);
-		
-		if(validate && descriptor.getSchema() != null) {
+
+        if (validate && descriptor.getSchema() != null) {
 			// Validate the message against the schemas...
 			Document messageDoc = toDocument(message);
 

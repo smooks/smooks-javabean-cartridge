@@ -47,22 +47,22 @@ import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
 @DefaultNamespace(uri = "http://www.acme.com/xsd/aaa.xsd", prefix = "aaa")
 public class AAA {
 
-	private double doubleProperty;
-    private double intProperty;
+	private Double doubleProperty;
+    private Double intProperty;
 
-    public double getDoubleProperty() {
+    public Double getDoubleProperty() {
         return doubleProperty;
     }
 
-    public void setDoubleProperty(double doubleProperty) {
+    public void setDoubleProperty(Double doubleProperty) {
         this.doubleProperty = doubleProperty;
     }
 
-    public double getIntProperty() {
+    public Double getIntProperty() {
         return intProperty;
     }
 
-    public void setIntProperty(double intProperty) {
+    public void setIntProperty(Double intProperty) {
         this.intProperty = intProperty;
     }
 }

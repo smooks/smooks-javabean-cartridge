@@ -43,18 +43,22 @@
 package org.smooks.cartridges.javabean;
 
 import org.smooks.Smooks;
-import org.smooks.cartridges.javabean.factory.Factory;
-import org.smooks.javabean.DataDecoder;
-import org.smooks.util.ClassUtil;
-import org.smooks.delivery.VisitorConfigMap;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
+import org.smooks.cartridges.javabean.factory.Factory;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.converter.TypeConverter;
+import org.smooks.converter.TypeConverterDescriptor;
+import org.smooks.converter.TypeConverterFactoryLoader;
+import org.smooks.converter.factory.TypeConverterFactory;
+import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.util.ClassUtil;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Programmatic Bean Configurator.
@@ -143,6 +147,7 @@ import java.util.ArrayList;
  * @see Value
  */
 public class Bean extends BindingAppender {
+    private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 
     BeanInstanceCreator beanInstanceCreator;
     private Class<?> beanClass;
@@ -350,7 +355,7 @@ public class Bean extends BindingAppender {
      *                      the data value.
      * @return <code>this</code> Bean configuration instance.
      */
-    public Bean bindTo(String bindingMember, String dataSelector, DataDecoder dataDecoder) {
+    public Bean bindTo(String bindingMember, String dataSelector, TypeConverter<String, ?> typeConverter) {
         assertNotProcessed();
         AssertArgument.isNotNull(bindingMember, "bindingMember");
         AssertArgument.isNotNull(dataSelector, "dataSelector");
@@ -363,14 +368,19 @@ public class Bean extends BindingAppender {
 
         // Configure the populator visitor...
         beanInstancePopulator.setBeanId(getBeanId());
-        beanInstancePopulator.setValueAttributeName(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME));
-        beanInstancePopulator.setValueAttributePrefix(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX));
+        beanInstancePopulator.setValueAttributeName(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
+        beanInstancePopulator.setValueAttributePrefix(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, String.class));
 
         Method bindingMethod = getBindingMethod(bindingMember, beanClass);
         if (bindingMethod != null) {
-            if (dataDecoder == null) {
-                Class<?> dataType = bindingMethod.getParameterTypes()[0];
-                dataDecoder = DataDecoder.Factory.create(dataType);
+            if (typeConverter == null) {
+                final Class<?> dataType = bindingMethod.getParameterTypes()[0];
+                final TypeConverterFactory<String, ?> typeConverterFactory = (TypeConverterFactory<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, dataType));
+                if (typeConverterFactory != null) {
+                    typeConverter = typeConverterFactory.createTypeConverter();
+                } else {
+                    typeConverter = (TypeConverter<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(Object.class, Object.class)).createTypeConverter();
+                }
             }
 
             if (bindingMethod.getName().equals(bindingMember)) {
@@ -381,7 +391,7 @@ public class Bean extends BindingAppender {
         } else {
             beanInstancePopulator.setProperty(bindingMember);
         }
-        beanInstancePopulator.setDecoder(dataDecoder);
+        beanInstancePopulator.setTypeConverter(typeConverter);
 
         bindings.add(new Binding(populatorConfig.getSelector(), beanInstancePopulator, false));
 
@@ -465,7 +475,7 @@ public class Bean extends BindingAppender {
      * @return <code>this</code> Bean configuration instance.
      */
     public Bean bindTo(String dataSelector) {
-        return bindTo(dataSelector, (DataDecoder) null);
+        return bindTo(dataSelector, (TypeConverter<String, ?>) null);
     }
 
 
@@ -474,11 +484,11 @@ public class Bean extends BindingAppender {
      * dataSelector, to the target Collection/array Bean beanclass instance.
      *
      * @param dataSelector The data selector for the data value to be bound.
-     * @param dataDecoder  The {@link org.smooks.javabean.DataDecoder} to be used for decoding
+     * @param typeConverter  The {@link org.smooks.javabean.DataDecoder} to be used for decoding
      *                     the data value.
      * @return <code>this</code> Bean configuration instance.
      */
-    public Bean bindTo(String dataSelector, DataDecoder dataDecoder) {
+    public Bean bindTo(String dataSelector, TypeConverter<String, ?> typeConverter) {
         assertNotProcessed();
         AssertArgument.isNotNull(dataSelector, "dataSelector");
         // dataDecoder can be null
@@ -490,9 +500,9 @@ public class Bean extends BindingAppender {
 
         // Configure the populator visitor...
         beanInstancePopulator.setBeanId(getBeanId());
-        beanInstancePopulator.setValueAttributeName(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME));
-        beanInstancePopulator.setValueAttributePrefix(populatorConfig.getStringParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX));
-        beanInstancePopulator.setDecoder(dataDecoder);
+        beanInstancePopulator.setValueAttributeName(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
+        beanInstancePopulator.setValueAttributePrefix(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, String.class));
+        beanInstancePopulator.setTypeConverter(typeConverter);
 
         bindings.add(new Binding(populatorConfig.getSelector(), beanInstancePopulator, true));
 

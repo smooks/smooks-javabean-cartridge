@@ -47,16 +47,16 @@ package org.smooks.cartridges.javabean;
  */
 @OrderItemAnnotation
 public class OrderItem {
-    private long productId;
+    private Long productId;
     private Integer quantity;
-    private double price;
+    private Double price;
     private Order order;
 
     public long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
@@ -68,11 +68,11 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

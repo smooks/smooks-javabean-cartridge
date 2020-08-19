@@ -43,20 +43,18 @@
 package org.smooks.cartridges.javabean.dynamic.serialize.freemarker;
 
 import freemarker.template.Configuration;
-import freemarker.template.Template;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.ConfigParam;
-import org.smooks.container.ApplicationContext;
-import org.smooks.delivery.annotation.Initialize;
-import org.smooks.io.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
 import org.smooks.cartridges.javabean.dynamic.BeanRegistrationException;
 import org.smooks.cartridges.javabean.dynamic.Model;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
+import org.smooks.container.ApplicationContext;
 import org.smooks.util.FreeMarkerTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
@@ -74,9 +72,10 @@ public class FreeMarkerBeanWriter implements BeanWriter {
 
     public static final String MODEL_CTX_KEY = "dyna_model_inst";
 
-    @AppContext
+    @Inject
     private ApplicationContext appContext;
-    @ConfigParam(name = "template")
+    @Inject
+    @Named("template")
     private String templateConfig;
 
     private FreeMarkerTemplate template;
@@ -86,7 +85,7 @@ public class FreeMarkerBeanWriter implements BeanWriter {
     private static final WriteBeanPreTextDirective writePreTextDirective = new WriteBeanPreTextDirective();
     private static final WriteAttribsDirective writeAttribsDirective = new WriteAttribsDirective();
 
-    @Initialize
+    @PostConstruct
     public void intialize() {
         final String trimmedTemplateConfig = templateConfig.trim();
 

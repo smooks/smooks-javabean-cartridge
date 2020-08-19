@@ -45,12 +45,13 @@ package org.smooks.cartridges.javabean.ext;
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.ConfigParam;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
+
+import javax.inject.Inject;
 
 /**
  * Expression Binding initVal setter.
@@ -58,7 +59,7 @@ import org.w3c.dom.Element;
  */
 public class InitValExpressionSetter implements DOMVisitBefore {
 	
-	@ConfigParam
+	@Inject
 	private String initValAttrib;
 
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {

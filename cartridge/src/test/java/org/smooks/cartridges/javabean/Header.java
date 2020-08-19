@@ -51,7 +51,7 @@ public class Header {
     private Date date;
     private Long customerNumber;
     private String customerName;
-    private boolean privatePerson;
+    private Boolean privatePerson;
     private Order order;
 
     public Date getDate() {
@@ -78,11 +78,11 @@ public class Header {
         this.customerName = customerName;
     }
 
-	public boolean getPrivatePerson() {
+	public Boolean getPrivatePerson() {
 		return privatePerson;
 	}
 
-	public void setPrivatePerson(boolean privatePerson ) {
+	public void setPrivatePerson(Boolean privatePerson ) {
 		this.privatePerson = privatePerson;
 	}
 

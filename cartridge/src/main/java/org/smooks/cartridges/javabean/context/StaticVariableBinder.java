@@ -42,21 +42,13 @@
  */
 package org.smooks.cartridges.javabean.context;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.smooks.SmooksException;
 import org.smooks.cdr.Parameter;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.annotation.AppContext;
-import org.smooks.cdr.annotation.Config;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.annotation.Initialize;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.sax.SAXElement;
 import org.smooks.delivery.sax.SAXElementVisitor;
@@ -64,6 +56,13 @@ import org.smooks.delivery.sax.SAXText;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.repository.BeanId;
 import org.w3c.dom.Element;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Static variable binding visitor.
@@ -82,14 +81,14 @@ public class StaticVariableBinder implements SAXElementVisitor, DOMElementVisito
 
     private BeanId beanId;
 
-    @Config
+    @Inject
     private SmooksResourceConfiguration config;
 
 
-    @AppContext
+    @Inject
     private ApplicationContext appContext;
 
-    @Initialize
+    @PostConstruct
     public void initialize() throws SmooksConfigurationException {
 
         beanId = appContext.getBeanIdStore().getBeanId(STATVAR);

@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean.binding.xml;
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.get.Getter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
-import org.smooks.javabean.DataEncoder;
+import org.smooks.converter.TypeConverter;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -62,7 +62,7 @@ public abstract class XMLSerializationNode {
 
     protected QName qName;
     protected XMLElementSerializationNode parent;
-    protected DataEncoder encoder;
+    protected TypeConverter<?, String> typeConverter;
     protected String defaultVal;
     protected boolean isCollection = false;
     protected NodeGetter nodeGetter;
@@ -84,8 +84,8 @@ public abstract class XMLSerializationNode {
         this.parent = parent;
     }
 
-    public void setEncoder(DataEncoder encoder) {
-        this.encoder = encoder;
+    public void setTypeConverter(TypeConverter<?, String> typeConverter) {
+        this.typeConverter = typeConverter;
     }
 
     public void setDefaultVal(String defaultVal) {
@@ -109,8 +109,8 @@ public abstract class XMLSerializationNode {
                 }
             }
 
-            if(encoder != null) {
-                return encoder.encode(value);
+            if(typeConverter != null) {
+                return ((TypeConverter<Object, String>) typeConverter).convert(value);
             } else {
                 return value.toString();
             }
@@ -162,7 +162,7 @@ public abstract class XMLSerializationNode {
 
     protected void copyProperties(XMLSerializationNode node) {
         node.qName = qName;
-        node.encoder = encoder;
+        node.typeConverter = typeConverter;
         node.defaultVal = defaultVal;
     }
 

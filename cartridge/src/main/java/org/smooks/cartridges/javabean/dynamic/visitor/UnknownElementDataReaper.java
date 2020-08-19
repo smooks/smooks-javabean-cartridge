@@ -49,9 +49,12 @@ import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.w3c.dom.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Unknown element data reaper.
@@ -156,8 +159,8 @@ public class UnknownElementDataReaper {
     private static DefaultSerializationUnit serializationUnit;
     static {
         serializationUnit = new DefaultSerializationUnit();
-        serializationUnit.setCloseEmptyElements(true);
-        serializationUnit.setRewriteEntities(true); 
+        serializationUnit.setCloseEmptyElements(Optional.of(true));
+        serializationUnit.setRewriteEntities(Optional.of(true)); 
     }
     private static void serialize(Node node, Writer writer) throws IOException {
         switch(node.getNodeType()) {

@@ -45,16 +45,16 @@ package org.smooks.cartridges.javabean.dynamic;
 import org.smooks.Smooks;
 import org.smooks.SmooksException;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cartridges.javabean.dynamic.ext.BeanWriterFactory;
+import org.smooks.cartridges.javabean.dynamic.resolvers.AbstractResolver;
+import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
+import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.XMLConfigDigester;
 import org.smooks.cdr.xpath.SelectorStep;
-import org.smooks.cartridges.javabean.dynamic.ext.BeanWriterFactory;
-import org.smooks.cartridges.javabean.dynamic.resolvers.AbstractResolver;
-import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
-import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.util.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -264,7 +264,7 @@ public class Descriptor {
                         throw new SmooksConfigurationException("Unexpected configuration digest exception.", e);
                     }
 
-                    smooks.getApplicationContext().getStore().addSmooksResourceConfigurationList(configList);
+                    smooks.getApplicationContext().getRegistry().addSmooksResourceConfigurationList(configList);
                 } else {
                     throw new SAXException("Binding configuration resolver '" + bindingResolver.getClass().getName() + "' failed to resolve binding configuration for namespace '" + namespace + "'.  Resolver must return an InputStream in the InputSource.");
                 }

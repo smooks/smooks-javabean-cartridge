@@ -42,11 +42,11 @@
  */
 package org.smooks.cartridges.javabean.jaxb;
 
-import org.junit.Test;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.smooks.io.StreamUtils;
+import org.junit.Test;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.cartridges.javabean.jaxb.model.POType;
+import org.smooks.io.StreamUtils;
 import org.smooks.payload.StringSource;
 import org.xml.sax.SAXException;
 
@@ -61,7 +61,7 @@ public class POTypeTest {
     @Test
     public void test() throws IOException, SAXException {
         XMLBinding xmlBinding =
-                new XMLBinding().add(getClass().getResourceAsStream("POType-binding.xml")).intiailize();
+                new XMLBinding().add(getClass().getResourceAsStream("POType-binding.xml")).intialise();
 
         String poXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream("po.xml"), "UTF-8");
         POType po = xmlBinding.fromXML(new StringSource(poXML), POType.class);

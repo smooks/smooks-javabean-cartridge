@@ -42,21 +42,21 @@
  */
 package org.smooks.cartridges.javabean.binding;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.binding.config5.Person;
-import org.smooks.cartridges.javabean.binding.ordermodel.Order;
-import org.smooks.io.StreamUtils;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.smooks.cartridges.javabean.binding.model.ModelSet;
-import org.smooks.Smooks;
+import org.smooks.cartridges.javabean.binding.ordermodel.Order;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
+import org.smooks.io.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -90,7 +90,7 @@ public class XMLBindingTest {
     @Test
     public void test_Person_binding() throws IOException, SAXException {
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream("config5/person-binding-config.xml"));
-        xmlBinding.intiailize();
+        xmlBinding.intialise();
 
         Person person = xmlBinding.fromXML("<person name='Max' age='50' />", Person.class);
         String xml = xmlBinding.toXML(person);
@@ -121,7 +121,7 @@ public class XMLBindingTest {
         String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"), "UTF-8");
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
         XMLBinding xmlBinding = new XMLBinding(smooks);
-        xmlBinding.intiailize();
+        xmlBinding.intialise();
 
         assertTrue("Should be a binding only config.", ModelSet.get(smooks.getApplicationContext()).isBindingOnlyConfig());
 
@@ -131,7 +131,7 @@ public class XMLBindingTest {
     private void test_post_created_Smooks(String config) throws IOException, SAXException {
         String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"), "UTF-8");
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
-        xmlBinding.intiailize();
+        xmlBinding.intialise();
 
         test(inputXML, xmlBinding);
     }

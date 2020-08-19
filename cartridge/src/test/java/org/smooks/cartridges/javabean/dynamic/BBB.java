@@ -50,7 +50,7 @@ import java.util.List;
 public class BBB {
 
 	private List<AAA> aaas;
-	private float floatProperty;
+	private Float floatProperty;
 
     public List<AAA> getAaas() {
         return aaas;
@@ -64,7 +64,7 @@ public class BBB {
         return floatProperty;
     }
 
-    public void setFloatProperty(float floatProperty) {
+    public void setFloatProperty(Float floatProperty) {
         this.floatProperty = floatProperty;
     }
 }

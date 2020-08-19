@@ -42,6 +42,13 @@
  */
 package org.smooks.cartridges.javabean.dynamic;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -50,18 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.smooks.cartridges.javabean.dynamic.Model;
-import org.smooks.cartridges.javabean.dynamic.ModelBuilder;
-import org.xml.sax.SAXException;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import org.xml.sax.SAXParseException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -94,7 +90,7 @@ public class ModelBuilderTest {
             test_2_schema(new ModelBuilder(NS_DESCRIPTOR, true), "bbb-message-invalid.xml");
             fail("Expected SAXParseException");
         } catch (SAXParseException e) {
-            assertTrue(e.getMessage().indexOf("Invalid content was found starting with element '{\"http://boohoo.com\":ddd}'") != -1);
+            assertTrue(e.getMessage().contains("Invalid content was found starting with element '{\"http://boohoo.com\":ddd}'"));
         }
     }
 
@@ -138,15 +134,15 @@ public class ModelBuilderTest {
 
         aaas.add(new AAA());
         aaas.get(0).setDoubleProperty(1234.98765d);
-        aaas.get(0).setIntProperty(123);
+        aaas.get(0).setIntProperty((double) 123);
         model.registerBean(aaas.get(0));
         aaas.add(new AAA());
         aaas.get(1).setDoubleProperty(2234.98765d);
-        aaas.get(1).setIntProperty(223);
+        aaas.get(1).setIntProperty((double) 223);
         model.registerBean(aaas.get(1));
         aaas.add(new AAA());
         aaas.get(2).setDoubleProperty(3234.98765d);
-        aaas.get(2).setIntProperty(323);
+        aaas.get(2).setIntProperty((double) 323);
         model.registerBean(aaas.get(2));
 
         StringWriter writer = new StringWriter();

@@ -45,14 +45,17 @@ package org.smooks.cartridges.javabean.ext;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.extension.ExtensionContext;
+import org.smooks.cdr.registry.lookup.NameTypeConverterFactoryLookup;
+import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
+import org.smooks.converter.factory.PreprocessTypeConverter;
+import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.delivery.dom.DOMVisitBefore;
-import org.smooks.javabean.DataDecoder;
-import org.smooks.javabean.decoders.PreprocessDecoder;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 /**
@@ -62,18 +65,21 @@ import java.util.UUID;
  */
 public class DecodeParamResolver implements DOMVisitBefore {
 
+    @Inject
+    private ApplicationContext applicationContext;
+
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         NodeList decodeParams = element.getElementsByTagNameNS(element.getNamespaceURI(), "decodeParam");
 
-        if(decodeParams.getLength() > 0) {
+        if (decodeParams.getLength() > 0) {
             ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
             SmooksResourceConfiguration populatorConfig = extensionContext.getResourceStack().peek();
-            SmooksResourceConfiguration decoderConfig = new SmooksResourceConfiguration();
+            SmooksResourceConfiguration typeConverterConfig = new SmooksResourceConfiguration();
 
-            extensionContext.addResource(decoderConfig);
+            extensionContext.addResource(typeConverterConfig);
             try {
-                String type = populatorConfig.getStringParameter("type");
-                DataDecoder decoder = DataDecoder.Factory.create(type);
+                String type = populatorConfig.getParameterValue("type", String.class);
+                TypeConverterFactory<?, ?> typeConverterFactory = applicationContext.getRegistry().lookup(new NameTypeConverterFactoryLookup(type));
                 String reType = UUID.randomUUID().toString();
 
                 // Need to retype the populator configuration so as to get the
@@ -83,25 +89,25 @@ public class DecodeParamResolver implements DOMVisitBefore {
                 populatorConfig.setParameter("type", reType);
 
                 // Configure the new decoder config...
-                decoderConfig.setSelector("decoder:" + reType);
-                decoderConfig.setTargetProfile(extensionContext.getDefaultProfile());
-                
-                if(type != null) {
-                	decoderConfig.setResource(decoder.getClass().getName());
+                typeConverterConfig.setSelector("decoder:" + reType);
+                typeConverterConfig.setTargetProfile(extensionContext.getDefaultProfile());
+
+                if (type != null) {
+                    typeConverterConfig.setResource(typeConverterFactory.createTypeConverter().getClass().getName());
                 }
-                
-                for(int i = 0; i < decodeParams.getLength(); i++) {
+
+                for (int i = 0; i < decodeParams.getLength(); i++) {
                     Element decoderParam = (Element) decodeParams.item(i);
                     String name = decoderParam.getAttribute("name");
-                    
-                    if(name.equals(PreprocessDecoder.VALUE_PRE_PROCESSING)) {
-                    	// Wrap the decoder in the PreprocessDecoder...
-                    	decoderConfig.setResource(PreprocessDecoder.class.getName());
-                    	if(type != null) {
-                    		decoderConfig.setParameter(PreprocessDecoder.BASE_DECODER, decoder.getClass().getName());
-                    	}
-                    }                    
-                    decoderConfig.setParameter(name, DomUtils.getAllText(decoderParam, true));
+
+                    if (name.equals(PreprocessTypeConverter.VALUE_PRE_PROCESSING)) {
+                        // Wrap the decoder in the PreprocessDecoder...
+                        typeConverterConfig.setResource(PreprocessTypeConverter.class.getName());
+                        if (type != null) {
+                            typeConverterConfig.setParameter(PreprocessTypeConverter.DELEGATE_TYPE_CONVERTER_FACTORY, typeConverterFactory.getClass().getName());
+                        }
+                    }
+                    typeConverterConfig.setParameter(name, DomUtils.getAllText(decoderParam, true));
                 }
             } finally {
                 extensionContext.getResourceStack().pop();
