@@ -45,13 +45,13 @@ package org.smooks.cartridges.javabean;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
-import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.delivery.VisitorConfigMap;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Programmatic Value Configurator.
@@ -107,7 +107,7 @@ import java.util.Map;
  */
 public class Value extends BindingAppender {
 
-	private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+	private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 	
 	private String dataSelector;
 
@@ -143,7 +143,7 @@ public class Value extends BindingAppender {
 		AssertArgument.isNotNull(type, "type");
 
 		
-		this.typeConverter = (TypeConverter<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type)).createTypeConverter();
+		this.typeConverter = (TypeConverter<String, ?>) new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class Value extends BindingAppender {
 	 * @return <code>this</code> Value configuration instance.
 	 */
 	public Value setType(Class<?> type) {
-		this.typeConverter = (TypeConverter<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type)).createTypeConverter();
+		this.typeConverter = (TypeConverter<String, ?>) new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
 
 		return this;
 	}
