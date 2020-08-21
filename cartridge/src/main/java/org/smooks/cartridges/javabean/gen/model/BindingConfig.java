@@ -42,19 +42,19 @@
  */
 package org.smooks.cartridges.javabean.gen.model;
 
-import org.smooks.converter.TypeConverterDescriptor;
+import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BindingConfig {
-    private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+    private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 
     private Field property;
     private String wireBeanId;
@@ -99,7 +99,7 @@ public class BindingConfig {
             return "$DELETE:NOT-APPLICABLE$";
         }
 
-        final TypeConverterFactory<?, ?> typeConverterFactory = TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type));
+        final TypeConverterFactory<?, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES);
         if (typeConverterFactory != null && typeConverterFactory.getClass().isAnnotationPresent(Resource.class) && !typeConverterFactory.getClass().getAnnotation(Resource.class).name().equals("")) {
             return typeConverterFactory.getClass().getAnnotation(Resource.class).name();
         } else {

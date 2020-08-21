@@ -47,8 +47,8 @@ import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
 import org.smooks.cartridges.javabean.factory.Factory;
 import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
-import org.smooks.converter.TypeConverterDescriptor;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.delivery.VisitorConfigMap;
@@ -57,7 +57,7 @@ import org.smooks.util.ClassUtil;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -147,7 +147,7 @@ import java.util.UUID;
  * @see Value
  */
 public class Bean extends BindingAppender {
-    private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+    private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 
     BeanInstanceCreator beanInstanceCreator;
     private Class<?> beanClass;
@@ -375,11 +375,11 @@ public class Bean extends BindingAppender {
         if (bindingMethod != null) {
             if (typeConverter == null) {
                 final Class<?> dataType = bindingMethod.getParameterTypes()[0];
-                final TypeConverterFactory<String, ?> typeConverterFactory = (TypeConverterFactory<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, dataType));
+                final TypeConverterFactory<String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup(String.class, dataType).lookup(TYPE_CONVERTER_FACTORIES);
                 if (typeConverterFactory != null) {
                     typeConverter = typeConverterFactory.createTypeConverter();
                 } else {
-                    typeConverter = (TypeConverter<String, ?>) TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(Object.class, Object.class)).createTypeConverter();
+                    typeConverter = (TypeConverter<String, ?>) new SourceTargetTypeConverterFactoryLookup(Object.class, Object.class).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
                 }
             }
 

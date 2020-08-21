@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean.gen;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.gen.model.BindingConfig;
 import org.smooks.cartridges.javabean.gen.model.ClassConfig;
-import org.smooks.converter.TypeConverterDescriptor;
+import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.util.FreeMarkerTemplate;
@@ -80,7 +80,7 @@ import java.util.*;
  */
 public class ConfigGenerator {
 
-    private static final Map<TypeConverterDescriptor<?, ?>, TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+    private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
 
     public static final String ROOT_BEAN_CLASS = "root.beanClass";
     public static final String PACKAGES_INCLUDED = "packages.included";
@@ -164,8 +164,7 @@ public class ConfigGenerator {
 
             for(Field field : fields) {
                 Class<?> type = field.getType();
-
-                TypeConverterFactory<?, ?> typeConverterFactory = TYPE_CONVERTER_FACTORIES.get(new TypeConverterDescriptor<>(String.class, type));
+                TypeConverterFactory<?, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES);
 
                 if(typeConverterFactory != null) {
                     bindings.add(new BindingConfig(field));
