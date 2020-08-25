@@ -49,9 +49,9 @@ import org.smooks.cartridges.javabean.observers.BeanWiringObserver;
 import org.smooks.cartridges.javabean.observers.ListToArrayChangeObserver;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.lookup.NameTypeConverterFactoryLookup;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.NameTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.converter.TypeConverter;
@@ -179,7 +179,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
     private Method propertySetterMethod;
     private boolean checkedForSetterMethod;
     private boolean isAttribute = true;
-    private TypeConverter<String, ?> typeConverter;
+    private TypeConverter<? super String, ?> typeConverter;
 
     private String mapKeyAttribute;
 
@@ -235,11 +235,11 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         this.typeAlias = Optional.ofNullable(typeAlias);
     }
 
-    public void setTypeConverter(TypeConverter<String, ?> typeConverter) {
+    public void setTypeConverter(TypeConverter<? super String, ?> typeConverter) {
         this.typeConverter = typeConverter;
     }
 
-    public TypeConverter<String, ?> getTypeConverter() {
+    public TypeConverter<? super String, ?> getTypeConverter() {
         return typeConverter;
     }
 
@@ -648,17 +648,17 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         }
     }
 
-    private TypeConverter<String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
+    private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
         return getTypeConverter(executionContext.getDeliveryConfig());
     }
 
-    public TypeConverter<String, ?> getTypeConverter(ContentDeliveryConfig deliveryConfig) {
+    public TypeConverter<? super String, ?> getTypeConverter(ContentDeliveryConfig deliveryConfig) {
         @SuppressWarnings("unchecked")
         List<?> typeConverters = deliveryConfig.getObjects("decoder:" + typeAlias.orElse(null));
 
         if (typeConverters == null || typeConverters.isEmpty()) {
             if (typeAlias.isPresent()) {
-                typeConverter = (TypeConverter<String, ?>) appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup(typeAlias.get())).createTypeConverter();
+                typeConverter = appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias.get())).createTypeConverter();
             } else {
                 typeConverter = resolveDecoderReflectively();
             }
@@ -671,21 +671,21 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         if (typeConverter instanceof PreprocessTypeConverter) {
             PreprocessTypeConverter preprocessTypeConverter = (PreprocessTypeConverter) typeConverter;
             if (preprocessTypeConverter.getDelegateTypeConverter() == null) {
-                preprocessTypeConverter.setDelegateTypeConverter((TypeConverter<String, Object>) resolveDecoderReflectively());
+                preprocessTypeConverter.setDelegateTypeConverter(resolveDecoderReflectively());
             }
         }
 
         return typeConverter;
     }
 
-    private TypeConverter<String, ?> resolveDecoderReflectively() throws TypeConverterException {
+    private TypeConverter<? super String, ?> resolveDecoderReflectively() throws TypeConverterException {
         Class<?> bindType = resolveBindTypeReflectively();
 
         if (bindType != null) {
             if (bindType.isEnum()) {
                 return value -> Enum.valueOf((Class) bindType, value);
             } else {
-                final TypeConverterFactory<String, Object> typeConverterFactory = (TypeConverterFactory<String, Object>) appContext.getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(String.class, bindType));
+                final TypeConverterFactory<? super String, ?> typeConverterFactory = appContext.getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(String.class, bindType));
 
                 if (typeConverterFactory != null) {
                     return typeConverterFactory.createTypeConverter();
@@ -722,7 +722,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         return id;
     }
 
-    public Set<? extends Object> getProducts() {
+    public Set<?> getProducts() {
         return CollectionsUtil.toSet(beanIdName + "." + property.orElse(null), "]." + property.orElse(null));
     }
 
@@ -731,10 +731,8 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
             return true;
         } else if (object.equals(wireBeanIdName.orElse(null))) {
             return true;
-        } else if (expressionEvaluator != null && expressionEvaluator.getExpression().contains(object.toString())) {
-            return true;
+        } else {
+            return expressionEvaluator != null && expressionEvaluator.getExpression().contains(object.toString());
         }
-
-        return false;
     }
 }

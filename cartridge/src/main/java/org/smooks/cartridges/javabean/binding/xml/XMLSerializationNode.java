@@ -62,7 +62,7 @@ public abstract class XMLSerializationNode {
 
     protected QName qName;
     protected XMLElementSerializationNode parent;
-    protected TypeConverter<?, String> typeConverter;
+    protected TypeConverter<?, ? extends String> typeConverter;
     protected String defaultVal;
     protected boolean isCollection = false;
     protected NodeGetter nodeGetter;
@@ -84,7 +84,7 @@ public abstract class XMLSerializationNode {
         this.parent = parent;
     }
 
-    public void setTypeConverter(TypeConverter<?, String> typeConverter) {
+    public void setTypeConverter(TypeConverter<?, ? extends String> typeConverter) {
         this.typeConverter = typeConverter;
     }
 

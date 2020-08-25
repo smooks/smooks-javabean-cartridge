@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.gen.model;
 
-import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
 
@@ -99,7 +99,7 @@ public class BindingConfig {
             return "$DELETE:NOT-APPLICABLE$";
         }
 
-        final TypeConverterFactory<?, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES);
+        final TypeConverterFactory<? extends String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<String, Object>(String.class, type).lookup(TYPE_CONVERTER_FACTORIES);
         if (typeConverterFactory != null && typeConverterFactory.getClass().isAnnotationPresent(Resource.class) && !typeConverterFactory.getClass().getAnnotation(Resource.class).name().equals("")) {
             return typeConverterFactory.getClass().getAnnotation(Resource.class).name();
         } else {

@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.registry.lookup.NameTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.converter.TypeConverter;
@@ -161,7 +161,7 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 
     private boolean isAttribute;
 
-    private TypeConverter<String, ?> typeConverter;
+    private TypeConverter<? super String, ?> typeConverter;
 
     /**
      *
@@ -235,14 +235,14 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 	/**
 	 * @return the decoder
 	 */
-	public TypeConverter<String, ?> getTypeConverter() {
+	public TypeConverter<? super String, ?> getTypeConverter() {
 		return typeConverter;
 	}
 
 	/**
 	 * @param decoder the decoder to set
 	 */
-	public void setTypeConverter(TypeConverter<String, ?> typeConverter) {
+	public void setTypeConverter(TypeConverter<? super String, ?> typeConverter) {
 		this.typeConverter = typeConverter;
 	}
 
@@ -305,7 +305,7 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
 		}
 	}
 
-	public Set<? extends Object> getProducts() {
+	public Set<?> getProducts() {
 		return CollectionsUtil.toSet(beanIdName);
 	}
 
@@ -324,17 +324,17 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
         }
     }
 
-	private TypeConverter<String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
+	private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
 		if(typeConverter == null) {
 			@SuppressWarnings("unchecked")
 			List decoders = executionContext.getDeliveryConfig().getObjects("decoder:" + typeAlias);
 
 	        if (decoders == null || decoders.isEmpty()) {
-	            typeConverter = (TypeConverter<String, ?>) appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup(typeAlias)).createTypeConverter();
+	            typeConverter = appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias)).createTypeConverter();
 	        } else if (!(decoders.get(0) instanceof TypeConverter)) {
 	            throw new TypeConverterException("Configured type converter '" + typeAlias + ":" + decoders.get(0).getClass().getName() + "' is not an instance of " + TypeConverter.class.getName());
 	        } else {
-	            typeConverter = (TypeConverter<String, ?>) decoders.get(0);
+	            typeConverter = (TypeConverter<? super String, ?>) decoders.get(0);
 	        }
 		}
         return typeConverter;
