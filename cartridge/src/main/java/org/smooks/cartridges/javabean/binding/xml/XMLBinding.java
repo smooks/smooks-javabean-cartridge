@@ -57,7 +57,7 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
-import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cdr.xpath.SelectorStepBuilder;
 import org.smooks.config.Configurable;
@@ -260,10 +260,10 @@ public class XMLBinding extends AbstractBinding {
                 if(node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
                     Method getterMethodByProperty = ClassUtil.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
-                    TypeConverter<String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getDeliveryConfig());
-                    TypeConverterFactory<?, String> xmlBindingTypeFactory = getSmooks().getApplicationContext().getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(getterMethodByProperty.getReturnType(), String.class));
+                    TypeConverter<? super String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getDeliveryConfig());
+                    TypeConverterFactory<?, ? extends String> xmlBindingTypeFactory = getSmooks().getApplicationContext().getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(getterMethodByProperty.getReturnType(), String.class));
                     if (xmlBindingTypeFactory != null) {
-                        TypeConverter<?, String> xmlBindingTypeConverter = xmlBindingTypeFactory.createTypeConverter();
+                        TypeConverter<?, ? extends String> xmlBindingTypeConverter = xmlBindingTypeFactory.createTypeConverter();
                         if (xmlBindingTypeConverter instanceof Configurable && beanPopulatorTypeConverter instanceof Configurable) {
                             ((Configurable) xmlBindingTypeConverter).setConfiguration(((Configurable) beanPopulatorTypeConverter).getConfiguration());
                         }

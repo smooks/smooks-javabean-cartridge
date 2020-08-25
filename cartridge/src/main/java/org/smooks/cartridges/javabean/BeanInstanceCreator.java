@@ -361,7 +361,7 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
         return bean;
     }
 
-    public Set<? extends Object> getProducts() {
+    public Set<?> getProducts() {
         return CollectionsUtil.toSet(beanIdName);
     }
 

@@ -42,15 +42,15 @@
  */
 package org.smooks.cartridges.javabean.observers;
 
-import java.lang.annotation.Annotation;
-
-import org.smooks.container.ExecutionContext;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.container.ExecutionContext;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
+
+import java.lang.annotation.Annotation;
 
 /**
  * {@link BeanContext} Observer performing bean wiring.
@@ -117,7 +117,7 @@ public class BeanWiringObserver implements BeanContextLifecycleObserver {
 	}
 	
 	public static boolean isMatchingBean(Object bean, Class<?> type, Class<? extends Annotation> annotation) {
-		Class<? extends Object> beanClass = bean.getClass();
+		Class<?> beanClass = bean.getClass();
 
 		if(type != null && !type.isAssignableFrom(beanClass)) {
 			return false;

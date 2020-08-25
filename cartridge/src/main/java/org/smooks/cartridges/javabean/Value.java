@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.lookup.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -115,7 +115,7 @@ public class Value extends BindingAppender {
 
 	private String defaultValue;
 
-	private TypeConverter<String, ?> typeConverter;
+	private TypeConverter<? super String, ?> typeConverter;
 
 	/**
      * Create a Value binding configuration.
@@ -143,7 +143,7 @@ public class Value extends BindingAppender {
 		AssertArgument.isNotNull(type, "type");
 
 		
-		this.typeConverter = (TypeConverter<String, ?>) new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
+		this.typeConverter = new SourceTargetTypeConverterFactoryLookup<>(String.class, type).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class Value extends BindingAppender {
 	 * @return <code>this</code> Value configuration instance.
 	 */
 	public Value setType(Class<?> type) {
-		this.typeConverter = (TypeConverter<String, ?>) new SourceTargetTypeConverterFactoryLookup(String.class, type).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
+		this.typeConverter = new SourceTargetTypeConverterFactoryLookup<>(String.class, type).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
 
 		return this;
 	}
