@@ -51,14 +51,12 @@ import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactory
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.delivery.Visitor;
 import org.smooks.util.ClassUtil;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Programmatic Bean Configurator.
@@ -153,10 +151,10 @@ public class Bean extends BindingAppender {
     private Class<?> beanClass;
     private String createOnElement;
     private String targetNamespace;
-    private List<Binding> bindings = new ArrayList<Binding>();
-    private List<Bean> wirings = new ArrayList<Bean>();
+    private List<Binding> bindings = new ArrayList<>();
+    private List<Bean> wirings = new ArrayList<>();
     private boolean processed = false;
-
+    
     /**
      * Create a Bean binding configuration.
      * <p/>
@@ -513,34 +511,42 @@ public class Bean extends BindingAppender {
      * Add the visitors, associated with this Bean instance, to the visitor map.
      * @param visitorMap The visitor Map.
      */
-    public void addVisitors(VisitorConfigMap visitorMap) {
-
+    @Override
+    public List<ContentHandlerBinding<Visitor>> addVisitors() {
         // Need to protect against multiple calls.  This can happen where e.g. beans are
         // wired together in 2-way relationships, or the creating code doesn't use the
         // fluent interface and calls Smooks.addVisitor to each bean instance.
         if(processed) {
-            return;
+            return Collections.EMPTY_LIST;
         }
         processed = true;
 
+        List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
         // Add the create bean visitor...
-        SmooksResourceConfiguration creatorConfig = visitorMap.addVisitor(beanInstanceCreator, createOnElement, targetNamespace, true);
-        creatorConfig.setParameter("beanId", getBeanId());
-        creatorConfig.setParameter("beanClass", beanClass.getName());
+        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new ContentHandlerBinding<>(beanInstanceCreator, createOnElement, targetNamespace, registry);
+        SmooksResourceConfiguration beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getSmooksResourceConfiguration();
+        beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanId", getBeanId());
+        beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());
 
+        visitorBindings.add(beanInstanceCreateBinding);
+        
         // Recurse down the wired beans...
         for(Bean bean : wirings) {
-            bean.addVisitors(visitorMap);
+            bean.setRegistry(registry);
+            visitorBindings.addAll(bean.addVisitors());
         }
 
         // Add the populate bean visitors...
         for(Binding binding : bindings) {
-            SmooksResourceConfiguration populatorConfig = visitorMap.addVisitor(binding.beanInstancePopulator, binding.selector, targetNamespace, true);
-            populatorConfig.setParameter("beanId", getBeanId());
+            ContentHandlerBinding<Visitor> beanInstancePopulatorBinding = new ContentHandlerBinding<>(binding.beanInstancePopulator, binding.selector, targetNamespace, registry);
+            beanInstancePopulatorBinding.getSmooksResourceConfiguration().setParameter("beanId", getBeanId());
+            visitorBindings.add(beanInstancePopulatorBinding);
             if(binding.assertTargetIsCollection) {
                 assertBeanClassIsCollection();
             }
         }
+        
+        return visitorBindings;
     }
 
     /**
