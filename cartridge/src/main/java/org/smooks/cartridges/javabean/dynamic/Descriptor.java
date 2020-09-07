@@ -243,12 +243,12 @@ public class Descriptor {
 
             if(bindingSource != null) {
                 if(bindingSource.getByteStream() != null) {
-                    SmooksResourceConfigurationList configList;
+                    SmooksResourceConfigurationList smooksResourceConfigurationList;
 
                     try {
-                        configList = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
-                        for(int i = 0; i < configList.size(); i++) {
-                            SmooksResourceConfiguration config = configList.get(i);
+                        smooksResourceConfigurationList = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
+                        for(int i = 0; i < smooksResourceConfigurationList.size(); i++) {
+                            SmooksResourceConfiguration config = smooksResourceConfigurationList.get(i);
                             
                             if(config.getSelectorNamespaceURI() == null) {
                                 SelectorStep selectorStep = config.getSelectorStep();
@@ -264,7 +264,7 @@ public class Descriptor {
                         throw new SmooksConfigurationException("Unexpected configuration digest exception.", e);
                     }
 
-                    smooks.getApplicationContext().getRegistry().addSmooksResourceConfigurationList(configList);
+                    smooks.getApplicationContext().getRegistry().registerSmooksResourceConfigurationList(smooksResourceConfigurationList);
                 } else {
                     throw new SAXException("Binding configuration resolver '" + bindingResolver.getClass().getName() + "' failed to resolve binding configuration for namespace '" + namespace + "'.  Resolver must return an InputStream in the InputSource.");
                 }

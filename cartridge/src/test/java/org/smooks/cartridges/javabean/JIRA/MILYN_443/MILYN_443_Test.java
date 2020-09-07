@@ -42,21 +42,20 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_443;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.xml.transform.stream.StreamSource;
-
+import org.junit.Test;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Bean;
 import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-443
@@ -87,7 +86,7 @@ public class MILYN_443_Test {
 		Bean beanConfig = new Bean(HashMap.class, "theBean");
 		beanConfig.bindTo("attr1", "test1/@e:attr1");
 		beanConfig.bindTo("attr2", "test1/@f:attr2");		
-		smooks.addVisitor(beanConfig);
+		smooks.addVisitors(beanConfig);
 		
 		test(smooks);
     }

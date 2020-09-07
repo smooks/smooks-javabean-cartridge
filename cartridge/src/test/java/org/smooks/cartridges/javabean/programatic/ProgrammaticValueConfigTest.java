@@ -63,15 +63,16 @@ public class ProgrammaticValueConfigTest {
 
 	@Test
 	public void test_01() {
-
 		Smooks smooks = new Smooks();
+		smooks.addVisitors(new Value("customerName", "customer"));
+		
+		Value customerNumberValue = new Value("customerNumber", "customer/@number");
+		customerNumberValue.setTypeConverter(new StringToIntegerConverterFactory().createTypeConverter());
+		smooks.addVisitors(customerNumberValue);
 
-		smooks.addVisitor(new Value("customerName", "customer"));
-		smooks.addVisitor(new Value("customerNumber", "customer/@number")
-								.setTypeConverter(new StringToIntegerConverterFactory().createTypeConverter()));
-		smooks.addVisitor(new Value("privatePerson", "privatePerson")
-								.setTypeConverter(new BooleanConverterFactory().createTypeConverter())
-								.setDefaultValue("true"));
+		Value privatePersonValue = new Value("privatePerson", "privatePerson");
+		privatePersonValue.setTypeConverter(new BooleanConverterFactory().createTypeConverter()).setDefaultValue("true");
+		smooks.addVisitors(privatePersonValue);
 
 		JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("../order-01.xml")), result);
@@ -86,8 +87,8 @@ public class ProgrammaticValueConfigTest {
 
 		Smooks smooks = new Smooks();
 
-		smooks.addVisitor(new Value("customerNumber1", "customer/@number", Integer.class));
-		smooks.addVisitor(new Value("customerNumber2", "customer/@number").setType(Integer.class));
+		smooks.addVisitors(new Value("customerNumber1", "customer/@number", Integer.class));
+		smooks.addVisitors(new Value("customerNumber2", "customer/@number").setType(Integer.class));
 
 		JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("../order-01.xml")), result);

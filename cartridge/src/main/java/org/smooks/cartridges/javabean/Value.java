@@ -49,8 +49,11 @@ import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactory
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.delivery.VisitorConfigMap;
+import org.smooks.delivery.ContentHandlerBinding;
+import org.smooks.delivery.Visitor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -116,7 +119,7 @@ public class Value extends BindingAppender {
 	private String defaultValue;
 
 	private TypeConverter<? super String, ?> typeConverter;
-
+	
 	/**
      * Create a Value binding configuration.
      *
@@ -161,7 +164,7 @@ public class Value extends BindingAppender {
 	/**
 	 * The default value for if the data is null or empty
 	 *
-	 * @param targetNamespace The default value
+	 * @param defaultValue The default value
 	 * @return <code>this</code> Value configuration instance.
 	 */
 	public Value setDefaultValue(String defaultValue) {
@@ -198,18 +201,20 @@ public class Value extends BindingAppender {
 	/**
 	 * Used by Smooks to retrieve the visitor configuration of this Value Configuration
 	 */
-	public void addVisitors(VisitorConfigMap visitorMap) {
+	@Override
+	public List<ContentHandlerBinding<Visitor>> addVisitors() {
+		List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
+		ValueBinder valueBinder = new ValueBinder(getBeanId());
+		SmooksResourceConfiguration valueBinderSmooksResourceConfiguration = new SmooksResourceConfiguration(dataSelector);
 
-		ValueBinder binder = new ValueBinder(getBeanId());
-		SmooksResourceConfiguration populatorConfig = new SmooksResourceConfiguration(dataSelector);
+		SelectorPropertyResolver.resolveSelectorTokens(valueBinderSmooksResourceConfiguration);
 
-		SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
+		valueBinder.setTypeConverter(typeConverter);
+		valueBinder.setDefaultValue(defaultValue);
+		valueBinder.setValueAttributeName(valueBinderSmooksResourceConfiguration.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
 
-		binder.setTypeConverter(typeConverter);
-		binder.setDefaultValue(defaultValue);
-		binder.setValueAttributeName(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
-
-		visitorMap.addVisitor(binder, populatorConfig.getSelector(), targetNamespace, true);
+		visitorBindings.add(new ContentHandlerBinding<>(valueBinder, valueBinderSmooksResourceConfiguration.getSelector(), targetNamespace, registry));
+	
+		return visitorBindings;
 	}
-
 }

@@ -42,24 +42,24 @@
  */
 package org.smooks.cartridges.javabean.extendedconfig13;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.smooks.Smooks;
 import org.smooks.container.ExecutionContext;
 import org.smooks.payload.JavaResult;
 import org.smooks.util.ClassUtil;
 import org.xml.sax.SAXException;
 
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class ValueBinderExtendedConfigTest {
 
-        @Test
+	@Test
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_value_01.xml"));
 		JavaResult result = new JavaResult();
@@ -77,7 +77,7 @@ public class ValueBinderExtendedConfigTest {
 		assertNull(result.getBean("product"));
 	}
 
-        @Test
+	@Test
 	public void test_01_other() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_value_01.xml"));
 

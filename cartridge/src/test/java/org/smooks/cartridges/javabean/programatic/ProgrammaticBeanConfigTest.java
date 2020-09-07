@@ -81,7 +81,7 @@ public class ProgrammaticBeanConfigTest {
     public void test_01_fluent() {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order");
-
+                
         orderBean.bindTo("header",
             orderBean.newBean(Header.class, "/order")
                 .bindTo("order", orderBean)
@@ -101,8 +101,8 @@ public class ProgrammaticBeanConfigTest {
                         .bindTo("quantity", "order-item/quantity")
                         .bindTo("price", "order-item/price")));
 
-        smooks.addVisitor(orderBean);
-
+        smooks.addVisitors(orderBean);
+        
         execute_01_test(smooks);
     }
 
@@ -136,7 +136,7 @@ public class ProgrammaticBeanConfigTest {
                         .bindTo("quantity", "order-item/quantity")
                         .bindTo("price", "order-item/price")));
 
-        smooks.addVisitor(orderBean);
+        smooks.addVisitors(orderBean);
 
         execute_01_test(smooks);
     }
@@ -146,7 +146,7 @@ public class ProgrammaticBeanConfigTest {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order");
 
-        smooks.addVisitor(orderBean);
+        smooks.addVisitors(orderBean);
 
         try {
             // invalid attempt to bindTo after it has been added to the Smooks instance...
@@ -164,7 +164,7 @@ public class ProgrammaticBeanConfigTest {
     public void test_01_flat() {
         Smooks smooks = new Smooks();
         Bean orderBean = new Bean(Order.class, "order", "/order");
-
+                
         Bean headerBean = new Bean(Header.class, "header", "/order")
                                     .bindTo("order", orderBean)
                                     .bindTo("customerNumber", "header/customer/@number")
@@ -183,7 +183,7 @@ public class ProgrammaticBeanConfigTest {
                                         .bindTo("quantity", "order-item/quantity")
                                         .bindTo("price", "order-item/price")));
 
-        smooks.addVisitor(orderBean);
+        smooks.addVisitors(orderBean);
 
         execute_01_test(smooks);
     }
@@ -205,7 +205,7 @@ public class ProgrammaticBeanConfigTest {
         Smooks smooks = new Smooks();
 
         Bean orderBean = new Bean(HashMap.class, "order", "/order");
-
+                
         orderBean.bindTo("header",
                 orderBean.newBean(HashMap.class, "/order")
                     .bindTo("customerNumber", "header/customer/@number", new StringToIntegerConverterFactory().createTypeConverter())
@@ -219,7 +219,7 @@ public class ProgrammaticBeanConfigTest {
                             .bindTo("price", "order-item/price", new StringToDoubleConverterFactory().createTypeConverter()))
                 );
 
-        smooks.addVisitor(orderBean);
+        smooks.addVisitors(orderBean);
 
         JavaResult result = new JavaResult();
         smooks.filterSource(new StreamSource(getClass().getResourceAsStream("../order-01.xml")), result);
@@ -253,6 +253,7 @@ public class ProgrammaticBeanConfigTest {
         Smooks smooks = new Smooks();
 
         Bean orderBean = new Bean(Order.class, "order", "order");
+
         Bean orderItemArray = new Bean(OrderItem[].class, "orderItemsArray", "order");
         Bean orderItem = new Bean(OrderItem.class, "orderItem", "order-item");
 
@@ -260,7 +261,7 @@ public class ProgrammaticBeanConfigTest {
         orderItemArray.bindTo(orderItem);
         orderBean.bindTo("orderItems", orderItemArray);
 
-        smooks.addVisitor(orderBean);
+        smooks.addVisitors(orderBean);
 
         execSmooksArrays(smooks);
     }
