@@ -178,7 +178,7 @@ public class Bean extends BindingAppender {
      * @param factory		   The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, Factory<? extends T> factory) {
-    	this(beanClass, beanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, (String)null, factory);
+    	this(beanClass, beanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, null, factory);
     }
 
     /**
@@ -391,7 +391,7 @@ public class Bean extends BindingAppender {
         }
         beanInstancePopulator.setTypeConverter(typeConverter);
 
-        bindings.add(new Binding(populatorConfig.getSelector(), beanInstancePopulator, false));
+        bindings.add(new Binding(populatorConfig.getSelectorPath().getSelector(), beanInstancePopulator, false));
 
         return this;
     }
@@ -502,7 +502,7 @@ public class Bean extends BindingAppender {
         beanInstancePopulator.setValueAttributePrefix(populatorConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, String.class));
         beanInstancePopulator.setTypeConverter(typeConverter);
 
-        bindings.add(new Binding(populatorConfig.getSelector(), beanInstancePopulator, true));
+        bindings.add(new Binding(populatorConfig.getSelectorPath().getSelector(), beanInstancePopulator, true));
 
         return this;
     }

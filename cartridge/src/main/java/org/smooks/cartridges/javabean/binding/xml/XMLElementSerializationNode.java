@@ -43,9 +43,10 @@
 package org.smooks.cartridges.javabean.binding.xml;
 
 import org.smooks.cartridges.javabean.binding.SerializationContext;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.cartridges.javabean.binding.model.get.Getter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
+import org.smooks.cdr.xpath.SelectorPath;
+import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.xml.XmlUtil;
 
 import javax.xml.namespace.QName;
@@ -196,24 +197,24 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
         }
     }
 
-    public XMLSerializationNode findNode(SelectorStep[] selectorSteps) {
-        if(selectorSteps.length == 1) {
-            if(selectorSteps[0].getTargetAttribute() != null) {
-                return getAttribute(selectorSteps[0], attributes, false);
+    public XMLSerializationNode findNode(SelectorPath selectorPath) {
+        if(selectorPath.size() == 1) {
+            if(selectorPath.get(0).getAttribute() != null) {
+                return getAttribute(selectorPath.get(0), attributes, false);
             }
             return this;
         }
-        return getPathNode(selectorSteps, 1, false);
+        return getPathNode(selectorPath, 1, false);
     }
 
-    public XMLSerializationNode getPathNode(SelectorStep[] selectorSteps, int stepIndex, boolean create) {
-        if(stepIndex >= selectorSteps.length) {
+    public XMLSerializationNode getPathNode(SelectorPath selectorPath, int stepIndex, boolean create) {
+        if(stepIndex >= selectorPath.size()) {
             throw new IllegalStateException("Unexpected call to 'addPathNode'.  SelectorStep index out of bounds.");
         }
 
-        SelectorStep selectorStep = selectorSteps[stepIndex];
+        SelectorStep selectorStep = selectorPath.get(stepIndex);
 
-        if(stepIndex == selectorSteps.length - 1 && selectorStep.getTargetAttribute() != null) {
+        if(stepIndex == selectorPath.size() - 1 && selectorStep.getAttribute() != null) {
             // It's an attribute node...
             XMLElementSerializationNode elementNode = getElement(selectorStep, elements, create);
             return addAttributeNode(elementNode, selectorStep, create);
@@ -222,9 +223,9 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
             XMLElementSerializationNode childElement = getElement(selectorStep, elements, create);
             if(childElement != null) {
                 childElement.setParent(this);
-                if(stepIndex < selectorSteps.length - 1) {
+                if(stepIndex < selectorPath.size() - 1) {
                     // Drill down again...
-                    return childElement.getPathNode(selectorSteps, stepIndex + 1, create);
+                    return childElement.getPathNode(selectorPath, stepIndex + 1, create);
                 } else {
                     return childElement;
                 }
@@ -243,7 +244,7 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     }
 
     public static XMLElementSerializationNode getElement(SelectorStep step, Collection<XMLElementSerializationNode> elementList, boolean create) {
-        QName qName = step.getTargetElement();
+        QName qName = step.getElement();
         XMLElementSerializationNode element = getNode(qName, elementList);
 
         if(element == null && create) {
@@ -255,7 +256,7 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     }
 
     public static XMLAttributeSerializationNode getAttribute(SelectorStep step, Collection<XMLAttributeSerializationNode> attributeList, boolean create) {
-        QName qName = step.getTargetAttribute();
+        QName qName = step.getAttribute();
         XMLAttributeSerializationNode attribute = getNode(qName, attributeList);
 
         if(attribute == null && create) {

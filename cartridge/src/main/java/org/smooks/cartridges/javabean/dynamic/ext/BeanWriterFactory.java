@@ -85,28 +85,21 @@ public class BeanWriterFactory implements ContentHandler {
         try {
             BeanWriter beanWriter = beanWriterClass.newInstance();
             appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(beanWriter, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), config, beanWriter)));
-            getBeanWriters(beanClass, appContext).put(config.getSelectorNamespaceURI(), beanWriter);
-        } catch (InstantiationException e) {
-            throw new SmooksConfigurationException("Unable to create BeanWriter instance.", e);
-        } catch (IllegalAccessException e) {
+            getBeanWriters(beanClass, appContext).put(config.getSelectorPath().getSelectorNamespaceURI(), beanWriter);
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new SmooksConfigurationException("Unable to create BeanWriter instance.", e);
         }
     }
 
     public static Map<String, BeanWriter> getBeanWriters(Class<?> beanClass, ApplicationContext appContext) {
         Map<Class<?>, Map<String, BeanWriter>> beanWriterMap = getBeanWriters(appContext);
-        Map<String, BeanWriter> beanWriters = beanWriterMap.get(beanClass);
-
-        if(beanWriters == null) {
-            beanWriters = new LinkedHashMap<String, BeanWriter>();
-            beanWriterMap.put(beanClass, beanWriters);
-        }
+        Map<String, BeanWriter> beanWriters = beanWriterMap.computeIfAbsent(beanClass, k -> new LinkedHashMap<>());
 
         return beanWriters;
     }
 
     public static Map<Class<?>, Map<String, BeanWriter>> getBeanWriters(ApplicationContext appContext) {
-        Map<Class<?>, Map<String, BeanWriter>> beanWriters = (Map<Class<?>, Map<String, BeanWriter>>) appContext.getRegistry().lookup(BeanWriter.class);
+        Map<Class<?>, Map<String, BeanWriter>> beanWriters = appContext.getRegistry().lookup(BeanWriter.class);
 
         if(beanWriters == null) {
             beanWriters = new HashMap<>();

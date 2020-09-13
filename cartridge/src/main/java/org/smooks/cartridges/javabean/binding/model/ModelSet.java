@@ -50,8 +50,7 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.cdr.registry.lookup.UserDefinedSmooksResourceConfigurationList;
-import org.smooks.cdr.xpath.SelectorStep;
-import org.smooks.cdr.xpath.SelectorStepBuilder;
+import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.ContentHandlerFactory;
@@ -62,6 +61,8 @@ import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Bean binding model set.
@@ -171,7 +172,7 @@ public class ModelSet {
     }
 
     private boolean isGlobalParamsConfig(SmooksResourceConfiguration config) {
-        return ParameterAccessor.GLOBAL_PARAMETERS.equals(config.getSelector());
+        return ParameterAccessor.GLOBAL_PARAMETERS.equals(config.getSelectorPath().getSelector());
     }
 
     private void createExpandedModels() {
@@ -208,8 +209,8 @@ public class ModelSet {
     }
 
     private void expandSelector(SmooksResourceConfiguration resourceConfiguration, boolean failOnMissingBean, SmooksResourceConfiguration context) {
-        SelectorStep[] selectorSteps = resourceConfiguration.getSelectorSteps();
-        QName targetElement = selectorSteps[0].getTargetElement();
+        SelectorPath selectorPath = resourceConfiguration.getSelectorPath();
+        QName targetElement = selectorPath.get(0).getElement();
 
         if(targetElement == null) {
             return;
@@ -217,7 +218,7 @@ public class ModelSet {
 
         String localPart = targetElement.getLocalPart();
         if(localPart.equals("#") && context != null) {
-            resourceConfiguration.setSelectorSteps(concat(context.getSelectorSteps(), selectorSteps));
+            resourceConfiguration.setSelectorPath(concat(context.getSelectorPath(), selectorPath));
             return;
         }
 
@@ -227,21 +228,19 @@ public class ModelSet {
             Bean bean = baseBeans.get(beanId);
 
             if(bean != null) {
-                resourceConfiguration.setSelectorSteps(concat(bean.getConfig().getSelectorSteps(), selectorSteps));
+                resourceConfiguration.setSelectorPath(concat(bean.getConfig().getSelectorPath(), selectorPath));
             } else if(failOnMissingBean) {
-                throw new SmooksConfigurationException("Invalid selector '" + SelectorStepBuilder.toString(selectorSteps) + "'.  Unknown beanId '" + beanId + "'.");
+                throw new SmooksConfigurationException("Invalid selector '" + selectorPath.toString() + "'.  Unknown beanId '" + beanId + "'.");
             }
 
         }
     }
 
-    private SelectorStep[] concat(SelectorStep[] context, SelectorStep[] beanSelectorSteps) {
-        SelectorStep[] newSteps = new SelectorStep[context.length + beanSelectorSteps.length - 1];
-
-        System.arraycopy(context, 0, newSteps, 0, context.length);
-        System.arraycopy(beanSelectorSteps, 1, newSteps, context.length, beanSelectorSteps.length - 1);
-
-        return newSteps;
+    private SelectorPath concat(SelectorPath context, SelectorPath beanSelectorPath) {
+        SelectorPath newSelectorPath = new SelectorPath();
+        newSelectorPath.addAll(Stream.concat(context.stream(), beanSelectorPath.subList(1, beanSelectorPath.size()).stream()).collect(Collectors.toList()));
+        
+        return newSelectorPath;
     }
 
     public static void build(ApplicationContext appContext) {
