@@ -58,8 +58,8 @@ import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
 import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
 import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
-import org.smooks.cdr.xpath.SelectorStepBuilder;
 import org.smooks.config.Configurable;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -256,7 +256,7 @@ public class XMLBinding extends AbstractBinding {
             BeanInstancePopulator populator = binding.getPopulator();
 
             if(!isCollection && binding instanceof DataBinding) {
-                XMLSerializationNode node = serializer.findNode(populator.getConfig().getSelectorSteps());
+                XMLSerializationNode node = serializer.findNode(populator.getConfig().getSelectorPath());
                 if(node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
                     Method getterMethodByProperty = ClassUtil.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
@@ -272,7 +272,7 @@ public class XMLBinding extends AbstractBinding {
                 }
             } else if(binding instanceof WiredBinding) {
                 Bean wiredBean = ((WiredBinding) binding).getWiredBean();
-                XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getCreator().getConfig().getSelectorSteps());
+                XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getCreator().getConfig().getSelectorPath());
 
                 if(node != null) {
                     if(isCollection) {
@@ -297,8 +297,8 @@ public class XMLBinding extends AbstractBinding {
 
         for(Bean model : beanModels) {
             BeanInstanceCreator creator = model.getCreator();
-            SelectorStep[] selectorSteps = creator.getConfig().getSelectorSteps();
-            XMLElementSerializationNode createNode = (XMLElementSerializationNode) findNode(graphs, selectorSteps);
+            SelectorPath selectorPath = creator.getConfig().getSelectorPath();
+            XMLElementSerializationNode createNode = (XMLElementSerializationNode) findNode(graphs, selectorPath);
 
             // Only create serializers for routed elements...
             if(rootElementNames.contains(createNode.getQName())) {
@@ -345,27 +345,27 @@ public class XMLBinding extends AbstractBinding {
 
             if (javaResource instanceof BeanInstanceCreator) {
                 assertSelectorOK(smooksResourceConfiguration);
-                constructNodePath(smooksResourceConfiguration.getSelectorSteps(), graphRoots);
+                constructNodePath(smooksResourceConfiguration.getSelectorPath(), graphRoots);
             } else if (javaResource instanceof BeanInstancePopulator) {
                 assertSelectorOK(smooksResourceConfiguration);
-                constructNodePath(smooksResourceConfiguration.getSelectorSteps(), graphRoots);
+                constructNodePath(smooksResourceConfiguration.getSelectorPath(), graphRoots);
             }
         }
 
         return graphRoots;
     }
 
-    private XMLSerializationNode constructNodePath(SelectorStep[] selectorSteps, List<XMLElementSerializationNode> graphRoots) {
-        if(selectorSteps == null || selectorSteps.length == 0) {
+    private XMLSerializationNode constructNodePath(SelectorPath selectorPath, List<XMLElementSerializationNode> graphRoots) {
+        if(selectorPath == null || selectorPath.size() == 0) {
             throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
         }
 
-        SelectorStep rootSelectorStep = selectorSteps[0];
+        SelectorStep rootSelectorStep = selectorPath.get(0);
         XMLElementSerializationNode root = XMLElementSerializationNode.getElement(rootSelectorStep, graphRoots, true);
 
-        if(selectorSteps.length > 1) {
-            return root.getPathNode(selectorSteps, 1, true);
-        } else if(rootSelectorStep.getTargetAttribute() != null) {
+        if(selectorPath.size() > 1) {
+            return root.getPathNode(selectorPath, 1, true);
+        } else if(rootSelectorStep.getAttribute() != null) {
             // It's an attribute node...
             return XMLElementSerializationNode.addAttributeNode(root, rootSelectorStep, true);
         } else {
@@ -373,23 +373,23 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private XMLSerializationNode findNode(List<XMLElementSerializationNode> graphs, SelectorStep[] selectorSteps) {
-        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorSteps[0], graphs, false);
+    private XMLSerializationNode findNode(List<XMLElementSerializationNode> graphs, SelectorPath selectorPath) {
+        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorPath.get(0), graphs, false);
         XMLSerializationNode node = root;
 
-        if(selectorSteps.length > 1) {
-            node = root.getPathNode(selectorSteps, 1, false);
+        if(selectorPath.size() > 1) {
+            node = root.getPathNode(selectorPath, 1, false);
         }
 
         if(node == null) {
-            throw new IllegalStateException("Unexpected exception.  Failed to locate the node '" + SelectorStepBuilder.toString(selectorSteps) + "'.");
+            throw new IllegalStateException("Unexpected exception.  Failed to locate the node '" + selectorPath.toString() + "'.");
         }
 
         return node;
     }
 
     private void assertSelectorOK(SmooksResourceConfiguration config) {
-        String selector = config.getSelector();
+        String selector = config.getSelectorPath().getSelector();
 
         if(selector != null) {
             if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
@@ -398,13 +398,13 @@ public class XMLBinding extends AbstractBinding {
             if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {
                 throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
-            rootElementNames.add(config.getSelectorSteps()[0].getTargetElement());
+            rootElementNames.add(config.getSelectorPath().get(0).getElement());
         }
     }
 
-    private class RootNodeSerializer {
-        private String beanId;
-        private XMLElementSerializationNode serializer;
+    private static class RootNodeSerializer {
+        private final String beanId;
+        private final XMLElementSerializationNode serializer;
 
         private RootNodeSerializer(String beanId, XMLElementSerializationNode serializer) {
             this.beanId = beanId;

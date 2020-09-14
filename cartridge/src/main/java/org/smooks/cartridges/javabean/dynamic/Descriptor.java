@@ -250,13 +250,13 @@ public class Descriptor {
                         for(int i = 0; i < smooksResourceConfigurationList.size(); i++) {
                             SmooksResourceConfiguration config = smooksResourceConfigurationList.get(i);
                             
-                            if(config.getSelectorNamespaceURI() == null) {
-                                SelectorStep selectorStep = config.getSelectorStep();
+                            if(config.getSelectorPath().getSelectorNamespaceURI() == null) {
+                                SelectorStep selectorStep = config.getSelectorPath().getTargetSelectorStep();
 
                                 // And if there isn't a namespace prefix specified on the element (unresolved at this point),
                                 // then assign the binding config namespace...
-                                if(selectorStep.getTargetElement().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-                                    config.setSelectorNamespaceURI(namespace.uri);
+                                if(selectorStep.getElement().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                                    config.getSelectorPath().setSelectorNamespaceURI(namespace.uri);
                                 }
                             }
                         }

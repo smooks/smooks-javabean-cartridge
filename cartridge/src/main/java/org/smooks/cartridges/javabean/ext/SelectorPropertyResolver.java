@@ -42,15 +42,15 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import javax.xml.namespace.QName;
-
-import org.smooks.*;
+import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cdr.*;
-import org.smooks.cdr.extension.*;
-import org.smooks.container.*;
-import org.smooks.delivery.dom.*;
-import org.w3c.dom.*;
+import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.extension.ExtensionContext;
+import org.smooks.container.ExecutionContext;
+import org.smooks.delivery.dom.DOMVisitBefore;
+import org.w3c.dom.Element;
+
+import javax.xml.namespace.QName;
 
 /**
  * Selector Property Resolver.
@@ -72,7 +72,7 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
     }
 
     public static void resolveSelectorTokens(SmooksResourceConfiguration populatorConfig) {
-        QName valueAttributeQName = populatorConfig.getTargetAttributeQName();
+        QName valueAttributeQName = populatorConfig.getSelectorPath().isEmpty() ? null : populatorConfig.getSelectorPath().getTargetSelectorStep().getAttribute();
         
         if(valueAttributeQName != null) {
 	        String valueAttributeName = valueAttributeQName.getLocalPart();
@@ -84,17 +84,4 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
 	        }
         }
     }
-
-    public static String getSelectorProperty(String[] selectorTokens) {
-        StringBuffer selectorProp = new StringBuffer();
-
-        for (String selectorToken : selectorTokens) {
-            if (!selectorToken.trim().startsWith("@")) {
-                selectorProp.append(selectorToken).append(" ");
-            }
-        }
-
-        return selectorProp.toString().trim();
-    }
-
 }
