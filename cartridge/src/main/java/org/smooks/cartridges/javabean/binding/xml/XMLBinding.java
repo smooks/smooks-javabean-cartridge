@@ -56,7 +56,7 @@ import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
 import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
@@ -316,7 +316,7 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private void addNamespaceAttributes(XMLElementSerializationNode serializer) {
-        Properties namespaces = getSmooks().getApplicationContext().getRegistry().lookup(new NamespaceMappingsLookup());
+        Properties namespaces = getSmooks().getApplicationContext().getRegistry().lookup(new NamespaceManagerLookup());
         if(namespaces != null) {
             Enumeration<String> namespacePrefixes = (Enumeration<String>) namespaces.propertyNames();
             while(namespacePrefixes.hasMoreElements()) {

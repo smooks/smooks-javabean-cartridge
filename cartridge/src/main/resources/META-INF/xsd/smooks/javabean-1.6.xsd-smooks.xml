@@ -42,18 +42,19 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" default-selector-namespace="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" 
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <!--
         Bean Instance Creator Resource...
     -->
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.BeanInstanceCreator</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">createOnElement</param>
         <param name="mapTo">selector</param>
@@ -65,7 +66,7 @@
         <param name="defaultValue">$void</param>
     </resource-config>
     
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">createOnElementNS</param>
         <param name="mapTo">namespaceURI</param>
@@ -77,40 +78,40 @@
         <param name="defaultValue">$void</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanId</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">class</param>
         <param name="mapTo">beanClass</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">factory</param>
         <param name="mapTo">beanFactory</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">extendLifecycle</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">retain</param>
     </resource-config>
 
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">phase</param>
         <param name="mapTo">VisitPhase</param>
     </resource-config>
     
-    <resource-config selector="bean">
+    <resource-config selector="jb:bean">
         <resource>org.smooks.cartridges.javabean.ext.SetRetainParam</resource>
     </resource-config>
 
@@ -118,7 +119,7 @@
         Bean Instance Populator Resource (Value)...
     -->
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.smooks.cdr.extension.CloneResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
@@ -126,42 +127,42 @@
         <param name="unset">extendLifecycle</param>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">data</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">property</param>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setterMethod</param>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">decoder</param>
         <param name="mapTo">type</param>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">default</param>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cartridges.javabean.ext.SelectorPropertyResolver</resource>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cartridges.javabean.ext.DecodeParamResolver</resource>
     </resource-config>
 
-    <resource-config selector="bean/value">
+    <resource-config selector="jb:bean/value">
         <resource>org.smooks.cartridges.javabean.ext.InitValExpressionSetter</resource>
         <param name="initValAttrib">default</param>
     </resource-config>
@@ -170,58 +171,58 @@
         Bean Instance Populator Resource (Wiring)...
     -->
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.smooks.cdr.extension.CloneResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
         <param name="unset">beanClass</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">property</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setterMethod</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanIdRef</param>
         <param name="mapTo">wireBeanId</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanType</param>
         <param name="mapTo">wireBeanType</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanAnnotation</param>
         <param name="mapTo">wireBeanAnnotation</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">wireOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">wireOnElementNS</param>
         <param name="mapTo">selector-namespace</param>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
     	<resource>org.smooks.cartridges.javabean.ext.WireOnElementChecker</resource>
     </resource-config>
 
-    <resource-config selector="bean/wiring">
+    <resource-config selector="jb:bean/wiring">
     	<resource>org.smooks.cartridges.javabean.ext.WireTargetChecker</resource>
     </resource-config>
 
@@ -229,7 +230,7 @@
         Bean Instance Populator Resource (Expression)...
     -->
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.smooks.cdr.extension.CloneResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
@@ -237,33 +238,33 @@
         <param name="unset">extendLifecycle</param>
     </resource-config>
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">execOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">property</param>
     </resource-config>
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">setterMethod</param>
     </resource-config>
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <resource>org.smooks.cartridges.javabean.ext.InitValExpressionSetter</resource>
         <param name="initValAttrib">initVal</param>
     </resource-config>
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromText</resource>
         <param name="mapTo">expression</param>
     </resource-config>
 
-    <resource-config selector="bean/expression">
+    <resource-config selector="jb:bean/expression">
         <resource>org.smooks.cartridges.javabean.ext.SelectorPropertyResolver</resource>
     </resource-config>
 
@@ -271,7 +272,7 @@
         Bean Instance Populator Resource (Expression)...
     -->
 
-    <resource-config selector="bean/*">
+    <resource-config selector="jb:bean/jb:*">
         <resource>org.smooks.cartridges.javabean.ext.PropertyChecker</resource>
     </resource-config>
 
@@ -279,38 +280,38 @@
         Value Binder...
 	-->
 
-    <resource-config selector="smooks-resource-list/value">
+    <resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.ValueBinder</param>
     </resource-config>
 
-    <resource-config selector="smooks-resource-list/value">
+    <resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">data</param>
         <param name="mapTo">selector</param>
     </resource-config>
 
-    <resource-config selector="smooks-resource-list/value">
+    <resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanId</param>
     </resource-config>
 
- 	<resource-config selector="smooks-resource-list/value">
+ 	<resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">decoder</param>
         <param name="mapTo">type</param>
     </resource-config>
 
-    <resource-config selector="smooks-resource-list/value">
+    <resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">default</param>
     </resource-config>
 
-    <resource-config selector="smooks-resource-list/value">
+    <resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cartridges.javabean.ext.SelectorPropertyResolver</resource>
     </resource-config>
 
-    <resource-config selector="smooks-resource-list/value">
+    <resource-config selector="smooks-resource-list/jb:value">
         <resource>org.smooks.cartridges.javabean.ext.DecodeParamResolver</resource>
     </resource-config>
 
@@ -318,12 +319,12 @@
         Bean Result Cleanup resource...
     -->
 
-    <resource-config selector="result">
+    <resource-config selector="jb:result">
         <resource>org.smooks.cdr.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.javabean.lifecycle.BeanResultCleanup</param>
     </resource-config>
 
-    <resource-config selector="result">
+    <resource-config selector="jb:result">
         <resource>org.smooks.cdr.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">retainBeans</param>
         <param name="mapTo">beanIDs</param>

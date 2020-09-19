@@ -42,7 +42,7 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-1.2.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <jb:bean beanId="order" class="org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder" createOnElement="order">
         <jb:expression property="total" execOnElement="order-item" >1.0 + 1.0</jb:expression>
@@ -52,6 +52,5 @@
 		<condition>false</condition>
         <jb:expression property="total" execOnElement="order-item" >2.0 + 2.0</jb:expression>
     </jb:bean>
-
-
+    
 </smooks-resource-list>

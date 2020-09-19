@@ -49,7 +49,7 @@ import org.smooks.cartridges.javabean.observers.BeanWiringObserver;
 import org.smooks.cartridges.javabean.observers.ListToArrayChangeObserver;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.registry.lookup.NamespaceMappingsLookup;
+import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
 import org.smooks.cdr.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.container.ApplicationContext;
@@ -265,7 +265,7 @@ public class BeanInstancePopulator implements DOMElementVisitor, SAXVisitBefore,
         isAttribute = valueAttributeName.isPresent();
 
         if (valueAttributePrefix.isPresent()) {
-            Properties namespaces = appContext.getRegistry().lookup(new NamespaceMappingsLookup());
+            Properties namespaces = appContext.getRegistry().lookup(new NamespaceManagerLookup());
             valueAttributeNS = namespaces.getProperty(valueAttributePrefix.get());
         }
 
