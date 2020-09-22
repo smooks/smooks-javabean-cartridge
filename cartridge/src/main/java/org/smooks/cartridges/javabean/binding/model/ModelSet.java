@@ -55,7 +55,7 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.ContentHandlerFactory;
 import org.smooks.util.DollarBraceDecoder;
-import org.smooks.xml.NamespaceMappings;
+import org.smooks.xml.NamespaceManager;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
@@ -164,7 +164,7 @@ public class ModelSet {
         }
 
         // Ignore resource that do not manipulate the event stream...
-        if(javaResource instanceof NamespaceMappings) {
+        if(javaResource instanceof NamespaceManager) {
             return false;
         }
 
