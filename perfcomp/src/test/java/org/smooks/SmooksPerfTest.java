@@ -42,26 +42,19 @@
  */
 package org.smooks;
 
-import java.io.IOException;
-
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import org.smooks.Order;
-import org.smooks.Smooks;
 import org.TestConstants;
+import org.junit.Test;
 import org.smooks.container.ExecutionContext;
 import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
 import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -81,15 +74,15 @@ public class SmooksPerfTest {
         JavaResult javaResult = null;
         NoddyObserver nobserver = new NoddyObserver();
         for (int i = 0; i < TestConstants.NUM_ITERATIONS; i++) {
-            ExecutionContext execContext = smooks.createExecutionContext();
-            BeanContext beanCtx = execContext.getBeanContext();
+            ExecutionContext executionContext = smooks.createExecutionContext();
+            BeanContext beanContext = executionContext.getBeanContext();
 
             for (int ii = 0; ii < 15; ii++) {
-                beanCtx.addObserver(nobserver);
+                beanContext.addObserver(nobserver);
             }
 
             javaResult = new JavaResult();
-            smooks.filterSource(execContext, new StreamSource(TestConstants.getMessageReader()), javaResult);
+            smooks.filterSource(executionContext, new StreamSource(TestConstants.getMessageReader()), javaResult);
         }
 
         System.out.println("Smooks took: " + (System.currentTimeMillis() - start));
@@ -99,7 +92,7 @@ public class SmooksPerfTest {
         }
     }
 
-    class NoddyObserver implements BeanContextLifecycleObserver {
+    static class NoddyObserver implements BeanContextLifecycleObserver {
 
         private BeanId beanId = new BeanId(null, 0, null);
 

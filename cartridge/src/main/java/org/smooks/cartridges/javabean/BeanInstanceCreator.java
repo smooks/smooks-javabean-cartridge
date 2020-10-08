@@ -59,12 +59,10 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleEvent;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleListener;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.VisitLifecycleCleanable;
 import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXVisitAfter;
-import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.delivery.sax.ng.AfterVisitor;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
 import org.smooks.expression.MVELExpressionEvaluator;
@@ -72,13 +70,13 @@ import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
+import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.util.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -96,7 +94,7 @@ import java.util.Set;
 @VisitAfterReport(condition = "parameters.containsKey('setOn') || parameters.beanClass.value.endsWith('[]')",
         summary = "Ended bean lifecycle. Set bean on any targets.",
         detailTemplate = "reporting/BeanInstanceCreatorReport_After.html")
-public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
+public class BeanInstanceCreator implements DOMElementVisitor, BeforeVisitor, AfterVisitor, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstanceCreator.class);
 
@@ -183,7 +181,7 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
      * @throws SmooksConfigurationException Incorrectly configured resource.
      */
     @PostConstruct
-    public void initialize() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigurationException {
         buildId();
 
         beanId = appContext.getBeanIdStore().register(beanIdName);
@@ -263,27 +261,17 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
 
         id = idBuilder.toString();
     }
-
+    
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         createAndSetBean(executionContext, new Fragment(element));
-    }
-
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        createAndSetBean(executionContext, new Fragment(element));
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.smooks.delivery.dom.DOMVisitAfter#visitAfter(org.w3c.dom.Element, org.smooks.container.ExecutionContext)
-     */
-    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        visitAfter(executionContext, new Fragment(element));
     }
 
     /* (non-Javadoc)
      * @see org.smooks.delivery.sax.SAXVisitAfter#visitAfter(org.smooks.delivery.sax.SAXElement, org.smooks.container.ExecutionContext)
      */
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
+    @Override
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
         visitAfter(executionContext, new Fragment(element));
     }
 
@@ -393,6 +381,7 @@ public class BeanInstanceCreator implements DOMElementVisitor, SAXVisitBefore, S
         }
     }
 
+    @Override
     public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
         BeanContext beanContext = executionContext.getBeanContext();
         Object bean = beanContext.getBean(beanId);

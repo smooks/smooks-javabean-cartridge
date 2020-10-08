@@ -55,15 +55,15 @@ import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.cdr.registry.lookup.NamespaceManagerLookup;
-import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.config.Configurable;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.payload.StringSource;
+import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
+import org.smooks.registry.lookup.NamespaceManagerLookup;
+import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.util.ClassUtil;
 import org.xml.sax.SAXException;
 

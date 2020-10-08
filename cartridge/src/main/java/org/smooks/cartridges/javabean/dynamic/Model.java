@@ -68,11 +68,11 @@ public class Model<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
 
-	private T modelRoot;
-	private List<BeanMetadata> modelMetadata;
-    private Map<Class<?>, Map<String, BeanWriter>> beanWriters;
+	private final T modelRoot;
+	private final List<BeanMetadata> modelMetadata;
+    private final Map<Class<?>, Map<String, BeanWriter>> beanWriters;
+    private final Map<String, String> namespacePrefixMappings;
     private Set<String> knownNamespaces;
-    private Map<String, String> namespacePrefixMappings;
 
     /**
 	 * Public constructor.
@@ -84,9 +84,9 @@ public class Model<T> {
         AssertArgument.isNotNull(builder, "builder");
 
 		this.modelRoot = modelRoot;
-		this.modelMetadata = new ArrayList<BeanMetadata>();
+		this.modelMetadata = new ArrayList<>();
         this.beanWriters = builder.getDescriptor().getBeanWriters();
-        this.namespacePrefixMappings = new LinkedHashMap<String, String>();
+        this.namespacePrefixMappings = new LinkedHashMap<>();
 
         resolveKnownNamespaces();
 
@@ -297,7 +297,7 @@ public class Model<T> {
      */
     private void removeKnownNamespaceMappings() {
         // Need to create a clone so as to avoid concurrent mod exceptions...
-        Set<String> namespaceUris = new HashSet<String>(namespacePrefixMappings.keySet());
+        Set<String> namespaceUris = new HashSet<>(namespacePrefixMappings.keySet());
 
         for(String namespaceUri : namespaceUris) {
             if(knownNamespaces.contains(namespaceUri) && !isNamespaceInModel(namespaceUri)) {

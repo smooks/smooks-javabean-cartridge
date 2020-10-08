@@ -50,10 +50,10 @@ import org.smooks.cartridges.javabean.binding.model.WiredBinding;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.cdr.registry.lookup.UserDefinedSmooksResourceConfigurationList;
 import org.smooks.container.ExecutionContext;
 import org.smooks.event.report.HtmlReportGenerator;
 import org.smooks.payload.JavaResult;
+import org.smooks.registry.lookup.UserDefinedSmooksResourceConfigurationList;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;

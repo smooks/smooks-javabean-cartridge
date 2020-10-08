@@ -64,23 +64,11 @@ import static org.junit.Assert.*;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class RetainBeanTest {
-
     @Test
-    public void test_01_DOM() throws IOException, SAXException {
-    	test_01(FilterSettings.DEFAULT_DOM);
-    }
-
-    @Test
-    public void test_01_SAX() throws IOException, SAXException {
-    	test_01(FilterSettings.DEFAULT_SAX);
-    }
-
-    public void test_01(FilterSettings filterSettings) throws IOException, SAXException {
+    public void test_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_01.xml"));
         JavaResult result = new JavaResult();
-
-        smooks.setFilterSettings(filterSettings);
-
+        
         ExecutionContext execContext = smooks.createExecutionContext();
         //execContext.setEventListener(new HtmlReportGenerator("/zap/report.html"));
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
@@ -94,23 +82,12 @@ public class RetainBeanTest {
         assertNull(result.getBean("orderItemArray"));
         assertNull(result.getBean("orderItem"));
     }
-
-    @Test
-    public void test_02_DOM() throws IOException, SAXException {
-    	test_02(FilterSettings.DEFAULT_DOM);
-    }
-
-    @Test
-    public void test_02_SAX() throws IOException, SAXException {
-    	test_02(FilterSettings.DEFAULT_SAX);
-    }
     
-    public void test_02(FilterSettings filterSettings) throws IOException, SAXException {
+    @Test
+    public void test_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_02.xml"));
         JavaResult result = new JavaResult();
-
-        smooks.setFilterSettings(filterSettings);
-
+        
         ExecutionContext execContext = smooks.createExecutionContext();
         //execContext.setEventListener(new HtmlReportGenerator("/zap/report.html"));
         smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);

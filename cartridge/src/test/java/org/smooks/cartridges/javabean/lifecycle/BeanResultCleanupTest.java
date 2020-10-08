@@ -57,18 +57,12 @@ import java.io.IOException;
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
 public class BeanResultCleanupTest {
-
+    
     @Test
     public void test() throws IOException, SAXException {
-        test(StreamFilterType.DOM);
-        test(StreamFilterType.SAX);
-    }
-
-    private void test(StreamFilterType filterType) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
         JavaResult result = new JavaResult();
 
-        smooks.setFilterSettings(new FilterSettings(filterType));
         smooks.filterSource(new StringSource("<root><a><b>1</b></a></root>"), result);
         assertNotNull(result.getBean("root"));
         assertNull(result.getBean("a"));

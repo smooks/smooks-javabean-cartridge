@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean.dynamic.visitor;
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.dom.serialize.DefaultSerializationUnit;
+import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.w3c.dom.*;
 
@@ -156,48 +156,30 @@ public class UnknownElementDataReaper {
         return stringBuf.toString();
     }
 
-    private static DefaultSerializationUnit serializationUnit;
+    private static final DefaultDOMSerializerVisitor SERIALIZER_VISITOR;
     static {
-        serializationUnit = new DefaultSerializationUnit();
-        serializationUnit.setCloseEmptyElements(Optional.of(true));
-        serializationUnit.setRewriteEntities(Optional.of(true)); 
+        SERIALIZER_VISITOR = new DefaultDOMSerializerVisitor();
+        SERIALIZER_VISITOR.setCloseEmptyElements(Optional.of(true));
+        SERIALIZER_VISITOR.setRewriteEntities(Optional.of(true)); 
+        SERIALIZER_VISITOR.postConstruct();
     }
+    
     private static void serialize(Node node, Writer writer) throws IOException {
-        switch(node.getNodeType()) {
-            case Node.ELEMENT_NODE: {
-                Element element = (Element) node;
-                NodeList children = element.getChildNodes();
-                int childCount = children.getLength();
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element) node;
+            NodeList children = element.getChildNodes();
+            int childCount = children.getLength();
 
-                serializationUnit.writeElementStart(element, writer);
+            SERIALIZER_VISITOR.writeStartElement(element, writer, null);
 
-                // Write the child nodes...
-                for(int i = 0; i < childCount; i++) {
-                    serialize(children.item(i), writer);
-                }
+            // Write the child nodes...
+            for(int i = 0; i < childCount; i++) {
+                serialize(children.item(i), writer);
+            }
 
-                serializationUnit.writeElementEnd(element, writer);
-                break;
-            }
-            case Node.TEXT_NODE: {
-                serializationUnit.writeElementText((Text)node, writer, null);
-                break;
-            }
-            case Node.COMMENT_NODE: {
-                serializationUnit.writeElementComment((Comment)node, writer, null);
-                break;
-            }
-            case Node.CDATA_SECTION_NODE: {
-                serializationUnit.writeElementCDATA((CDATASection)node, writer, null);
-                break;
-            }
-            case Node.ENTITY_REFERENCE_NODE: {
-                serializationUnit.writeElementEntityRef((EntityReference)node, writer, null);
-                break;
-            }
-            default: {
-                break;
-            }
+            SERIALIZER_VISITOR.writeEndElement(element, writer, null);
+        } else {
+            SERIALIZER_VISITOR.writeCharacterData(node, writer, null);
         }
     }
 }

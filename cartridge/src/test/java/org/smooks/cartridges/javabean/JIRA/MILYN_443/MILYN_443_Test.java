@@ -65,15 +65,11 @@ import static org.junit.Assert.assertEquals;
 public class MILYN_443_Test {
 
     @Test
-	public void test_SAX() throws IOException, SAXException {
-		test(FilterSettings.DEFAULT_SAX);
-	}
-
-    @Test	
-    public void test_DOM() throws IOException, SAXException {
-		test(FilterSettings.DEFAULT_DOM);
+	public void test() throws IOException, SAXException {
+		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
+		test(smooks);
     }
-   
+	
     @Test 
     public void test_programmatic() {
 		Smooks smooks = new Smooks();
@@ -90,12 +86,6 @@ public class MILYN_443_Test {
 		
 		test(smooks);
     }
-    
-	private void test(FilterSettings filterSettings) throws IOException, SAXException {
-		Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
-		smooks.setFilterSettings(filterSettings);
-		test(smooks);
-	}
 
 	private void test(Smooks smooks) {
 		JavaResult result = new JavaResult();

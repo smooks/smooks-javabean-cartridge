@@ -231,7 +231,7 @@ public class Descriptor {
         AssertArgument.isNotNull(bindingResolver, "bindingResolver");
 
         Set<Namespace> namespaces = resolveNamespaces(descriptors);
-        Map<String, Smooks> extendedConfigDigesters = new HashMap<String, Smooks>();
+        Map<String, Smooks> extendedConfigDigesters = new HashMap<>();
 
         // Now create a Smooks instance for processing configurations for these namespaces...
         Smooks smooks = new Smooks();
