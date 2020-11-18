@@ -184,9 +184,9 @@ public class ModelBuilder {
         Model<T> model;
 
         if(modelRoot == JavaResult.class) {
-            model = new Model<T>(modelRoot.cast(result), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
+            model = new Model<>(modelRoot.cast(result), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
         } else {
-            model = new Model<T>(modelRoot.cast(result.getBean(modelRoot)), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
+            model = new Model<>(modelRoot.cast(result.getBean(modelRoot)), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
         }
 
         return model;

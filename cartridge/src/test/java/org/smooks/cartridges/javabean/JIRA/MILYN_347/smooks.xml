@@ -42,12 +42,9 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
-
-    <params>
-        <param name="stream.filter.type">SAX</param>
-    </params>
-
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" 
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+    
     <jb:bean beanId="bean" class="java.util.HashMap" createOnElement="#document">
         <jb:expression property="xxxx">x</jb:expression>
     </jb:bean>

@@ -42,9 +42,9 @@
  */
 package org.smooks.cartridges.javabean.gen.model;
 
-import org.smooks.cdr.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
+import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;

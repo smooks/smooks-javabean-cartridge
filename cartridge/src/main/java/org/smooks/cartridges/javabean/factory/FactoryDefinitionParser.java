@@ -45,9 +45,9 @@ package org.smooks.cartridges.javabean.factory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.cdr.registry.lookup.GlobalParamsLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverterException;
+import org.smooks.registry.lookup.GlobalParamsLookup;
 import org.smooks.util.ClassUtil;
 
 import java.util.*;

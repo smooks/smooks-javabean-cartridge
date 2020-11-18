@@ -46,7 +46,6 @@
                       xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <params>
-        <param name="stream.filter.type">SAX</param>
         <param name="reader.pool.size">1</param>
     </params>
 

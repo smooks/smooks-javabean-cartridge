@@ -43,11 +43,7 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
-	
-	<resource-config selector="global-parameters">
-        <param name="stream.filter.type">SAX</param>
-    </resource-config>
-
+    
     <jb:bean beanId="person" class="org.smooks.cartridges.javabean.performance.model.Person" createOnElement="person">
     	<jb:value property="surname" data="person"/>
     </jb:bean>     
