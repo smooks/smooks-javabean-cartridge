@@ -44,11 +44,7 @@
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
-
-    <params>
-        <param name="stream.filter.type">SAX</param>
-    </params>
-
+    
     <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOnElement="order-item">
         <jb:value property="productId" data="order-item/product" />
         <jb:value property="quantity" data="order-item/quantity" />

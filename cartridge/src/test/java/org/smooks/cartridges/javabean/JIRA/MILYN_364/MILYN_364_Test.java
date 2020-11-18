@@ -62,8 +62,6 @@ public class MILYN_364_Test {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(MILYN_364_Test.class.getResourceAsStream("config.xml"));
-
-        smooks.setFilterSettings(FilterSettings.DEFAULT_SAX);
         
         try {
             StringResult xmlResult = new StringResult();

@@ -117,7 +117,6 @@ public class ModelBuilderTest {
 
         StringWriter writer = new StringWriter();
         model.writeModel(writer);
-        System.out.println(writer);
         XMLUnit.setIgnoreWhitespace(true);
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream(message)), new StringReader(writer.toString()));
     }

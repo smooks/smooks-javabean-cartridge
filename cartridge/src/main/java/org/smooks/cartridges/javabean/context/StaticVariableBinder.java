@@ -49,17 +49,13 @@ import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.dom.DOMElementVisitor;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXElementVisitor;
-import org.smooks.delivery.sax.SAXText;
+import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.repository.BeanId;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +71,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class StaticVariableBinder implements SAXElementVisitor, DOMElementVisitor {
+public class StaticVariableBinder implements ElementVisitor {
 
     private static final String STATVAR = "statvar";
 
@@ -89,8 +85,7 @@ public class StaticVariableBinder implements SAXElementVisitor, DOMElementVisito
     private ApplicationContext appContext;
 
     @PostConstruct
-    public void initialize() throws SmooksConfigurationException {
-
+    public void postConstruct() throws SmooksConfigurationException {
         beanId = appContext.getBeanIdStore().getBeanId(STATVAR);
 
         if(beanId == null) {
@@ -99,24 +94,13 @@ public class StaticVariableBinder implements SAXElementVisitor, DOMElementVisito
 
 
     }
-
-    public void visitBefore(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-        bindParamaters(executionContext, new Fragment(element));
-    }
-
-    public void onChildText(SAXElement element, SAXText childText, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-
-    public void onChildElement(SAXElement element, SAXElement childElement, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-
-    public void visitAfter(SAXElement element, ExecutionContext executionContext) throws SmooksException, IOException {
-    }
-
+    
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         bindParamaters(executionContext, new Fragment(element));
     }
 
+    @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
     }
 
@@ -155,5 +139,15 @@ public class StaticVariableBinder implements SAXElementVisitor, DOMElementVisito
         }
 
         params.put(parameter.getName(), parameter.getValue(executionContext.getDeliveryConfig()));
+    }
+
+    @Override
+    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+        
+    }
+
+    @Override
+    public void visitChildElement(Element childElement, ExecutionContext executionContext) throws SmooksException {
+
     }
 }

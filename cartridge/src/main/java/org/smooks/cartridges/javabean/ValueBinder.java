@@ -46,22 +46,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterException;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.dom.DOMElementVisitor;
+import org.smooks.delivery.memento.NodeVisitable;
+import org.smooks.delivery.memento.TextAccumulatorMemento;
 import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.delivery.sax.SAXUtil;
-import org.smooks.delivery.sax.SAXVisitAfter;
-import org.smooks.delivery.sax.SAXVisitBefore;
+import org.smooks.delivery.sax.ng.AfterVisitor;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.delivery.sax.ng.ChildrenVisitor;
 import org.smooks.event.report.annotation.VisitAfterReport;
 import org.smooks.event.report.annotation.VisitBeforeReport;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.repository.BeanId;
+import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
 import org.w3c.dom.Element;
@@ -69,7 +69,6 @@ import org.w3c.dom.Element;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -135,7 +134,7 @@ import java.util.Set;
 @VisitAfterReport(condition = "!parameters.containsKey('valueAttributeName')",
         summary = "Creating object <b>${resource.parameters.beanId}</b> with a value from this element.",
         detailTemplate = "reporting/ValueBinderReport_After.html")
-public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitAfter, Producer {
+public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor, Producer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ValueBinder.class);
 
@@ -251,7 +250,7 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
      * @throws SmooksConfigurationException Incorrectly configured resource.
      */
     @PostConstruct
-    public void initialize() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigurationException {
     	isAttribute = (valueAttributeName.isPresent());
 
         beanId = appContext.getBeanIdStore().register(beanIdName);
@@ -261,35 +260,19 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
         }
     }
 
-	public void visitBefore(Element element, ExecutionContext executionContext)
-			throws SmooksException {
-		if(isAttribute) {
+	@Override
+	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+		if (isAttribute) {
 			bindValue(DomUtils.getAttributeValue(element, valueAttributeName.orElse(null)), executionContext, new Fragment(element));
 		}
 	}
 
-	public void visitAfter(Element element, ExecutionContext executionContext)
-			throws SmooksException {
+	@Override
+	public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
 		if(!isAttribute) {
-			bindValue(DomUtils.getAllText(element, false), executionContext, new Fragment(element));
-		}
-	}
-
-	public void visitBefore(SAXElement element,
-			ExecutionContext executionContext) throws SmooksException,
-			IOException {
-		if(isAttribute) {
-			bindValue(SAXUtil.getAttribute(valueAttributeName.orElse(null), element.getAttributes()), executionContext, new Fragment(element));
-		} else {
-            // Turn on Text Accumulation...
-            element.accumulateText();
-		}
-	}
-
-	public void visitAfter(SAXElement element, ExecutionContext executionContext)
-			throws SmooksException, IOException {
-		if(!isAttribute) {
-			bindValue(element.getTextContent(), executionContext, new Fragment(element));
+			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
+			executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
+			bindValue(textAccumulatorMemento.getText(), executionContext, new Fragment(element));
 		}
 	}
 
@@ -340,4 +323,17 @@ public class ValueBinder implements DOMElementVisitor, SAXVisitBefore, SAXVisitA
         return typeConverter;
     }
 
+	@Override
+	public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+		if (!isAttribute) {
+			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
+			textAccumulatorMemento.accumulateText(element.getTextContent());
+			executionContext.getMementoCaretaker().save(textAccumulatorMemento);
+		}
+	}
+
+	@Override
+	public void visitChildElement(Element childElement, ExecutionContext executionContext) throws SmooksException {
+
+	}
 }

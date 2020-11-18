@@ -48,12 +48,12 @@ import org.smooks.cdr.ParameterAccessor;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.SmooksResourceConfigurationList;
-import org.smooks.cdr.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.cdr.registry.lookup.UserDefinedSmooksResourceConfigurationList;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.ContentHandlerFactory;
+import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
+import org.smooks.registry.lookup.UserDefinedSmooksResourceConfigurationList;
 import org.smooks.util.DollarBraceDecoder;
 import org.smooks.xml.NamespaceManager;
 
@@ -252,6 +252,6 @@ public class ModelSet {
     }
 
     public static ModelSet get(ApplicationContext appContext) {
-        return (ModelSet) appContext.getRegistry().lookup(ModelSet.class);
+        return appContext.getRegistry().lookup(ModelSet.class);
     }
 }

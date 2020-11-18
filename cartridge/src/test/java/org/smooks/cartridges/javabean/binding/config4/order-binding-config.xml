@@ -45,9 +45,7 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
                       xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
-
-    <core:filterSettings type="DOM" />
-
+    
     <core:namespaces>
         <core:namespace prefix="ord" uri="http://order"/>
         <core:namespace prefix="ordi" uri="http://orderItem"/>

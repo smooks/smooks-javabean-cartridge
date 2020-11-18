@@ -68,15 +68,14 @@ public class NamespaceReaper implements DOMVisitBefore {
         NamedNodeMap attributes = element.getAttributes();
         int attributeCount = attributes.getLength();
 
-        for(int i = 0; i < attributeCount; i++) {
+        for (int i = 0; i < attributeCount; i++) {
             Attr attr = (Attr) attributes.item(i);
 
-            if(XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
+            if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
                 String uri = attr.getValue();
                 QName attrQName = SAXUtil.toQName(uri, attr.getLocalName(), attr.getNodeName());
 
-                if (attrQName != null)
-                {
+                if (attrQName != null) {
                     addMapping(namespacePrefixMappings, uri, attrQName.getLocalPart());
                 }
             }
@@ -84,16 +83,16 @@ public class NamespaceReaper implements DOMVisitBefore {
     }
 
     private void addMapping(Map<String, String> namespacePrefixMappings, String uri, String prefix) {
-        if(uri != null && prefix != null && !namespacePrefixMappings.containsKey(uri)) {
+        if (uri != null && prefix != null && !namespacePrefixMappings.containsKey(uri)) {
             namespacePrefixMappings.put(uri, prefix);
         }
     }
 
     public static Map<String, String> getNamespacePrefixMappings(ExecutionContext executionContext) {
-        Map<String, String> namespacePrefixMappings = (Map<String, String>) executionContext.getAttribute(NamespaceReaper.class);
+        Map<String, String> namespacePrefixMappings = executionContext.getAttribute(NamespaceReaper.class);
 
-        if(namespacePrefixMappings == null) {
-            namespacePrefixMappings = new LinkedHashMap<String, String>();
+        if (namespacePrefixMappings == null) {
+            namespacePrefixMappings = new LinkedHashMap<>();
             executionContext.setAttribute(NamespaceReaper.class, namespacePrefixMappings);
         }
 
