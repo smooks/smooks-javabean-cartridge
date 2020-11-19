@@ -59,7 +59,6 @@ import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleEvent;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleListener;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
@@ -94,7 +93,7 @@ import java.util.Set;
 @VisitAfterReport(condition = "parameters.containsKey('setOn') || parameters.beanClass.value.endsWith('[]')",
         summary = "Ended bean lifecycle. Set bean on any targets.",
         detailTemplate = "reporting/BeanInstanceCreatorReport_After.html")
-public class BeanInstanceCreator implements DOMElementVisitor, BeforeVisitor, AfterVisitor, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
+public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstanceCreator.class);
 

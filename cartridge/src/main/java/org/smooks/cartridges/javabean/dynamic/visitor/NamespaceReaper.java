@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.dynamic.visitor;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
 import org.smooks.delivery.sax.SAXUtil;
+import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -61,8 +61,9 @@ import java.util.Map;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @SuppressWarnings("unchecked")
-public class NamespaceReaper implements DOMVisitBefore {
+public class NamespaceReaper implements BeforeVisitor {
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         Map<String, String> namespacePrefixMappings = getNamespacePrefixMappings(executionContext);
         NamedNodeMap attributes = element.getAttributes();

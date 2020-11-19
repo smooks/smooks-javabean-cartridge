@@ -58,7 +58,6 @@ import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.converter.factory.system.StringConverterFactory;
 import org.smooks.delivery.ContentDeliveryConfig;
 import org.smooks.delivery.Fragment;
-import org.smooks.delivery.dom.DOMElementVisitor;
 import org.smooks.delivery.memento.NodeVisitable;
 import org.smooks.delivery.memento.TextAccumulatorMemento;
 import org.smooks.delivery.ordering.Consumer;
@@ -74,7 +73,6 @@ import org.smooks.javabean.context.BeanIdStore;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.javabean.repository.BeanId;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
 import org.smooks.registry.lookup.NamespaceManagerLookup;
 import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
@@ -105,7 +103,7 @@ import java.util.*;
 @VisitAfterReport(condition = "!parameters.containsKey('wireBeanId') && !parameters.containsKey('valueAttributeName')",
         summary = "Populating <b>${resource.parameters.beanId}</b> with a value from this element.",
         detailTemplate = "reporting/BeanInstancePopulatorReport_After.html")
-public class BeanInstancePopulator implements DOMElementVisitor, BeforeVisitor, AfterVisitor, ChildrenVisitor, Producer, Consumer {
+public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, ChildrenVisitor, Producer, Consumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstancePopulator.class);
 
