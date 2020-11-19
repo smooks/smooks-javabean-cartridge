@@ -86,7 +86,7 @@ public class FreeMarkerBeanWriter implements BeanWriter {
     private static final WriteAttribsDirective writeAttribsDirective = new WriteAttribsDirective();
 
     @PostConstruct
-    public void intialize() {
+    public void postConstruct() {
         final String trimmedTemplateConfig = templateConfig.trim();
 
         // Only attempt to load as a template resource URI if the configured 'template'
@@ -110,6 +110,7 @@ public class FreeMarkerBeanWriter implements BeanWriter {
         template = new FreeMarkerTemplate(templateConfig);
     }
 
+    @Override
     public void write(final Object bean, final Writer writer, final Model model) throws BeanRegistrationException, IOException {
         final Map<String, Object> templateContext = new HashMap<>();
         final BeanMetadata beanMetadata = model.getBeanMetadata(bean);

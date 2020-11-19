@@ -222,8 +222,8 @@ public class ModelBuilder {
         smooks.addVisitor(new NamespaceReaper());
         //descriptor.getSmooks().addVisitor(new UnknownElementDataReaper(), "*");
 
-        smooks.setFilterSettings(FilterSettings.newDOMSettings());
-        ParameterAccessor.setParameter(BeanInstancePopulator.NOTIFY_POPULATE, "true", smooks);        
+        smooks.setFilterSettings(FilterSettings.newSaxNgSettings().setMaxNodeDepth(Integer.MAX_VALUE));
+        ParameterAccessor.setParameter(BeanInstancePopulator.NOTIFY_POPULATE, "true", smooks);
 
         // Create the execution context so as to force resolution of the config...
         smooks.createExecutionContext();
