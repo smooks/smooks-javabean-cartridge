@@ -50,9 +50,9 @@ import org.smooks.cartridges.javabean.dynamic.resolvers.AbstractResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.XMLConfigDigester;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.util.ClassUtil;
@@ -243,12 +243,12 @@ public class Descriptor {
 
             if(bindingSource != null) {
                 if(bindingSource.getByteStream() != null) {
-                    SmooksResourceConfigurationList smooksResourceConfigurationList;
+                    ResourceConfigList resourceConfigList;
 
                     try {
-                        smooksResourceConfigurationList = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
-                        for(int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-                            SmooksResourceConfiguration config = smooksResourceConfigurationList.get(i);
+                        resourceConfigList = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
+                        for(int i = 0; i < resourceConfigList.size(); i++) {
+                            ResourceConfig config = resourceConfigList.get(i);
                             
                             if(config.getSelectorPath().getSelectorNamespaceURI() == null) {
                                 SelectorStep selectorStep = config.getSelectorPath().getTargetSelectorStep();
@@ -264,7 +264,7 @@ public class Descriptor {
                         throw new SmooksConfigurationException("Unexpected configuration digest exception.", e);
                     }
 
-                    smooks.getApplicationContext().getRegistry().registerSmooksResourceConfigurationList(smooksResourceConfigurationList);
+                    smooks.getApplicationContext().getRegistry().registerResourceConfigList(resourceConfigList);
                 } else {
                     throw new SAXException("Binding configuration resolver '" + bindingResolver.getClass().getName() + "' failed to resolve binding configuration for namespace '" + namespace + "'.  Resolver must return an InputStream in the InputSource.");
                 }

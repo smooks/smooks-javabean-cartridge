@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.dynamic.ext;
 
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.delivery.ContentHandler;
 import org.smooks.injector.Scope;
@@ -76,7 +76,7 @@ public class BeanWriterFactory implements ContentHandler {
     @Named(BeanConfigUtil.BEAN_CLASS_CONFIG)
     private Class<?> beanClass;
     @Inject
-    private SmooksResourceConfiguration config;
+    private ResourceConfig resourceConfig;
     @Inject
     private ApplicationContext appContext;
 
@@ -84,8 +84,8 @@ public class BeanWriterFactory implements ContentHandler {
     public void createBeanWriter() {
         try {
             BeanWriter beanWriter = beanWriterClass.newInstance();
-            appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(beanWriter, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), config, beanWriter)));
-            getBeanWriters(beanClass, appContext).put(config.getSelectorPath().getSelectorNamespaceURI(), beanWriter);
+            appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(beanWriter, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), resourceConfig, beanWriter)));
+            getBeanWriters(beanClass, appContext).put(resourceConfig.getSelectorPath().getSelectorNamespaceURI(), beanWriter);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new SmooksConfigurationException("Unable to create BeanWriter instance.", e);
         }

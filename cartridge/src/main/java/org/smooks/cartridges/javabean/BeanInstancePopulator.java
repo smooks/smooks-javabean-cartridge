@@ -47,8 +47,8 @@ import org.slf4j.LoggerFactory;
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.observers.BeanWiringObserver;
 import org.smooks.cartridges.javabean.observers.ListToArrayChangeObserver;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.converter.TypeConverter;
@@ -161,7 +161,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     private Boolean notifyPopulate = false;
 
     @Inject
-    private SmooksResourceConfiguration config;
+    private ResourceConfig config;
 
     @Inject
     private ApplicationContext appContext;
@@ -186,7 +186,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     private BeanWiringObserver wireByBeanIdObserver;
     private ListToArrayChangeObserver listToArrayChangeObserver;
 
-    public SmooksResourceConfiguration getConfig() {
+    public ResourceConfig getConfig() {
         return config;
     }
 

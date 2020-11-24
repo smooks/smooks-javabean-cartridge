@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.binding.model;
 
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -59,7 +59,7 @@ public abstract class Binding {
         this.property = populator.getProperty();
     }
 
-    public SmooksResourceConfiguration getConfig() {
+    public ResourceConfig getConfig() {
         return populator.getConfig();
     }
 

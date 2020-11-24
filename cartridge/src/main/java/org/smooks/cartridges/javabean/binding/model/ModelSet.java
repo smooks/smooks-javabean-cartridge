@@ -45,15 +45,15 @@ package org.smooks.cartridges.javabean.binding.model;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.cdr.ParameterAccessor;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.ContentHandlerFactory;
 import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.registry.lookup.UserDefinedSmooksResourceConfigurationList;
+import org.smooks.registry.lookup.UserDefinedResourceConfigList;
 import org.smooks.util.DollarBraceDecoder;
 import org.smooks.xml.NamespaceManager;
 
@@ -92,7 +92,7 @@ public class ModelSet {
      */
     private Boolean isBindingOnlyConfig;
 
-    private ModelSet(SmooksResourceConfigurationList userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigurationException {
+    private ModelSet(ResourceConfigList userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigurationException {
         createBaseBeanMap(userConfigList, javaContentHandlerFactory);
         createExpandedModels();
         resolveModelSelectors(userConfigList);
@@ -119,9 +119,9 @@ public class ModelSet {
         return isBindingOnlyConfig;
     }
 
-    private void createBaseBeanMap(final SmooksResourceConfigurationList smooksResourceConfigurationList, final ContentHandlerFactory<?> contentHandlerFactory) {
+    private void createBaseBeanMap(final ResourceConfigList smooksResourceConfigurationList, final ContentHandlerFactory<?> contentHandlerFactory) {
         for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-            final SmooksResourceConfiguration smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
+            final ResourceConfig smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
             final Object javaResource;
             if (smooksResourceConfiguration.isJavaResource()) {
                 javaResource = contentHandlerFactory.create(smooksResourceConfiguration);
@@ -171,7 +171,7 @@ public class ModelSet {
         return true;
     }
 
-    private boolean isGlobalParamsConfig(SmooksResourceConfiguration config) {
+    private boolean isGlobalParamsConfig(ResourceConfig config) {
         return ParameterAccessor.GLOBAL_PARAMETERS.equals(config.getSelectorPath().getSelector());
     }
 
@@ -181,7 +181,7 @@ public class ModelSet {
         }
     }
 
-    private void resolveModelSelectors(SmooksResourceConfigurationList userConfigList) {
+    private void resolveModelSelectors(ResourceConfigList userConfigList) {
         // Do the beans first...
         for(Bean model : models.values()) {
             resolveModelSelectors(model);
@@ -194,12 +194,12 @@ public class ModelSet {
     }
 
     private void resolveModelSelectors(Bean model) {
-        SmooksResourceConfiguration beanConfig = model.getConfig();
+        ResourceConfig beanConfig = model.getConfig();
 
         expandSelector(beanConfig, true, null);
 
         for(Binding binding : model.getBindings()) {
-            SmooksResourceConfiguration bindingConfig = binding.getConfig();
+            ResourceConfig bindingConfig = binding.getConfig();
             expandSelector(bindingConfig, true, beanConfig);
 
             if(binding instanceof WiredBinding) {
@@ -208,7 +208,7 @@ public class ModelSet {
         }
     }
 
-    private void expandSelector(SmooksResourceConfiguration resourceConfiguration, boolean failOnMissingBean, SmooksResourceConfiguration context) {
+    private void expandSelector(ResourceConfig resourceConfiguration, boolean failOnMissingBean, ResourceConfig context) {
         SelectorPath selectorPath = resourceConfiguration.getSelectorPath();
         QName targetElement = selectorPath.get(0).getElement();
 
@@ -246,7 +246,7 @@ public class ModelSet {
     public static void build(ApplicationContext appContext) {
         ModelSet modelSet = get(appContext);
         if(modelSet == null) {
-            modelSet = new ModelSet(appContext.getRegistry().lookup(new UserDefinedSmooksResourceConfigurationList(appContext.getRegistry())), appContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")));
+            modelSet = new ModelSet(appContext.getRegistry().lookup(new UserDefinedResourceConfigList(appContext.getRegistry())), appContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")));
             appContext.getRegistry().registerObject(ModelSet.class, modelSet);
         }
     }

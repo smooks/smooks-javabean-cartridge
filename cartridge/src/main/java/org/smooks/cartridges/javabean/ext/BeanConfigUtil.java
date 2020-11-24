@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.ext;
 
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cdr.ConfigSearch;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 
@@ -60,9 +60,9 @@ public abstract class BeanConfigUtil {
     
     public static final String BEAN_CLASS_CONFIG = "beanClass";
 
-    public static SmooksResourceConfiguration findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
+    public static ResourceConfig findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-        List<SmooksResourceConfiguration> creatorConfigs = extensionContext.lookupResource(new ConfigSearch().resource(BeanInstanceCreator.class.getName()).param("beanId", beanId));
+        List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new ConfigSearch().resource(BeanInstanceCreator.class.getName()).param("beanId", beanId));
 
         if(creatorConfigs.size() > 1) {
             throw new SmooksConfigurationException("Multiple <jb:bean> configurations exist for beanId '" + beanId + "'.  'beanId' values must be unique.");

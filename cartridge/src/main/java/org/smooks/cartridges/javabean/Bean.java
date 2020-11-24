@@ -46,7 +46,7 @@ import org.smooks.Smooks;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
 import org.smooks.cartridges.javabean.factory.Factory;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -178,7 +178,7 @@ public class Bean extends BindingAppender {
      * @param factory		   The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, Factory<? extends T> factory) {
-    	this(beanClass, beanId, SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR, null, factory);
+    	this(beanClass, beanId, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, null, factory);
     }
 
     /**
@@ -360,7 +360,7 @@ public class Bean extends BindingAppender {
         // dataDecoder can be null
 
         BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
-        SmooksResourceConfiguration populatorConfig = new SmooksResourceConfiguration(dataSelector);
+        ResourceConfig populatorConfig = new ResourceConfig(dataSelector);
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
 
@@ -492,7 +492,7 @@ public class Bean extends BindingAppender {
         // dataDecoder can be null
 
         BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
-        SmooksResourceConfiguration populatorConfig = new SmooksResourceConfiguration(dataSelector);
+        ResourceConfig populatorConfig = new ResourceConfig(dataSelector);
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
 
@@ -524,7 +524,7 @@ public class Bean extends BindingAppender {
         List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
         // Add the create bean visitor...
         ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new ContentHandlerBinding<>(beanInstanceCreator, createOnElement, targetNamespace, registry);
-        SmooksResourceConfiguration beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getSmooksResourceConfiguration();
+        ResourceConfig beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getResourceConfig();
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanId", getBeanId());
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());
 
@@ -539,7 +539,7 @@ public class Bean extends BindingAppender {
         // Add the populate bean visitors...
         for(Binding binding : bindings) {
             ContentHandlerBinding<Visitor> beanInstancePopulatorBinding = new ContentHandlerBinding<>(binding.beanInstancePopulator, binding.selector, targetNamespace, registry);
-            beanInstancePopulatorBinding.getSmooksResourceConfiguration().setParameter("beanId", getBeanId());
+            beanInstancePopulatorBinding.getResourceConfig().setParameter("beanId", getBeanId());
             visitorBindings.add(beanInstancePopulatorBinding);
             if(binding.assertTargetIsCollection) {
                 assertBeanClassIsCollection();

@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.ext;
 
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
@@ -67,7 +67,7 @@ public class InitValExpressionSetter implements DOMVisitBefore {
 		
 		if(initValExpression != null) {
 	        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-	        SmooksResourceConfiguration creatorConfig = extensionContext.getResourceByName(BeanInstanceCreator.class.getName());
+			ResourceConfig creatorConfig = extensionContext.getResourceByName(BeanInstanceCreator.class.getName());
 			String propertyName = DomUtils.getAttributeValue(element, "property");
 	        
 			creatorConfig.setParameter(BeanInstanceCreator.INIT_VAL_EXPRESSION, "this." + propertyName + " = (" + initValExpression + ");");
