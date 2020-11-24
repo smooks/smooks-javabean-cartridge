@@ -40,13 +40,13 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   =========================LICENSE_END==================================
   -->
-<org.smooks.cartridges.javabean.JIRA.MILYN__619.RootObject>
+<org.smooks.cartridges.javabean.JIRA.MILYN__61_.0039.RootObject>
     <enums>
-        <org.smooks.cartridges.javabean.JIRA.MILYN__619.TheEnumContainer>
+        <org.smooks.cartridges.javabean.JIRA.MILYN__61_.0039.TheEnumContainer>
             <theEnum>FIRST</theEnum>
-        </org.smooks.cartridges.javabean.JIRA.MILYN__619.TheEnumContainer>
-        <org.smooks.cartridges.javabean.JIRA.MILYN__619.TheEnumContainer>
+        </org.smooks.cartridges.javabean.JIRA.MILYN__61_.0039.TheEnumContainer>
+        <org.smooks.cartridges.javabean.JIRA.MILYN__61_.0039.TheEnumContainer>
             <theEnum>FIRST</theEnum>
-        </org.smooks.cartridges.javabean.JIRA.MILYN__619.TheEnumContainer>
+        </org.smooks.cartridges.javabean.JIRA.MILYN__61_.0039.TheEnumContainer>
     </enums>
-</org.smooks.cartridges.javabean.JIRA.MILYN__619.RootObject>
+</org.smooks.cartridges.javabean.JIRA.MILYN__61_.0039.RootObject>

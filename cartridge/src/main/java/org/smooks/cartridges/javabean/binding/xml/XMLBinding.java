@@ -52,9 +52,9 @@ import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.*;
 import org.smooks.cartridges.javabean.binding.model.get.ConstantGetter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
+import org.smooks.cdr.ResourceConfig;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
-import org.smooks.cdr.SmooksResourceConfigurationList;
 import org.smooks.cdr.xpath.SelectorPath;
 import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.config.Configurable;
@@ -331,11 +331,11 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final SmooksResourceConfigurationList smooksResourceConfigurationList) {
+    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigList smooksResourceConfigurationList) {
         final List<XMLElementSerializationNode> graphRoots = new ArrayList<XMLElementSerializationNode>();
 
         for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-            final SmooksResourceConfiguration smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
+            final ResourceConfig smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
             final Object javaResource;
             if (smooksResourceConfiguration.isJavaResource()) {
                 javaResource = getSmooks().getApplicationContext().getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(smooksResourceConfiguration);
@@ -388,11 +388,11 @@ public class XMLBinding extends AbstractBinding {
         return node;
     }
 
-    private void assertSelectorOK(SmooksResourceConfiguration config) {
+    private void assertSelectorOK(ResourceConfig config) {
         String selector = config.getSelectorPath().getSelector();
 
         if(selector != null) {
-            if(selector.contains(SmooksResourceConfiguration.DOCUMENT_FRAGMENT_SELECTOR)) {
+            if(selector.contains(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
             if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {

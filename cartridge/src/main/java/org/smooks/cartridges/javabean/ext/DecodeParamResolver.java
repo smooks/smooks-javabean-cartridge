@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.ext;
 
 import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
@@ -73,8 +73,8 @@ public class DecodeParamResolver implements DOMVisitBefore {
 
         if (decodeParams.getLength() > 0) {
             ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-            SmooksResourceConfiguration populatorConfig = extensionContext.getResourceStack().peek();
-            SmooksResourceConfiguration typeConverterConfig = new SmooksResourceConfiguration();
+            ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
+            ResourceConfig typeConverterConfig = new ResourceConfig();
 
             extensionContext.addResource(typeConverterConfig);
             try {

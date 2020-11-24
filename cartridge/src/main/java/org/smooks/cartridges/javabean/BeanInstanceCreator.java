@@ -52,8 +52,8 @@ import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
 import org.smooks.cartridges.javabean.factory.Factory;
 import org.smooks.cartridges.javabean.factory.FactoryDefinitionParser.FactoryDefinitionParserFactory;
 import org.smooks.cdr.Parameter;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleEvent;
@@ -117,7 +117,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     private Boolean retain = true;
 
     @Inject
-    private SmooksResourceConfiguration config;
+    private ResourceConfig config;
 
     @Inject
     private ApplicationContext appContext;
@@ -170,7 +170,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         return beanIdName;
     }
 
-    public SmooksResourceConfiguration getConfig() {
+    public ResourceConfig getConfig() {
         return config;
     }
 

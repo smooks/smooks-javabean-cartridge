@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.ext;
 
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
@@ -67,11 +67,11 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-        SmooksResourceConfiguration populatorConfig = extensionContext.getResourceStack().peek();
+        ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
         resolveSelectorTokens(populatorConfig);
     }
 
-    public static void resolveSelectorTokens(SmooksResourceConfiguration populatorConfig) {
+    public static void resolveSelectorTokens(ResourceConfig populatorConfig) {
         QName valueAttributeQName = populatorConfig.getSelectorPath().isEmpty() ? null : populatorConfig.getSelectorPath().getTargetSelectorStep().getAttribute();
         
         if(valueAttributeQName != null) {

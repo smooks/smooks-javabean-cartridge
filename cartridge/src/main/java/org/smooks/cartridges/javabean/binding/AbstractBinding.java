@@ -49,11 +49,11 @@ import org.smooks.cartridges.javabean.binding.model.DataBinding;
 import org.smooks.cartridges.javabean.binding.model.WiredBinding;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
-import org.smooks.cdr.SmooksResourceConfigurationList;
+import org.smooks.cdr.ResourceConfigList;
 import org.smooks.container.ExecutionContext;
 import org.smooks.event.report.HtmlReportGenerator;
 import org.smooks.payload.JavaResult;
-import org.smooks.registry.lookup.UserDefinedSmooksResourceConfigurationList;
+import org.smooks.registry.lookup.UserDefinedResourceConfigList;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;
@@ -190,8 +190,8 @@ public class AbstractBinding {
         return javaResult.getBean(toType);
     }
 
-    protected SmooksResourceConfigurationList getUserDefinedResourceList() {
-        return smooks.getApplicationContext().getRegistry().lookup(new UserDefinedSmooksResourceConfigurationList(smooks.getApplicationContext().getRegistry()));
+    protected ResourceConfigList getUserDefinedResourceList() {
+        return smooks.getApplicationContext().getRegistry().lookup(new UserDefinedResourceConfigList(smooks.getApplicationContext().getRegistry()));
     }
 
     protected GetterGraph constructContextualGetter(DataBinding binding) {

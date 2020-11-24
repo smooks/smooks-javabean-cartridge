@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.dynamic.ext;
 
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.cdr.extension.ExtensionContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.dom.DOMVisitBefore;
@@ -65,7 +65,7 @@ public class BeanClassLookup implements DOMVisitBefore {
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         // The current config on the stack must be <dmb:writer>...
         ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
-        SmooksResourceConfiguration dmbWriterConfig = extensionContext.getResourceStack().peek();
+        ResourceConfig dmbWriterConfig = extensionContext.getResourceStack().peek();
         if(dmbWriterConfig.getParameterValue("beanClass", String.class) == null) {
             String beanId = dmbWriterConfig.getParameterValue("beanId", String.class);
 
@@ -73,7 +73,7 @@ public class BeanClassLookup implements DOMVisitBefore {
                 throw new SmooksConfigurationException("One of the 'beanClass' or 'beanId' attributes must be configured on the <dmb:writer> configuration.");                
             }
 
-            SmooksResourceConfiguration beanCreatorConfig = BeanConfigUtil.findBeanCreatorConfig(beanId, executionContext);
+            ResourceConfig beanCreatorConfig = BeanConfigUtil.findBeanCreatorConfig(beanId, executionContext);
             if(beanCreatorConfig == null) {
                 throw new SmooksConfigurationException("Cannot find <jb:bean> configuration for beanId '" + beanId + "' for <dmb:writer>.  Reordered <dmb:writer> after <jb:bean> config.");
             }

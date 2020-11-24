@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.context;
 
 import org.smooks.SmooksException;
 import org.smooks.cdr.Parameter;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.SmooksResourceConfiguration;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.Fragment;
@@ -78,7 +78,7 @@ public class StaticVariableBinder implements ElementVisitor {
     private BeanId beanId;
 
     @Inject
-    private SmooksResourceConfiguration config;
+    private ResourceConfig resourceConfig;
 
 
     @Inject
@@ -105,7 +105,7 @@ public class StaticVariableBinder implements ElementVisitor {
     }
 
     private void bindParamaters(ExecutionContext executionContext, Fragment source) {
-        List<?> params = config.getParameterList();
+        List<?> params = resourceConfig.getParameterList();
 
         for (Object parameter : params) {
             // It's either an object, or list of objects...

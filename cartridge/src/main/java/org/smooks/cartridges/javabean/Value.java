@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean;
 
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
-import org.smooks.cdr.SmooksResourceConfiguration;
+import org.smooks.cdr.ResourceConfig;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterFactoryLoader;
 import org.smooks.converter.factory.TypeConverterFactory;
@@ -205,7 +205,7 @@ public class Value extends BindingAppender {
 	public List<ContentHandlerBinding<Visitor>> addVisitors() {
 		List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
 		ValueBinder valueBinder = new ValueBinder(getBeanId());
-		SmooksResourceConfiguration valueBinderSmooksResourceConfiguration = new SmooksResourceConfiguration(dataSelector);
+		ResourceConfig valueBinderSmooksResourceConfiguration = new ResourceConfig(dataSelector);
 
 		SelectorPropertyResolver.resolveSelectorTokens(valueBinderSmooksResourceConfiguration);
 
