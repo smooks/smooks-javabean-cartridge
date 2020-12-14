@@ -223,11 +223,11 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
             LOGGER.debug("BeanInstanceCreator created for [" + beanIdName + "]. BeanRuntimeInfo: " + beanRuntimeInfo);
         }
 
-        List<Parameter> initValExpressions = config.getParameters(INIT_VAL_EXPRESSION);
+        List<Parameter<?>> initValExpressions = config.getParameters(INIT_VAL_EXPRESSION);
         if (initValExpressions != null && !initValExpressions.isEmpty()) {
             StringBuilder initValsExpressionString = new StringBuilder();
 
-            for (Parameter initValExpression : initValExpressions) {
+            for (Parameter<?> initValExpression : initValExpressions) {
                 initValsExpressionString.append(initValExpression.getValue());
                 initValsExpressionString.append("\n");
             }

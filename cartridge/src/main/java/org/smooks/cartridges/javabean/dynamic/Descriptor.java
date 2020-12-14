@@ -55,6 +55,7 @@ import org.smooks.cdr.ResourceConfigList;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.cdr.XMLConfigDigester;
 import org.smooks.cdr.xpath.SelectorStep;
+import org.smooks.container.standalone.DefaultApplicationContextBuilder;
 import org.smooks.util.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -234,9 +235,7 @@ public class Descriptor {
         Map<String, Smooks> extendedConfigDigesters = new HashMap<>();
 
         // Now create a Smooks instance for processing configurations for these namespaces...
-        Smooks smooks = new Smooks();
-
-        smooks.setClassLoader(classloader);
+        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classloader).build());
         
         for (Namespace namespace : namespaces) {
             InputSource bindingSource = bindingResolver.resolveEntity(namespace.uri, namespace.uri);
