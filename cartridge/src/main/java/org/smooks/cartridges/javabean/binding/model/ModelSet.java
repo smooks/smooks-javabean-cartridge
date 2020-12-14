@@ -53,7 +53,7 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.delivery.ContentHandlerFactory;
 import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.registry.lookup.UserDefinedResourceConfigList;
+import org.smooks.registry.lookup.UserDefinedResourceConfigListLookup;
 import org.smooks.util.DollarBraceDecoder;
 import org.smooks.xml.NamespaceManager;
 
@@ -246,7 +246,7 @@ public class ModelSet {
     public static void build(ApplicationContext appContext) {
         ModelSet modelSet = get(appContext);
         if(modelSet == null) {
-            modelSet = new ModelSet(appContext.getRegistry().lookup(new UserDefinedResourceConfigList(appContext.getRegistry())), appContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")));
+            modelSet = new ModelSet(appContext.getRegistry().lookup(new UserDefinedResourceConfigListLookup(appContext.getRegistry())), appContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")));
             appContext.getRegistry().registerObject(ModelSet.class, modelSet);
         }
     }
