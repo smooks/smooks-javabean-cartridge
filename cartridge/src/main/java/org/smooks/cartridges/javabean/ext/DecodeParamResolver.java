@@ -72,7 +72,7 @@ public class DecodeParamResolver implements DOMVisitBefore {
         NodeList decodeParams = element.getElementsByTagNameNS(element.getNamespaceURI(), "decodeParam");
 
         if (decodeParams.getLength() > 0) {
-            ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+            ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
             ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
             ResourceConfig typeConverterConfig = new ResourceConfig();
 

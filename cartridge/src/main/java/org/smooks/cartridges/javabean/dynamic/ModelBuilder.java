@@ -54,13 +54,18 @@ import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
 import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
 import org.smooks.cdr.ParameterAccessor;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.delivery.fragment.SAXElementFragment;
+import org.smooks.delivery.sax.SAXElement;
 import org.smooks.event.report.HtmlReportGenerator;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.javabean.lifecycle.BeanLifecycle;
 import org.smooks.payload.JavaResult;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -165,7 +170,7 @@ public class ModelBuilder {
 		BeanTracker beanTracker = new BeanTracker(beanWriters);
 
         if(reportPath != null) {
-            executionContext.setEventListener(new HtmlReportGenerator(reportPath));            
+            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath));            
         }
 
 		executionContext.getBeanContext().addObserver(beanTracker);
@@ -231,52 +236,67 @@ public class ModelBuilder {
 
     private class BeanTracker implements BeanContextLifecycleObserver {
 		
-		private List<BeanMetadata> beans = new ArrayList<BeanMetadata>();
-        private Map<Class<?>, Map<String, BeanWriter>> beanWriterMap;
+		private final List<BeanMetadata> beans = new ArrayList<>();
+        private final Map<Class<?>, Map<String, BeanWriter>> beanWriterMap;
 
         public BeanTracker(Map<Class<?>, Map<String, BeanWriter>> beanWriterMap) {
             this.beanWriterMap = beanWriterMap;
         }
 
         public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
-			if(event.getLifecycle() == BeanLifecycle.ADD || event.getLifecycle() == BeanLifecycle.CHANGE) {
+            if (event.getLifecycle() == BeanLifecycle.ADD || event.getLifecycle() == BeanLifecycle.CHANGE) {
                 Object bean = event.getBean();
                 BeanMetadata beanMetadata = new BeanMetadata(bean);
                 Map<String, BeanWriter> beanWriters = beanWriterMap.get(bean.getClass());
                 Fragment source = event.getSource();
 
-                if(source != null) {
-                    String namespaceURI = source.getNamespaceURI();
+                if (source != null) {
+                    String namespaceURI = null;
+                    if (source instanceof NodeFragment) {
+                        Node node = (Node) source.unwrap();
 
-                    beanMetadata.setNamespace(namespaceURI);
-                    beanMetadata.setNamespacePrefix(source.getPrefix());
-                    beanMetadata.setCreateSource(source);
-                    beans.add(beanMetadata);
+                        namespaceURI = node.getNamespaceURI();
 
-                    if(source.isDOMElement()) {
-                        beanMetadata.setPreText(UnknownElementDataReaper.getPreText(source.getDOMElement(), beans, event));
-                    } else {
+                        beanMetadata.setNamespace(namespaceURI);
+                        beanMetadata.setNamespacePrefix(node.getPrefix());
+                        beanMetadata.setCreateSource(source);
+
+                        beans.add(beanMetadata);
+
+                        beanMetadata.setPreText(UnknownElementDataReaper.getPreText((Element) node, beans));
+                    } else if (source instanceof SAXElementFragment) {
+                        SAXElement saxElement = (SAXElement) source.unwrap();
+
+                        namespaceURI = saxElement.getName().getNamespaceURI();
+
+                        beanMetadata.setNamespace(namespaceURI);
+                        beanMetadata.setNamespacePrefix(saxElement.getName().getPrefix());
+                        beanMetadata.setCreateSource(source);
+
+                        beans.add(beanMetadata);
+
                         // SAX pretext is gathered by an instance of the UnknownElementDataReaper
                     }
 
-                    if(beanWriters != null) {
+                    
+                    if (beanWriters != null) {
                         BeanWriter beanWriter = beanWriters.get(namespaceURI);
 
-                        if(beanWriter != null) {
+                        if (beanWriter != null) {
                             beanMetadata.setWriter(beanWriter);
-                        } else if(LOGGER.isDebugEnabled()) {
+                        } else if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("BeanWriters are configured for Object type '" + bean.getClass() + "', but not for namespace '" + namespaceURI + "'.");
                         }
-                    } else if(LOGGER.isDebugEnabled()) {
+                    } else if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("No BeanWriters configured for Object type '" + bean.getClass() + "'.");
                     }
                 }
-            } else if(event.getLifecycle() == BeanLifecycle.POPULATE) {
+            } else if (event.getLifecycle() == BeanLifecycle.POPULATE) {
                 BeanMetadata beanMetdata = findMetadata(event.getBean());
 
                 beanMetdata.getPopulateSources().add(event.getSource());
             }
-		}
+        }
 
         private BeanMetadata findMetadata(Object bean) {
             for(BeanMetadata metaData : beans) {

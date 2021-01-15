@@ -64,7 +64,7 @@ public class BeanClassLookup implements DOMVisitBefore {
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         // The current config on the stack must be <dmb:writer>...
-        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
         ResourceConfig dmbWriterConfig = extensionContext.getResourceStack().peek();
         if(dmbWriterConfig.getParameterValue("beanClass", String.class) == null) {
             String beanId = dmbWriterConfig.getParameterValue("beanId", String.class);

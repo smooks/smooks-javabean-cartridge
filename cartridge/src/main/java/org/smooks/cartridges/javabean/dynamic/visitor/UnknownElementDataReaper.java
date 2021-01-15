@@ -44,10 +44,12 @@ package org.smooks.cartridges.javabean.dynamic.visitor;
 
 import org.smooks.SmooksException;
 import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
-import org.smooks.delivery.Fragment;
 import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.w3c.dom.*;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -66,7 +68,7 @@ import java.util.Optional;
  */
 public class UnknownElementDataReaper {
 
-    public static String getPreText(Element element, List<BeanMetadata> beanMetadataSet, BeanContextLifecycleEvent event) {
+    public static String getPreText(Element element, List<BeanMetadata> beanMetadataSet) {
         StringWriter serializeWriter = new StringWriter();
         List<Node> toSerializeNodes = new ArrayList<Node>();
         Node current = element;
@@ -82,8 +84,8 @@ public class UnknownElementDataReaper {
                 break;
             }
 
-            if(current instanceof Element) {
-                if(isOnModelSourcePath(new Fragment((Element) current), beanMetadataSet)) {
+            if (current instanceof Element) {
+                if (isOnModelSourcePath(current, beanMetadataSet)) {
                     // The "previous" element is associated with the creation/population of a bean in the
                     // model, so stop here...
                     break;
@@ -126,14 +128,14 @@ public class UnknownElementDataReaper {
         return trimEnd.toString();
     }
 
-    private static boolean isOnModelSourcePath(Fragment fragment, List<BeanMetadata> beanMetadataSet) {
-        for(BeanMetadata beanMetadata : beanMetadataSet) {
-            if(fragment.equals(beanMetadata.getCreateSource())) {
+    private static boolean isOnModelSourcePath(Node node, List<BeanMetadata> beanMetadataSet) {
+        for (BeanMetadata beanMetadata : beanMetadataSet) {
+            if (node.equals(beanMetadata.getCreateSource().unwrap())) {
                 return true;
             }
 
-            for(Fragment populateSource : beanMetadata.getPopulateSources()) {
-                if(fragment.isParentFragment(populateSource)) {
+            for (Fragment populateSourceFragment : beanMetadata.getPopulateSources()) {
+                if (populateSourceFragment instanceof NodeFragment && isEqualOrDescendant((Node) populateSourceFragment.unwrap(), node)) {
                     return true;
                 }
             }
@@ -142,6 +144,17 @@ public class UnknownElementDataReaper {
         return false;
     }
 
+    public static boolean isEqualOrDescendant(Node nodeUnderTest, Node candidateNode) {
+        while (nodeUnderTest != null) {
+            if (nodeUnderTest == candidateNode) {
+                return true;
+            }
+            nodeUnderTest = nodeUnderTest.getParentNode();
+        }
+
+        return false;
+    }
+    
     public static String normalizeLines(String xml) throws IOException {
         StringBuffer stringBuf = new StringBuffer();
         int xmlLength = xml.length();

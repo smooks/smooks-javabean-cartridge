@@ -61,7 +61,7 @@ public abstract class BeanConfigUtil {
     public static final String BEAN_CLASS_CONFIG = "beanClass";
 
     public static ResourceConfig findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
-        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
         List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new ConfigSearch().resource(BeanInstanceCreator.class.getName()).param("beanId", beanId));
 
         if(creatorConfigs.size() > 1) {

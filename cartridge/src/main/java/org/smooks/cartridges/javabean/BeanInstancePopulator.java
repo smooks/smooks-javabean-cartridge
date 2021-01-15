@@ -57,8 +57,8 @@ import org.smooks.converter.factory.PreprocessTypeConverter;
 import org.smooks.converter.factory.TypeConverterFactory;
 import org.smooks.converter.factory.system.StringConverterFactory;
 import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.Fragment;
-import org.smooks.delivery.memento.NodeVisitable;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.memento.TextAccumulatorMemento;
 import org.smooks.delivery.ordering.Consumer;
 import org.smooks.delivery.ordering.Producer;
@@ -79,6 +79,7 @@ import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLook
 import org.smooks.util.ClassUtil;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
@@ -363,7 +364,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
 
         if (isBeanWiring) {
-            bindBeanValue(executionContext, new Fragment(element));
+            bindBeanValue(executionContext, new NodeFragment(element));
         } else if (isAttribute) {
             // Bind attribute (i.e. selectors with '@' prefix) values on the visitBefore...
             bindSaxDataValue(element, executionContext);
@@ -403,16 +404,16 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
             if (isAttribute) {
                 dataString = DomUtils.getAttributeValue(element, valueAttributeName.orElse(null), valueAttributeNS);
             } else {
-                TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
+                TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element), this);
                 executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
                 dataString = textAccumulatorMemento.getText();
             }
         }
 
         if (expressionEvaluator != null) {
-            bindExpressionValue(propertyName, dataString, executionContext, new Fragment(element));
+            bindExpressionValue(propertyName, dataString, executionContext, new NodeFragment(element));
         } else {
-            decodeAndSetPropertyValue(propertyName, dataString, executionContext, new Fragment(element));
+            decodeAndSetPropertyValue(propertyName, dataString, executionContext, new NodeFragment(element));
         }
     }
 
@@ -589,7 +590,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     }
 
     private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
-        return getTypeConverter(executionContext.getDeliveryConfig());
+        return getTypeConverter(executionContext.getContentDeliveryRuntime().getContentDeliveryConfig());
     }
 
     public TypeConverter<? super String, ?> getTypeConverter(ContentDeliveryConfig deliveryConfig) {
@@ -677,11 +678,11 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
         if (!isBeanWiring && !isAttribute && (expressionEvaluator == null || expressionHasDataVariable)) {
-            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
+            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this);
             executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
-            textAccumulatorMemento.accumulateText(element.getTextContent());
+            textAccumulatorMemento.accumulateText(characterData.getTextContent());
             executionContext.getMementoCaretaker().save(textAccumulatorMemento);
         }
     }

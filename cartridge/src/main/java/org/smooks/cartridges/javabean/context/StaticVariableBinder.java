@@ -48,10 +48,12 @@ import org.smooks.cdr.ResourceConfig;
 import org.smooks.cdr.SmooksConfigurationException;
 import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.sax.ng.ElementVisitor;
 import org.smooks.javabean.context.BeanContext;
 import org.smooks.javabean.repository.BeanId;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
@@ -97,7 +99,7 @@ public class StaticVariableBinder implements ElementVisitor {
     
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        bindParamaters(executionContext, new Fragment(element));
+        bindParamaters(executionContext, new NodeFragment(element));
     }
 
     @Override
@@ -138,11 +140,11 @@ public class StaticVariableBinder implements ElementVisitor {
             beanContext.addBean(beanId, params, source);
         }
 
-        params.put(parameter.getName(), parameter.getValue(executionContext.getDeliveryConfig()));
+        params.put(parameter.getName(), parameter.getValue(executionContext.getContentDeliveryRuntime().getContentDeliveryConfig()));
     }
 
     @Override
-    public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+    public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
         
     }
 

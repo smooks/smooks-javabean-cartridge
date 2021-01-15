@@ -260,7 +260,7 @@ public class XMLBinding extends AbstractBinding {
                 if(node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
                     Method getterMethodByProperty = ClassUtil.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
-                    TypeConverter<? super String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getDeliveryConfig());
+                    TypeConverter<? super String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig());
                     TypeConverterFactory<?, ? extends String> xmlBindingTypeFactory = getSmooks().getApplicationContext().getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(getterMethodByProperty.getReturnType(), String.class));
                     if (xmlBindingTypeFactory != null) {
                         TypeConverter<?, ? extends String> xmlBindingTypeConverter = xmlBindingTypeFactory.createTypeConverter();

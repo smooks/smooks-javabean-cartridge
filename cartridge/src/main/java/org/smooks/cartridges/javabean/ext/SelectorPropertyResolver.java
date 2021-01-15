@@ -66,7 +66,7 @@ import javax.xml.namespace.QName;
 public class SelectorPropertyResolver implements DOMVisitBefore {
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
         ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
         resolveSelectorTokens(populatorConfig);
     }
