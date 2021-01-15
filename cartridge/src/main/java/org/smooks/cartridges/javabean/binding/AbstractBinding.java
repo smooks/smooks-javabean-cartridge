@@ -182,7 +182,7 @@ public class AbstractBinding {
         ExecutionContext executionContext = smooks.createExecutionContext();
 
         if (reportPath != null) {
-            executionContext.setEventListener(new HtmlReportGenerator(reportPath));
+            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath));
         }
 
         smooks.filterSource(executionContext, inputSource, javaResult);

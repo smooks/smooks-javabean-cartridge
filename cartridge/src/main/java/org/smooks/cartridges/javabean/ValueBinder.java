@@ -50,8 +50,8 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.converter.TypeConverter;
 import org.smooks.converter.TypeConverterException;
-import org.smooks.delivery.Fragment;
-import org.smooks.delivery.memento.NodeVisitable;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.memento.TextAccumulatorMemento;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.ng.AfterVisitor;
@@ -64,6 +64,7 @@ import org.smooks.javabean.repository.BeanId;
 import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.util.CollectionsUtil;
 import org.smooks.xml.DomUtils;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
@@ -263,16 +264,17 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 	@Override
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 		if (isAttribute) {
-			bindValue(DomUtils.getAttributeValue(element, valueAttributeName.orElse(null)), executionContext, new Fragment(element));
+			bindValue(DomUtils.getAttributeValue(element, valueAttributeName.orElse(null)), executionContext, new NodeFragment(element));
 		}
 	}
 
 	@Override
 	public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
 		if(!isAttribute) {
-			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
+			NodeFragment nodeFragment = new NodeFragment(element);
+			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(nodeFragment, this);
 			executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
-			bindValue(textAccumulatorMemento.getText(), executionContext, new Fragment(element));
+			bindValue(textAccumulatorMemento.getText(), executionContext, nodeFragment);
 		}
 	}
 
@@ -310,7 +312,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 	private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
 		if(typeConverter == null) {
 			@SuppressWarnings("unchecked")
-			List decoders = executionContext.getDeliveryConfig().getObjects("decoder:" + typeAlias);
+			List decoders = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().getObjects("decoder:" + typeAlias);
 
 	        if (decoders == null || decoders.isEmpty()) {
 	            typeConverter = appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias)).createTypeConverter();
@@ -324,10 +326,10 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
     }
 
 	@Override
-	public void visitChildText(Element element, ExecutionContext executionContext) throws SmooksException {
+	public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
 		if (!isAttribute) {
-			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeVisitable(element), this);
-			textAccumulatorMemento.accumulateText(element.getTextContent());
+			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this);
+			textAccumulatorMemento.accumulateText(characterData.getTextContent());
 			executionContext.getMementoCaretaker().save(textAccumulatorMemento);
 		}
 	}

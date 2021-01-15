@@ -44,6 +44,7 @@ package org.smooks.cartridges.javabean.dynamic.visitor;
 
 import org.smooks.SmooksException;
 import org.smooks.container.ExecutionContext;
+import org.smooks.container.TypedKey;
 import org.smooks.delivery.sax.SAXUtil;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
 import org.w3c.dom.Attr;
@@ -63,6 +64,8 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class NamespaceReaper implements BeforeVisitor {
 
+    private static final TypedKey<Map<String, String>> NAMESPACE_REAPER_TYPED_KEY = new TypedKey<>();
+    
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         Map<String, String> namespacePrefixMappings = getNamespacePrefixMappings(executionContext);
@@ -90,11 +93,11 @@ public class NamespaceReaper implements BeforeVisitor {
     }
 
     public static Map<String, String> getNamespacePrefixMappings(ExecutionContext executionContext) {
-        Map<String, String> namespacePrefixMappings = executionContext.getAttribute(NamespaceReaper.class);
+        Map<String, String> namespacePrefixMappings = executionContext.get(NAMESPACE_REAPER_TYPED_KEY);
 
         if (namespacePrefixMappings == null) {
             namespacePrefixMappings = new LinkedHashMap<>();
-            executionContext.setAttribute(NamespaceReaper.class, namespacePrefixMappings);
+            executionContext.put(NAMESPACE_REAPER_TYPED_KEY, namespacePrefixMappings);
         }
 
         return namespacePrefixMappings;

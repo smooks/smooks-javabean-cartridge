@@ -58,7 +58,8 @@ import org.smooks.container.ApplicationContext;
 import org.smooks.container.ExecutionContext;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleEvent;
 import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleListener;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.Fragment;
+import org.smooks.delivery.fragment.NodeFragment;
 import org.smooks.delivery.ordering.Producer;
 import org.smooks.delivery.sax.ng.AfterVisitor;
 import org.smooks.delivery.sax.ng.BeforeVisitor;
@@ -263,7 +264,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        createAndSetBean(executionContext, new Fragment(element));
+        createAndSetBean(executionContext, new NodeFragment(element));
     }
 
     /* (non-Javadoc)
@@ -271,7 +272,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
      */
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
-        visitAfter(executionContext, new Fragment(element));
+        visitAfter(executionContext, new NodeFragment(element));
     }
 
     public void visitAfter(ExecutionContext executionContext, Fragment source) {

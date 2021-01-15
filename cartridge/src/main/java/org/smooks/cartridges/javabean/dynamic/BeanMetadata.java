@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean.dynamic;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
-import org.smooks.delivery.Fragment;
+import org.smooks.delivery.fragment.Fragment;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

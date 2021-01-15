@@ -66,7 +66,7 @@ public class InitValExpressionSetter implements DOMVisitBefore {
 		String initValExpression = DomUtils.getAttributeValue(element, initValAttrib);
 		
 		if(initValExpression != null) {
-	        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+	        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
 			ResourceConfig creatorConfig = extensionContext.getResourceByName(BeanInstanceCreator.class.getName());
 			String propertyName = DomUtils.getAttributeValue(element, "property");
 	        

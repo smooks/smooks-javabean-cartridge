@@ -53,10 +53,6 @@ import org.smooks.cartridges.javabean.factory.MVELFactory;
 import org.smooks.container.ExecutionContext;
 import org.smooks.converter.factory.system.StringToDoubleConverterFactory;
 import org.smooks.converter.factory.system.StringToIntegerConverterFactory;
-import org.smooks.event.ExecutionEvent;
-import org.smooks.event.ExecutionEventListener;
-import org.smooks.event.types.ElementPresentEvent;
-import org.smooks.event.types.ElementVisitEvent;
 import org.smooks.payload.JavaResult;
 import org.xml.sax.SAXException;
 
@@ -276,7 +272,6 @@ public class ProgrammaticBeanConfigTest {
         JavaResult result = new JavaResult();
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        //execContext.setEventListener(new ExecListener());
         smooks.filterSource(execContext, new StreamSource(getClass().getResourceAsStream("order-01.xml")), result);
 
         Order order = (Order) result.getBean("order");
@@ -285,15 +280,5 @@ public class ProgrammaticBeanConfigTest {
         assertEquals("Order:" + identity + "[header[null]\n" +
                      "orderItems[null]\n" +
                      "norderItemsArray[[{productId: 111, quantity: null, price: null}, {productId: 222, quantity: null, price: null}]]]", order.toString());
-    }
-
-    private class ExecListener implements ExecutionEventListener {
-        public void onEvent(ExecutionEvent event) {
-            if(event instanceof ElementPresentEvent || event instanceof ElementVisitEvent) {
-                return;
-            }
-
-            System.out.println(event);
-        }
     }
 }

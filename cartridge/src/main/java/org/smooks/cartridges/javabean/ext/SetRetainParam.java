@@ -65,7 +65,7 @@ public class SetRetainParam implements DOMVisitBefore {
 	 * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.container.ExecutionContext)
 	 */
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = ExtensionContext.getExtensionContext(executionContext);
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
         
         // The current config on the stack must be a <jb:bean>...
 		ResourceConfig beanConfig = extensionContext.getResourceStack().peek();
