@@ -683,7 +683,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
             TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this);
             executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
             textAccumulatorMemento.accumulateText(characterData.getTextContent());
-            executionContext.getMementoCaretaker().save(textAccumulatorMemento);
+            executionContext.getMementoCaretaker().capture(textAccumulatorMemento);
         }
     }
 
