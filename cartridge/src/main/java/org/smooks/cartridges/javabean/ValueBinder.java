@@ -330,7 +330,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 		if (!isAttribute) {
 			TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this);
 			textAccumulatorMemento.accumulateText(characterData.getTextContent());
-			executionContext.getMementoCaretaker().save(textAccumulatorMemento);
+			executionContext.getMementoCaretaker().capture(textAccumulatorMemento);
 		}
 	}
 
