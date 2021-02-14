@@ -239,7 +239,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     }
 
     public void handle(ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigurationException {
-        if (event == ContentDeliveryConfigBuilderLifecycleEvent.CONFIG_BUILDER_CREATED) {
+        if (event == ContentDeliveryConfigBuilderLifecycleEvent.CONTENT_DELIVERY_BUILDER_CREATED) {
             ModelSet.build(appContext);
         }
     }
