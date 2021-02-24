@@ -42,12 +42,11 @@
  */
 package org.smooks.cartridges.javabean.lifecycle;
 
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.delivery.sax.ng.SaxNgVisitor;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.lifecycle.ExecutionLifecycleCleanable;
-import org.smooks.util.CollectionsUtil;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.support.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;

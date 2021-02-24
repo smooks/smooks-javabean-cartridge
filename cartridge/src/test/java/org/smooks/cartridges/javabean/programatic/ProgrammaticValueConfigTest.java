@@ -45,9 +45,9 @@ package org.smooks.cartridges.javabean.programatic;
 import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Value;
-import org.smooks.converter.factory.system.BooleanConverterFactory;
-import org.smooks.converter.factory.system.StringToIntegerConverterFactory;
-import org.smooks.payload.JavaResult;
+import org.smooks.engine.converter.BooleanConverterFactory;
+import org.smooks.engine.converter.StringToIntegerConverterFactory;
+import org.smooks.io.payload.JavaResult;
 
 import javax.xml.transform.stream.StreamSource;
 

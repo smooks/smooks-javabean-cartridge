@@ -42,16 +42,15 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
+import org.junit.Test;
+import org.smooks.api.ExecutionContext;
+import org.smooks.tck.MockExecutionContext;
+
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.smooks.cartridges.javabean.factory.Factory;
-import org.smooks.cartridges.javabean.factory.MVELFactory;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.MockExecutionContext;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
@@ -59,7 +58,7 @@ import org.smooks.container.MockExecutionContext;
  */
 public class MVELFactoryTest {
 
-        @Test
+	@Test
 	public void test_create() throws Exception {
 
 		ExecutionContext context = new MockExecutionContext();

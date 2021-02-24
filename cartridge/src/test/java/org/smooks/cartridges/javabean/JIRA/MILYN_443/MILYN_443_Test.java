@@ -43,10 +43,9 @@
 package org.smooks.cartridges.javabean.JIRA.MILYN_443;
 
 import org.junit.Test;
-import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Bean;
-import org.smooks.payload.JavaResult;
+import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;

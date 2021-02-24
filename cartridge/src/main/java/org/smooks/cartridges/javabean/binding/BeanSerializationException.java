@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.binding;
 
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksException;
 
 /**
  * Bean Serialization exception.

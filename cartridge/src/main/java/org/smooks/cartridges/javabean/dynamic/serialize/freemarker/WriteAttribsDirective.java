@@ -46,7 +46,7 @@ import freemarker.core.Environment;
 import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 import org.smooks.xml.XmlUtil;
 
 import java.io.IOException;

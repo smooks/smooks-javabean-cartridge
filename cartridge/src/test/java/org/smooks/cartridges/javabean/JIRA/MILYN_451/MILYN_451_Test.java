@@ -42,19 +42,17 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_451;
 
-import java.io.IOException;
-
-import javax.xml.transform.stream.StreamSource;
-
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.payload.JavaResult;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

@@ -43,10 +43,10 @@
 package org.smooks.cartridges.javabean.ext;
 
 import org.apache.commons.lang.StringUtils;
-import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
 
 /**
@@ -56,13 +56,13 @@ import org.w3c.dom.Element;
 public class WireOnElementChecker implements DOMVisitBefore {
 
 	/* (non-Javadoc)
-	 * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.container.ExecutionContext)
+	 * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.api.ExecutionContext)
 	 */
 	public void visitBefore(Element element, ExecutionContext executionContext)
 			throws SmooksException {
 
 		if(!isCreateOnElementSet(element) && !isWireOnElementSet(element)) {
-			throw new SmooksConfigurationException("The bindings attribute 'createOnElement' and wiring attribute 'wireOnElement' " +
+			throw new SmooksConfigException("The bindings attribute 'createOnElement' and wiring attribute 'wireOnElement' " +
 					"are both not set. One of them must at least be set. If the result of this binding should be a new populated Object " +
 					"then you need to set the 'createOnElement' bindings attribute. If you want to update an existing object in the bean " +
 					"context then you must set the 'wireOnElement' attribute.");

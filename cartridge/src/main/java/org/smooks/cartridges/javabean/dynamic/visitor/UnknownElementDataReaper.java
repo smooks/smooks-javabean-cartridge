@@ -42,11 +42,11 @@
  */
 package org.smooks.cartridges.javabean.dynamic.visitor;
 
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
-import org.smooks.delivery.dom.serialize.DefaultDOMSerializerVisitor;
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.dom.serialize.DefaultDOMSerializerVisitor;
+import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -134,7 +134,7 @@ public class UnknownElementDataReaper {
                 return true;
             }
 
-            for (Fragment populateSourceFragment : beanMetadata.getPopulateSources()) {
+            for (Fragment<?> populateSourceFragment : beanMetadata.getPopulateSources()) {
                 if (populateSourceFragment instanceof NodeFragment && isEqualOrDescendant((Node) populateSourceFragment.unwrap(), node)) {
                     return true;
                 }

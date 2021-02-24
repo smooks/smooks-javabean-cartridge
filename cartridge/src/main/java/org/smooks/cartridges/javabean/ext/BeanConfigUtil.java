@@ -42,12 +42,12 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
-import org.smooks.cdr.ConfigSearch;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.extension.ExtensionContext;
-import org.smooks.container.ExecutionContext;
+import org.smooks.engine.resource.config.DefaultConfigSearch;
+import org.smooks.engine.resource.extension.ExtensionContext;
 
 import java.util.List;
 
@@ -62,10 +62,10 @@ public abstract class BeanConfigUtil {
 
     public static ResourceConfig findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-        List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new ConfigSearch().resource(BeanInstanceCreator.class.getName()).param("beanId", beanId));
+        List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new DefaultConfigSearch().resource(BeanInstanceCreator.class.getName()).param("beanId", beanId));
 
         if(creatorConfigs.size() > 1) {
-            throw new SmooksConfigurationException("Multiple <jb:bean> configurations exist for beanId '" + beanId + "'.  'beanId' values must be unique.");
+            throw new SmooksConfigException("Multiple <jb:bean> configurations exist for beanId '" + beanId + "'.  'beanId' values must be unique.");
         }
 
         return creatorConfigs.get(0);

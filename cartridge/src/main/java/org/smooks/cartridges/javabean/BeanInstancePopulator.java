@@ -44,41 +44,42 @@ package org.smooks.cartridges.javabean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.SmooksException;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.bean.context.BeanIdStore;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
+import org.smooks.api.bean.lifecycle.BeanLifecycle;
+import org.smooks.api.bean.repository.BeanId;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterException;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.delivery.ContentDeliveryConfig;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.delivery.ordering.Consumer;
+import org.smooks.api.delivery.ordering.Producer;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.VisitAfterReport;
+import org.smooks.api.resource.visitor.VisitBeforeReport;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
 import org.smooks.cartridges.javabean.observers.BeanWiringObserver;
 import org.smooks.cartridges.javabean.observers.ListToArrayChangeObserver;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.converter.TypeConverter;
-import org.smooks.converter.TypeConverterException;
-import org.smooks.converter.factory.PreprocessTypeConverter;
-import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.converter.factory.system.StringConverterFactory;
-import org.smooks.delivery.ContentDeliveryConfig;
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.memento.TextAccumulatorMemento;
-import org.smooks.delivery.ordering.Consumer;
-import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.ng.AfterVisitor;
-import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.delivery.sax.ng.ChildrenVisitor;
-import org.smooks.event.report.annotation.VisitAfterReport;
-import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.expression.MVELExpressionEvaluator;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.context.BeanIdStore;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.smooks.javabean.lifecycle.BeanLifecycle;
-import org.smooks.javabean.repository.BeanId;
-import org.smooks.registry.lookup.NamespaceManagerLookup;
-import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
-import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.util.ClassUtil;
-import org.smooks.util.CollectionsUtil;
-import org.smooks.xml.DomUtils;
+import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
+import org.smooks.engine.converter.PreprocessTypeConverter;
+import org.smooks.engine.converter.StringConverterFactory;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.expression.MVELExpressionEvaluator;
+import org.smooks.engine.lookup.NamespaceManagerLookup;
+import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
+import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.engine.memento.TextAccumulatorMemento;
+import org.smooks.support.ClassUtil;
+import org.smooks.support.CollectionsUtil;
+import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
@@ -254,10 +255,10 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     /**
      * Set the resource configuration on the bean populator.
      *
-     * @throws SmooksConfigurationException Incorrectly configured resource.
+     * @throws SmooksConfigException Incorrectly configured resource.
      */
     @PostConstruct
-    public void postConstruct() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigException {
         buildId();
 
         beanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(beanIdName, appContext);
@@ -277,7 +278,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
                 // Default the property name if it's a wiring...
                 property = Optional.of(wireBeanIdName.get());
             } else if (beanRuntimeInfo.getClassification() == BeanRuntimeInfo.Classification.NON_COLLECTION) {
-                throw new SmooksConfigurationException("Binding configuration for beanIdName='" + beanIdName + "' must contain " +
+                throw new SmooksConfigException("Binding configuration for beanIdName='" + beanIdName + "' must contain " +
                         "either a 'property' or 'setterMethod' attribute definition, unless the target bean is a Collection/Array." +
                         "  Bean is type '" + beanRuntimeInfo.getPopulateType().getName() + "'.");
             }
@@ -510,7 +511,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
                 ((Collection) bean).add(dataObject);
             } else {
                 if (setterMethod.isPresent()) {
-                    throw new SmooksConfigurationException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + setterMethod.get() + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
+                    throw new SmooksConfigException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + setterMethod.get() + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
                 } else if (property.isPresent()) {
                     boolean throwException = true;
 
@@ -524,17 +525,17 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
                     }
 
                     if (throwException) {
-                        throw new SmooksConfigurationException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + ClassUtil.toSetterName(property.get()) + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
+                        throw new SmooksConfigException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + ClassUtil.toSetterName(property.get()) + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
                     }
                 }
             }
 
             if (notifyPopulate) {
-                BeanContextLifecycleEvent event = new BeanContextLifecycleEvent(executionContext, source, BeanLifecycle.POPULATE, beanId, bean);
+                BeanContextLifecycleEvent event = new DefaultBeanContextLifecycleEvent(executionContext, source, BeanLifecycle.POPULATE, beanId, bean);
                 executionContext.getBeanContext().notifyObservers(event);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SmooksConfigurationException("Error invoking bean setter method [" + ClassUtil.toSetterName(property.orElse(null)) + "] on bean instance class type [" + bean.getClass() + "].", e);
+            throw new SmooksConfigException("Error invoking bean setter method [" + ClassUtil.toSetterName(property.orElse(null)) + "] on bean instance class type [" + bean.getClass() + "].", e);
         }
     }
 

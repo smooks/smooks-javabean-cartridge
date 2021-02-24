@@ -42,11 +42,11 @@
  */
 package org.smooks.cartridges.javabean.binding.xml;
 
+import org.smooks.api.resource.config.xpath.SelectorPath;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.get.Getter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
-import org.smooks.cdr.xpath.SelectorPath;
-import org.smooks.cdr.xpath.SelectorStep;
 import org.smooks.xml.XmlUtil;
 
 import javax.xml.namespace.QName;

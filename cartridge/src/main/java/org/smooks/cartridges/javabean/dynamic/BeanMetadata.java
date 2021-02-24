@@ -42,10 +42,10 @@
  */
 package org.smooks.cartridges.javabean.dynamic;
 
+import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
-import org.smooks.delivery.fragment.Fragment;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,7 +65,7 @@ public class BeanMetadata {
 	private String namespace;
     private String namespacePrefix;
     private Fragment createSource;
-    private List<Fragment> populateSources = new ArrayList<Fragment>();
+    private List<Fragment> populateSources = new ArrayList<>();
     private String preText;
     private Map<Object, Object> properties;
     private BeanWriter writer;

@@ -43,15 +43,15 @@
 package org.smooks.cartridges.javabean.lifecycle;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.FilterSettings;
-import org.smooks.StreamFilterType;
-import org.smooks.payload.JavaResult;
-import org.smooks.payload.StringSource;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.io.payload.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>

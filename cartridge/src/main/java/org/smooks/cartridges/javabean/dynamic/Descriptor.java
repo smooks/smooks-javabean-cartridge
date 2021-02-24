@@ -43,20 +43,20 @@
 package org.smooks.cartridges.javabean.dynamic;
 
 import org.smooks.Smooks;
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.dynamic.ext.BeanWriterFactory;
 import org.smooks.cartridges.javabean.dynamic.resolvers.AbstractResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.ResourceConfigList;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.XMLConfigDigester;
-import org.smooks.cdr.xpath.SelectorStep;
-import org.smooks.container.standalone.DefaultApplicationContextBuilder;
-import org.smooks.util.ClassUtil;
+import org.smooks.engine.DefaultApplicationContextBuilder;
+import org.smooks.engine.resource.config.XMLConfigDigester;
+import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -227,7 +227,7 @@ public class Descriptor {
         return xsdSources;
     }
 
-    private Smooks newSmooksInstance(List<Properties> descriptors, EntityResolver bindingResolver) throws SAXException, IOException, SmooksConfigurationException {
+    private Smooks newSmooksInstance(List<Properties> descriptors, EntityResolver bindingResolver) throws SAXException, IOException {
         AssertArgument.isNotNullAndNotEmpty(descriptors, "descriptors");
         AssertArgument.isNotNull(bindingResolver, "bindingResolver");
 
@@ -242,12 +242,12 @@ public class Descriptor {
 
             if(bindingSource != null) {
                 if(bindingSource.getByteStream() != null) {
-                    ResourceConfigList resourceConfigList;
+                    ResourceConfigSeq resourceConfigSeq;
 
                     try {
-                        resourceConfigList = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
-                        for(int i = 0; i < resourceConfigList.size(); i++) {
-                            ResourceConfig config = resourceConfigList.get(i);
+                        resourceConfigSeq = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
+                        for(int i = 0; i < resourceConfigSeq.size(); i++) {
+                            ResourceConfig config = resourceConfigSeq.get(i);
                             
                             if(config.getSelectorPath().getSelectorNamespaceURI() == null) {
                                 SelectorStep selectorStep = config.getSelectorPath().getTargetSelectorStep();
@@ -260,10 +260,10 @@ public class Descriptor {
                             }
                         }
                     } catch (URISyntaxException e) {
-                        throw new SmooksConfigurationException("Unexpected configuration digest exception.", e);
+                        throw new SmooksConfigException("Unexpected configuration digest exception.", e);
                     }
 
-                    smooks.getApplicationContext().getRegistry().registerResourceConfigList(resourceConfigList);
+                    smooks.getApplicationContext().getRegistry().registerResourceConfigList(resourceConfigSeq);
                 } else {
                     throw new SAXException("Binding configuration resolver '" + bindingResolver.getClass().getName() + "' failed to resolve binding configuration for namespace '" + namespace + "'.  Resolver must return an InputStream in the InputSource.");
                 }
@@ -306,7 +306,7 @@ public class Descriptor {
                 String namespaceId = getNamespaceId(namespaceUri, descriptor);
 
                 if(namespaceId == null) {
-                    throw new SmooksConfigurationException("Unable to resolve namespace ID for namespace URI '" + namespaceUri + "'.");
+                    throw new SmooksConfigException("Unable to resolve namespace ID for namespace URI '" + namespaceUri + "'.");
                 }
 
                 String namespaceOrder = descriptor.getProperty(namespaceId + DESCRIPTOR_ORDER_POSTFIX, Integer.toString(Integer.MAX_VALUE)).trim();
@@ -315,7 +315,7 @@ public class Descriptor {
                 try {
                     namespace.order = Integer.parseInt(namespaceOrder);
                 } catch(NumberFormatException e) {
-                    throw new SmooksConfigurationException("Invalid value for descriptor config value '" + namespaceId + DESCRIPTOR_ORDER_POSTFIX + "'.  Must be a valid Integer value.");
+                    throw new SmooksConfigException("Invalid value for descriptor config value '" + namespaceId + DESCRIPTOR_ORDER_POSTFIX + "'.  Must be a valid Integer value.");
                 }
 
                 namespaces.add(namespace);

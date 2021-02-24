@@ -43,8 +43,10 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.smooks.container.MockApplicationContext;
+import org.smooks.tck.MockApplicationContext;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * 

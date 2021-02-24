@@ -42,20 +42,21 @@
  */
 package org.smooks.cartridges.javabean.binding.model;
 
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.delivery.ContentHandlerFactory;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cdr.ParameterAccessor;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.ResourceConfigList;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.xpath.SelectorPath;
-import org.smooks.container.ApplicationContext;
-import org.smooks.converter.TypeConverter;
-import org.smooks.delivery.ContentHandlerFactory;
-import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.registry.lookup.UserDefinedResourceConfigListLookup;
-import org.smooks.util.DollarBraceDecoder;
-import org.smooks.xml.NamespaceManager;
+import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
+import org.smooks.engine.lookup.UserDefinedResourceConfigListLookup;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.xpath.DefaultSelectorPath;
+import org.smooks.engine.xml.NamespaceManager;
+import org.smooks.support.DollarBraceDecoder;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
@@ -92,7 +93,7 @@ public class ModelSet {
      */
     private Boolean isBindingOnlyConfig;
 
-    private ModelSet(ResourceConfigList userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigurationException {
+    private ModelSet(ResourceConfigSeq userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigException {
         createBaseBeanMap(userConfigList, javaContentHandlerFactory);
         createExpandedModels();
         resolveModelSelectors(userConfigList);
@@ -119,12 +120,12 @@ public class ModelSet {
         return isBindingOnlyConfig;
     }
 
-    private void createBaseBeanMap(final ResourceConfigList smooksResourceConfigurationList, final ContentHandlerFactory<?> contentHandlerFactory) {
-        for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-            final ResourceConfig smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
+    private void createBaseBeanMap(final ResourceConfigSeq resourceConfigList, final ContentHandlerFactory<?> contentHandlerFactory) {
+        for (int i = 0; i < resourceConfigList.size(); i++) {
+            final ResourceConfig resourceConfig = resourceConfigList.get(i);
             final Object javaResource;
-            if (smooksResourceConfiguration.isJavaResource()) {
-                javaResource = contentHandlerFactory.create(smooksResourceConfiguration);
+            if (resourceConfig.isJavaResource()) {
+                javaResource = contentHandlerFactory.create(resourceConfig);
             } else {
                 javaResource = null;
             }
@@ -143,7 +144,7 @@ public class ModelSet {
                 Bean bean = baseBeans.get(beanPopulator.getBeanId());
 
                 if (bean == null) {
-                    throw new SmooksConfigurationException("Unexpected binding configuration exception.  Unknown parent beanId '' for binding configuration.");
+                    throw new SmooksConfigException("Unexpected binding configuration exception.  Unknown parent beanId '' for binding configuration.");
                 }
 
                 if (beanPopulator.isBeanWiring()) {
@@ -151,7 +152,7 @@ public class ModelSet {
                 } else {
                     bean.getBindings().add(new DataBinding(beanPopulator));
                 }
-            } else if (isNonBindingResource(javaResource) && !isGlobalParamsConfig(smooksResourceConfiguration)) {
+            } else if (isNonBindingResource(javaResource) && !isGlobalParamsConfig(resourceConfig)) {
                 // The user has configured something other than a bean binding config.
                 isBindingOnlyConfig = false;
             }
@@ -181,7 +182,7 @@ public class ModelSet {
         }
     }
 
-    private void resolveModelSelectors(ResourceConfigList userConfigList) {
+    private void resolveModelSelectors(ResourceConfigSeq userConfigList) {
         // Do the beans first...
         for(Bean model : models.values()) {
             resolveModelSelectors(model);
@@ -230,14 +231,14 @@ public class ModelSet {
             if(bean != null) {
                 resourceConfiguration.setSelectorPath(concat(bean.getConfig().getSelectorPath(), selectorPath));
             } else if(failOnMissingBean) {
-                throw new SmooksConfigurationException("Invalid selector '" + selectorPath.toString() + "'.  Unknown beanId '" + beanId + "'.");
+                throw new SmooksConfigException("Invalid selector '" + selectorPath.toString() + "'.  Unknown beanId '" + beanId + "'.");
             }
 
         }
     }
 
     private SelectorPath concat(SelectorPath context, SelectorPath beanSelectorPath) {
-        SelectorPath newSelectorPath = new SelectorPath();
+        SelectorPath newSelectorPath = new DefaultSelectorPath();
         newSelectorPath.addAll(Stream.concat(context.stream(), beanSelectorPath.subList(1, beanSelectorPath.size()).stream()).collect(Collectors.toList()));
         
         return newSelectorPath;
@@ -245,7 +246,7 @@ public class ModelSet {
 
     public static void build(ApplicationContext appContext) {
         ModelSet modelSet = get(appContext);
-        if(modelSet == null) {
+        if (modelSet == null) {
             modelSet = new ModelSet(appContext.getRegistry().lookup(new UserDefinedResourceConfigListLookup(appContext.getRegistry())), appContext.getRegistry().lookup(new ContentHandlerFactoryLookup("class")));
             appContext.getRegistry().registerObject(ModelSet.class, modelSet);
         }

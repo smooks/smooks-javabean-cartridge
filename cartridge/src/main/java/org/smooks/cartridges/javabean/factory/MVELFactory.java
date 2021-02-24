@@ -43,8 +43,8 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.smooks.container.ExecutionContext;
-import org.smooks.javabean.expression.BeanMapExpressionEvaluator;
+import org.smooks.api.ExecutionContext;
+import org.smooks.cartridges.javabean.BeanMapExpressionEvaluator;
 
 /**
  * The MVELFactory uses MVEL to create the objects using a MVEL expression.

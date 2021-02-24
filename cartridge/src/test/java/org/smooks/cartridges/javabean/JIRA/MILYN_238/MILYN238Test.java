@@ -43,10 +43,10 @@
 package org.smooks.cartridges.javabean.JIRA.MILYN_238;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.smooks.delivery.sax.TrackedStringWriter;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-238

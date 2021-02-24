@@ -44,9 +44,9 @@ package org.smooks.cartridges.javabean.extendedconfig13;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
-import org.smooks.payload.JavaResult;
-import org.smooks.util.ClassUtil;
+import org.smooks.api.ExecutionContext;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.support.ClassUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;

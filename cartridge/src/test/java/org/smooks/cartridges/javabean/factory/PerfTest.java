@@ -43,9 +43,8 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.junit.Test;
-
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.MockExecutionContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.tck.MockExecutionContext;
 
 import java.lang.reflect.InvocationTargetException;
 

@@ -42,10 +42,10 @@
  */
 package org.smooks.cartridges.javabean.binding.xml;
 
+import org.smooks.api.converter.TypeConverter;
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.get.Getter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
-import org.smooks.converter.TypeConverter;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;

@@ -42,15 +42,15 @@
  */
 package org.smooks.cartridges.javabean.dynamic.resolvers;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
-
 import org.smooks.cartridges.javabean.dynamic.Descriptor;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Abstract descriptor resource resolver. 

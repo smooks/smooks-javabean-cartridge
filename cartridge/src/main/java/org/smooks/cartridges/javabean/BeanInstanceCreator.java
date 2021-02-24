@@ -45,33 +45,33 @@ package org.smooks.cartridges.javabean;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.SmooksException;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.bean.lifecycle.BeanLifecycle;
+import org.smooks.api.bean.repository.BeanId;
+import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleEvent;
+import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleListener;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.delivery.ordering.Producer;
+import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.resource.config.Parameter;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.VisitAfterReport;
+import org.smooks.api.resource.visitor.VisitBeforeReport;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.binding.model.ModelSet;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
 import org.smooks.cartridges.javabean.factory.Factory;
 import org.smooks.cartridges.javabean.factory.FactoryDefinitionParser.FactoryDefinitionParserFactory;
-import org.smooks.cdr.Parameter;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleEvent;
-import org.smooks.delivery.ContentDeliveryConfigBuilderLifecycleListener;
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.ng.AfterVisitor;
-import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.event.report.annotation.VisitAfterReport;
-import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.expression.MVELExpressionEvaluator;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.smooks.javabean.lifecycle.BeanLifecycle;
-import org.smooks.javabean.repository.BeanId;
-import org.smooks.lifecycle.VisitLifecycleCleanable;
-import org.smooks.util.CollectionsUtil;
+import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.expression.MVELExpressionEvaluator;
+import org.smooks.support.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import javax.annotation.PostConstruct;
@@ -178,10 +178,10 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     /**
      * Set the resource configuration on the bean populator.
      *
-     * @throws SmooksConfigurationException Incorrectly configured resource.
+     * @throws org.smooks.api.SmooksConfigException Incorrectly configured resource.
      */
     @PostConstruct
-    public void postConstruct() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigException {
         buildId();
 
         beanId = appContext.getBeanIdStore().register(beanIdName);
@@ -217,7 +217,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         if (factory == null) {
             checkForDefaultConstructor();
         } else if (beanRuntimeInfo.getClassification() == BeanRuntimeInfo.Classification.ARRAY_COLLECTION) {
-            throw new SmooksConfigurationException("Using a factory with an array is not supported");
+            throw new SmooksConfigException("Using a factory with an array is not supported");
         }
 
         if (LOGGER.isDebugEnabled()) {
@@ -238,7 +238,8 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         }
     }
 
-    public void handle(ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigurationException {
+    @Override
+    public void handle(ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigException {
         if (event == ContentDeliveryConfigBuilderLifecycleEvent.CONTENT_DELIVERY_BUILDER_CREATED) {
             ModelSet.build(appContext);
         }
@@ -268,7 +269,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     }
 
     /* (non-Javadoc)
-     * @see org.smooks.delivery.sax.SAXVisitAfter#visitAfter(org.smooks.delivery.sax.SAXElement, org.smooks.container.ExecutionContext)
+     * @see org.smooks.delivery.sax.SAXVisitAfter#visitAfter(org.smooks.delivery.sax.SAXElement, org.smooks.api.ExecutionContext)
      */
     @Override
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
@@ -308,8 +309,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
 
         bean = createBeanInstance(executionContext);
 
-        executionContext.getBeanContext().notifyObservers(new BeanContextLifecycleEvent(executionContext,
-                source, BeanLifecycle.START_FRAGMENT, beanId, bean));
+        executionContext.getBeanContext().notifyObservers(new DefaultBeanContextLifecycleEvent(executionContext, source, BeanLifecycle.START_FRAGMENT, beanId, bean));
 
         if (initValsExpression != null) {
             initValsExpression.exec(bean);
@@ -336,13 +336,13 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
             try {
                 bean = beanRuntimeInfo.getPopulateType().newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                throw new SmooksConfigurationException("Unable to create bean instance [" + beanIdName + ":" + beanRuntimeInfo.getPopulateType().getName() + "].", e);
+                throw new SmooksConfigException("Unable to create bean instance [" + beanIdName + ":" + beanRuntimeInfo.getPopulateType().getName() + "].", e);
             }
         } else {
             try {
                 bean = factory.create(executionContext);
             } catch (RuntimeException e) {
-                throw new SmooksConfigurationException("The factory was unable to create the bean instance [" + beanIdName + "] using the factory '" + factory + "'.", e);
+                throw new SmooksConfigException("The factory was unable to create the bean instance [" + beanIdName + "] using the factory '" + factory + "'.", e);
             }
         }
 
@@ -377,7 +377,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         try {
             beanRuntimeInfo.getPopulateType().getConstructor();
         } catch (NoSuchMethodException e) {
-            throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + beanRuntimeInfo.getPopulateType().getName() + " doesn't have a public default constructor.");
+            throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + beanRuntimeInfo.getPopulateType().getName() + " doesn't have a public default constructor.");
         }
     }
 
@@ -386,8 +386,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         BeanContext beanContext = executionContext.getBeanContext();
         Object bean = beanContext.getBean(beanId);
 
-        beanContext.notifyObservers(new BeanContextLifecycleEvent(executionContext,
-                fragment, BeanLifecycle.END_FRAGMENT, beanId, bean));
+        beanContext.notifyObservers(new DefaultBeanContextLifecycleEvent(executionContext, fragment, BeanLifecycle.END_FRAGMENT, beanId, bean));
 
         if (!retain) {
             beanContext.removeBean(beanId, null);

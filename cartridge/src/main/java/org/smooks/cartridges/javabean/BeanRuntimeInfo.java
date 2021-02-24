@@ -42,9 +42,9 @@
  */
 package org.smooks.cartridges.javabean;
 
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ApplicationContext;
-import org.smooks.util.ClassUtil;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.support.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public class BeanRuntimeInfo {
         BeanRuntimeInfo existingBeanConfig = runtimeInfoMap.get(beanId);
 
         if(existingBeanConfig != null && !beanRuntimeInfo.equals(existingBeanConfig)) {
-            throw new SmooksConfigurationException("Multiple configurations present with beanId='" + beanId + "', but the bean runtime infos are not equal i.e bean classes etc are different.  Use a different beanId and the 'setOnMethod' config if needed.");
+            throw new SmooksConfigException("Multiple configurations present with beanId='" + beanId + "', but the bean runtime infos are not equal i.e bean classes etc are different.  Use a different beanId and the 'setOnMethod' config if needed.");
         }
 
         runtimeInfoMap.put(beanId, beanRuntimeInfo);
@@ -171,7 +171,7 @@ public class BeanRuntimeInfo {
             try {
             	this.setArrayType(ClassUtil.forName(arrayTypeName, getClass()));
             } catch (ClassNotFoundException e) {
-                throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + arrayTypeName + " not on classpath.");
+                throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + arrayTypeName + " not on classpath.");
             }
             this.setPopulateType(ArrayList.class);
 
@@ -180,7 +180,7 @@ public class BeanRuntimeInfo {
 	        try {
 	            clazz = ClassUtil.forName(beanClass, getClass());
 	        } catch (ClassNotFoundException e) {
-	            throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
+	            throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
 	        }
 
 	        this.setPopulateType(clazz);

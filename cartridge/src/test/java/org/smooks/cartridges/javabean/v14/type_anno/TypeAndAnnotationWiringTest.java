@@ -42,19 +42,17 @@
  */
 package org.smooks.cartridges.javabean.v14.type_anno;
 
-import java.io.IOException;
-
-import javax.xml.transform.stream.StreamSource;
-
+import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksException;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
-import org.smooks.payload.JavaResult;
+import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
 
-import org.junit.Test;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -76,7 +74,7 @@ public class TypeAndAnnotationWiringTest {
         try {
             test("test_bean_03.xml");
         } catch (SmooksException e) {
-            assertEquals("One or more of attributes 'beanIdRef', 'beanType' and 'beanAnnotation' must be specified on a bean wiring configuration.", e.getCause().getMessage());
+            assertEquals("One or more of attributes 'beanIdRef', 'beanType' and 'beanAnnotation' must be specified on a bean wiring configuration.", e.getMessage());
         }
     }
 

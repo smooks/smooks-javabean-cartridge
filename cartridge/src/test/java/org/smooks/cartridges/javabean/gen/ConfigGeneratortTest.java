@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean.gen;
 import org.junit.Test;
 import org.smooks.cartridges.javabean.Order;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

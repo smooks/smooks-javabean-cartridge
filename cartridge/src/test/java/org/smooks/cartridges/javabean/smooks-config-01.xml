@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
   ========================LICENSE_START=================================
   smooks-javabean-cartridge
@@ -42,10 +42,15 @@
   =========================LICENSE_END==================================
   -->
 
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
 
-<!ELEMENT binding EMPTY>
-<!ATTLIST binding
-	property 	CDATA 	#REQUIRED
-	selector 	CDATA 	#REQUIRED
-	type 	    CDATA 	#IMPLIED
->
+    <resource-config selector="a">
+        <resource>org.smooks.cartridges.javabean.DOMVisitor</resource>
+        <condition evaluator="org.smooks.cartridges.javabean.BeanMapExpressionEvaluator">
+            <!--
+            !aBean.containsKey("a") || aBean.a == "hello"
+            -->
+        </condition>
+    </resource-config>
+
+</smooks-resource-list>

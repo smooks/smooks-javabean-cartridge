@@ -42,9 +42,9 @@
  */
 package org.smooks.cartridges.javabean;
 
+import org.smooks.api.Registry;
+import org.smooks.api.delivery.VisitorAppender;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.delivery.VisitorAppender;
-import org.smooks.registry.Registry;
 
 import javax.inject.Inject;
 
