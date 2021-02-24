@@ -45,12 +45,12 @@ package org.smooks.cartridges.javabean.dynamic.serialize.freemarker;
 import freemarker.template.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.ApplicationContext;
 import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
 import org.smooks.cartridges.javabean.dynamic.BeanRegistrationException;
 import org.smooks.cartridges.javabean.dynamic.Model;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
-import org.smooks.container.ApplicationContext;
-import org.smooks.util.FreeMarkerTemplate;
+import org.smooks.support.FreeMarkerTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

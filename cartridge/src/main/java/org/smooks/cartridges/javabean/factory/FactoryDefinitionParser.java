@@ -45,10 +45,10 @@ package org.smooks.cartridges.javabean.factory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.container.ApplicationContext;
-import org.smooks.converter.TypeConverterException;
-import org.smooks.registry.lookup.GlobalParamsLookup;
-import org.smooks.util.ClassUtil;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.converter.TypeConverterException;
+import org.smooks.engine.lookup.GlobalParamsLookup;
+import org.smooks.support.ClassUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

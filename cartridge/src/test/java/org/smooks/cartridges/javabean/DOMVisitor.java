@@ -40,39 +40,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cartridges.javabean.autodecode;
+package org.smooks.cartridges.javabean;
 
-import org.junit.Test;
-import org.smooks.Smooks;
-import org.smooks.cartridges.javabean.OrderItem;
-import org.smooks.io.payload.JavaResult;
-import org.xml.sax.SAXException;
-
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
+import org.w3c.dom.Element;
 
 /**
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class AutoDecodeTest {
+public class DOMVisitor implements DOMElementVisitor {
 
-    @Test
-    public void test() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
-        JavaResult jres = new JavaResult();
+    public static boolean visited = false;
 
-        try {
-            smooks.filterSource(new StreamSource(getClass().getResourceAsStream("../order-01.xml")), jres);
-        } finally {
-            smooks.close();
-        }
+    public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+    }
 
-        OrderItem orderItem = (OrderItem) jres.getBean("orderItem");
-
-        assertEquals(222, orderItem.getProductId());
-        assertEquals(7, (int)orderItem.getQuantity());
-        assertEquals(5.2, orderItem.getPrice(), 0d);
+    public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+        visited = true;
     }
 }

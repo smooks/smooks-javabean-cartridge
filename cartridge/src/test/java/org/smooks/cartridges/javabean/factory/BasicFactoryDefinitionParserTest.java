@@ -42,13 +42,14 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.smooks.container.MockExecutionContext;
+import org.junit.Test;
+import org.smooks.tck.MockExecutionContext;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import static org.junit.Assert.*;
 
 public class BasicFactoryDefinitionParserTest {
 

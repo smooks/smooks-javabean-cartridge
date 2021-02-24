@@ -42,8 +42,8 @@
  */
 package org.smooks.cartridges.javabean.binding.model;
 
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cdr.ResourceConfig;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

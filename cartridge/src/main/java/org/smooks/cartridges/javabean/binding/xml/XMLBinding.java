@@ -43,6 +43,14 @@
 package org.smooks.cartridges.javabean.binding.xml;
 
 import org.smooks.Smooks;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.ResourceConfigSeq;
+import org.smooks.api.resource.config.xpath.SelectorPath;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
@@ -52,19 +60,11 @@ import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.*;
 import org.smooks.cartridges.javabean.binding.model.get.ConstantGetter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.ResourceConfigList;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.xpath.SelectorPath;
-import org.smooks.cdr.xpath.SelectorStep;
-import org.smooks.config.Configurable;
-import org.smooks.converter.TypeConverter;
-import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.payload.StringSource;
-import org.smooks.registry.lookup.ContentHandlerFactoryLookup;
-import org.smooks.registry.lookup.NamespaceManagerLookup;
-import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.util.ClassUtil;
+import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
+import org.smooks.engine.lookup.NamespaceManagerLookup;
+import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.io.payload.StringSource;
+import org.smooks.support.ClassUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -331,7 +331,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigList smooksResourceConfigurationList) {
+    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigSeq smooksResourceConfigurationList) {
         final List<XMLElementSerializationNode> graphRoots = new ArrayList<XMLElementSerializationNode>();
 
         for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
@@ -393,10 +393,10 @@ public class XMLBinding extends AbstractBinding {
 
         if(selector != null) {
             if(selector.contains(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
-                throw new SmooksConfigurationException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
+                throw new SmooksConfigException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
             if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {
-                throw new SmooksConfigurationException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
+                throw new SmooksConfigException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
             rootElementNames.add(config.getSelectorPath().get(0).getElement());
         }

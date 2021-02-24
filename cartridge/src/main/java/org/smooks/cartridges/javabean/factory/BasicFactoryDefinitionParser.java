@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.factory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.smooks.container.ExecutionContext;
-import org.smooks.util.ClassUtil;
+import org.smooks.api.ExecutionContext;
+import org.smooks.support.ClassUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -231,30 +231,28 @@ public class BasicFactoryDefinitionParser extends
 
 			try {
 				factoryObj = getInstanceMethod.invoke(null);
-			} catch (IllegalAccessException e) {
-				throw new FactoryException("Could not invoke the static method '" + toClassDefinition(getInstanceMethod)+ "' to retrieve the factory defined by the factory definition '"+ factoryDefinition +"'");
-			} catch (InvocationTargetException e) {
-				throw new FactoryException("Could not invoke the static method '" + toClassDefinition(getInstanceMethod)+ "' to retrieve the factory defined by the factory definition '"+ factoryDefinition +"'");
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				throw new FactoryException("Could not invoke the static method '" + toClassDefinition(getInstanceMethod) + "' to retrieve the factory defined by the factory definition '" + factoryDefinition + "'");
 			}
 
-			if(factoryObj == null){
-				throw new NullPointerException("The static method '" + toClassDefinition(getInstanceMethod)+ "' returned null, which is not allowed" );
+			if (factoryObj == null) {
+				throw new NullPointerException("The static method '" + toClassDefinition(getInstanceMethod) + "' returned null, which is not allowed");
 			}
 
 			try {
 				return factoryMethod.invoke(factoryObj);
 			} catch (IllegalAccessException e) {
-				throw new FactoryException("Could not invoke the method '" + toClassDefinition(factoryMethod)+ "' on the factory object '"+ factoryObj +"'. This factory is defined by the factory definition '"+ factoryDefinition +"'");
+				throw new FactoryException("Could not invoke the method '" + toClassDefinition(factoryMethod) + "' on the factory object '" + factoryObj + "'. This factory is defined by the factory definition '" + factoryDefinition + "'");
 			} catch (InvocationTargetException e) {
-				throw new FactoryException("Could not invoke the method '" + toClassDefinition(factoryMethod)+ "' on the factory object '"+ factoryObj +"'. This factory is defined by the factory definition '"+ factoryDefinition +"'");
+				throw new FactoryException("Could not invoke the method '" + toClassDefinition(factoryMethod) + "' on the factory object '" + factoryObj + "'. This factory is defined by the factory definition '" + factoryDefinition + "'");
 			}
 		}
 
 		@Override
 		public String toString() {
 			ToStringBuilder builder = new ToStringBuilder(this);
-							builder.append("factoryDefinition", factoryDefinition)
-							.append("factoryMethod", factoryMethod);
+			builder.append("factoryDefinition", factoryDefinition)
+					.append("factoryMethod", factoryMethod);
 
 			return builder.toString();
 		}

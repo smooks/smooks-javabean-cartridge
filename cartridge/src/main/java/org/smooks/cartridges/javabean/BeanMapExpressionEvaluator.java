@@ -40,50 +40,67 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cartridges.javabean.expressionbinding;
+package org.smooks.cartridges.javabean;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.expression.ExecutionContextExpressionEvaluator;
+import org.smooks.api.expression.ExpressionEvaluationException;
+import org.smooks.engine.expression.MVELExpressionEvaluator;
 
-import javax.xml.transform.stream.StreamSource;
-import java.util.Date;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 /**
+ * Javabean Cartridge bean Map expression evaluator.
+ * <p/>
+ * Evaluates <a href="http://mvel.codehaus.org/">MVEL</a> expressions on java objects
+ * bound to the supplied {@link ExecutionContext} via the {@link BeanContext}.
+ * <p/>
+ * Cab be used to selectively target resources based on the
+ * contents of the java objects bound to the supplied {@link ExecutionContext}
+ * via the {@link BeanContext}.
+ * <p/>
+ * The special EC variable gives access to the EditingContext.
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ExpressionBindingTest {
+public class BeanMapExpressionEvaluator extends MVELExpressionEvaluator implements ExecutionContextExpressionEvaluator {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionBindingTest.class);
+    /**
+	 *
+	 */
+	public static final String MVEL_EXECUTION_CONTEXT_KEY = "EC";
 
-    @Test
-    public void test_data_variable() throws Exception {
-    	Smooks smooks = new Smooks(getClass().getResourceAsStream("02_binding.xml"));
+	private static final Logger LOGGER = LoggerFactory.getLogger(BeanMapExpressionEvaluator.class);
 
-    	JavaResult result = new JavaResult();
-
-    	ExecutionContext context = smooks.createExecutionContext();
-    	//context.setEventListener(new HtmlReportGenerator("target/expression_data_variable.html"));
-
-    	smooks.filterSource(context, new StreamSource(getClass().getResourceAsStream("02_number.xml")), result);
-
-    	Total total = (Total) result.getBean("total");
-
-    	assertEquals(20, (int) total.getTotal());
-    	assertEquals("10,20,30,40", total.getCsv());
-
+    public BeanMapExpressionEvaluator() {
     }
 
-    private void assertDateValue(JavaResult result, String beanId) {
-        Map<?, ?> message = (Map<?, ?>) result.getBean(beanId);
-        Date messageDate = (Date) message.get("date");
-        LOGGER.debug("Date: " + messageDate);
-        assertEquals(946143900000L, messageDate.getTime());
+    public BeanMapExpressionEvaluator(String expression) throws SmooksConfigException {
+        super(expression);
     }
+
+    public boolean eval(ExecutionContext context) throws ExpressionEvaluationException {
+        return (Boolean) getValue(context);
+    }
+
+    public Object getValue(ExecutionContext context) throws ExpressionEvaluationException {
+    	Map<String, Object> beans = context.getBeanContext().getBeanMap();
+
+        Object value = exec(beans);
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Expression value evaluation:===============================================================");
+            LOGGER.debug("\tExpression='" + getExpression() + "'");
+            LOGGER.debug("\tBean Map='" + beans + "'");
+            LOGGER.debug("\tValue='" + value + "'");
+            LOGGER.debug("===========================================================================================");
+        }
+
+        return value;
+    }
+
 }

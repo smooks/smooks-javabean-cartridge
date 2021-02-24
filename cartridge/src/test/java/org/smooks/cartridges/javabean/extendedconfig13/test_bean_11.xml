@@ -49,7 +49,7 @@
     </jb:bean>
 
 	<jb:bean beanId="order" class="org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder" createOnElement="order">
-		<condition>false</condition>
+		<condition evaluator="org.smooks.cartridges.javabean.BeanMapExpressionEvaluator">false</condition>
         <jb:expression property="total" execOnElement="order-item" >2.0 + 2.0</jb:expression>
     </jb:bean>
     

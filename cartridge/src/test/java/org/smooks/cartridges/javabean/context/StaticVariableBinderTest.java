@@ -42,19 +42,18 @@
  */
 package org.smooks.cartridges.javabean.context;
 
+import org.junit.Test;
+import org.smooks.Smooks;
+import org.smooks.api.ExecutionContext;
+import org.smooks.cartridges.javabean.BeanMapExpressionEvaluator;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
-import org.smooks.javabean.expression.BeanMapExpressionEvaluator;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

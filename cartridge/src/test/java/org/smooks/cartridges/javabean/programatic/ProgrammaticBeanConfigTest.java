@@ -44,16 +44,16 @@ package org.smooks.cartridges.javabean.programatic;
 
 import org.junit.Test;
 import org.smooks.Smooks;
+import org.smooks.api.ExecutionContext;
 import org.smooks.cartridges.javabean.Bean;
 import org.smooks.cartridges.javabean.Header;
 import org.smooks.cartridges.javabean.Order;
 import org.smooks.cartridges.javabean.OrderItem;
 import org.smooks.cartridges.javabean.factory.Factory;
 import org.smooks.cartridges.javabean.factory.MVELFactory;
-import org.smooks.container.ExecutionContext;
-import org.smooks.converter.factory.system.StringToDoubleConverterFactory;
-import org.smooks.converter.factory.system.StringToIntegerConverterFactory;
-import org.smooks.payload.JavaResult;
+import org.smooks.engine.converter.StringToDoubleConverterFactory;
+import org.smooks.engine.converter.StringToIntegerConverterFactory;
+import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;

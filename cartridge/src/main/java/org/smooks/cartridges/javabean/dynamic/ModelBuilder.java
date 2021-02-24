@@ -46,23 +46,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.FilterSettings;
 import org.smooks.Smooks;
-import org.smooks.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.api.bean.lifecycle.BeanLifecycle;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
 import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
-import org.smooks.cdr.ParameterAccessor;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.fragment.SAXElementFragment;
-import org.smooks.delivery.sax.SAXElement;
-import org.smooks.event.report.HtmlReportGenerator;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.javabean.lifecycle.BeanLifecycle;
-import org.smooks.payload.JavaResult;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.delivery.fragment.SAXElementFragment;
+import org.smooks.engine.report.HtmlReportGenerator;
+import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.io.payload.JavaResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -234,7 +234,7 @@ public class ModelBuilder {
         smooks.createExecutionContext();
 	}
 
-    private class BeanTracker implements BeanContextLifecycleObserver {
+    private static class BeanTracker implements BeanContextLifecycleObserver {
 		
 		private final List<BeanMetadata> beans = new ArrayList<>();
         private final Map<Class<?>, Map<String, BeanWriter>> beanWriterMap;

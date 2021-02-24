@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.smooks.container.ExecutionContext;
+import org.smooks.api.ExecutionContext;
 
 /**
  * The factory can create new objects of a certain type.

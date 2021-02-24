@@ -43,8 +43,8 @@
 package org.smooks.cartridges.javabean.binding.model.get;
 
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.BeanSerializationException;
+import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.Bean;
 import org.smooks.cartridges.javabean.binding.model.Binding;
 import org.smooks.cartridges.javabean.binding.model.DataBinding;

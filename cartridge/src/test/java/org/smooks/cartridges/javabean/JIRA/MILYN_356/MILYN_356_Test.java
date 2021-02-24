@@ -42,18 +42,17 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_356;
 
+import org.junit.Test;
+import org.smooks.Smooks;
+import org.smooks.cartridges.javabean.OrderItem;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.io.payload.StringSource;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.smooks.Smooks;
-import org.smooks.cartridges.javabean.OrderItem;
-import org.smooks.payload.JavaResult;
-import org.smooks.payload.StringSource;
-import org.xml.sax.SAXException;
-
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

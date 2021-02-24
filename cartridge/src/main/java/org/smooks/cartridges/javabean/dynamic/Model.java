@@ -42,12 +42,12 @@
  */
 package org.smooks.cartridges.javabean.dynamic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
-import org.smooks.payload.JavaResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.smooks.io.payload.JavaResult;
 
 import java.io.IOException;
 import java.io.Writer;

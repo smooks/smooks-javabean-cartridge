@@ -43,17 +43,17 @@
 package org.smooks.cartridges.javabean.binding;
 
 import org.smooks.Smooks;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.binding.model.Bean;
 import org.smooks.cartridges.javabean.binding.model.DataBinding;
 import org.smooks.cartridges.javabean.binding.model.WiredBinding;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
-import org.smooks.cdr.ResourceConfigList;
-import org.smooks.container.ExecutionContext;
-import org.smooks.event.report.HtmlReportGenerator;
-import org.smooks.payload.JavaResult;
-import org.smooks.registry.lookup.UserDefinedResourceConfigListLookup;
+import org.smooks.engine.lookup.UserDefinedResourceConfigListLookup;
+import org.smooks.engine.report.HtmlReportGenerator;
+import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;
@@ -190,7 +190,7 @@ public class AbstractBinding {
         return javaResult.getBean(toType);
     }
 
-    protected ResourceConfigList getUserDefinedResourceList() {
+    protected ResourceConfigSeq getUserDefinedResourceList() {
         return smooks.getApplicationContext().getRegistry().lookup(new UserDefinedResourceConfigListLookup(smooks.getApplicationContext().getRegistry()));
     }
 

@@ -48,13 +48,13 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
 import org.smooks.cartridges.javabean.dynamic.BeanRegistrationException;
 import org.smooks.cartridges.javabean.dynamic.Model;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.xml.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;

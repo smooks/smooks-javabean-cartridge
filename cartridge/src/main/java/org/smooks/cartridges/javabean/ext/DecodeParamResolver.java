@@ -42,16 +42,17 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import org.smooks.SmooksException;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.extension.ExtensionContext;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.converter.factory.PreprocessTypeConverter;
-import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.delivery.dom.DOMVisitBefore;
-import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
-import org.smooks.xml.DomUtils;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.engine.converter.PreprocessTypeConverter;
+import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.engine.resource.extension.ExtensionContext;
+import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -74,7 +75,7 @@ public class DecodeParamResolver implements DOMVisitBefore {
         if (decodeParams.getLength() > 0) {
             ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
             ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
-            ResourceConfig typeConverterConfig = new ResourceConfig();
+            ResourceConfig typeConverterConfig = new DefaultResourceConfig();
 
             extensionContext.addResource(typeConverterConfig);
             try {

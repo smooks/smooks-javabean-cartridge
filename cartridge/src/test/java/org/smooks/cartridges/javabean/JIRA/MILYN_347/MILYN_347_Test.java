@@ -43,13 +43,14 @@
 package org.smooks.cartridges.javabean.JIRA.MILYN_347;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.smooks.Smooks;
-import org.smooks.payload.JavaSource;
-import org.smooks.payload.JavaResult;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.io.payload.JavaSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>

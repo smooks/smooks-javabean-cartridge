@@ -43,17 +43,19 @@
 package org.smooks.cartridges.javabean;
 
 import org.smooks.Smooks;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
 import org.smooks.cartridges.javabean.factory.Factory;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.converter.TypeConverter;
-import org.smooks.converter.TypeConverterFactoryLoader;
-import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.delivery.ContentHandlerBinding;
-import org.smooks.delivery.Visitor;
-import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.util.ClassUtil;
+import org.smooks.engine.converter.TypeConverterFactoryLoader;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
+import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
+import org.smooks.support.ClassUtil;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -360,7 +362,7 @@ public class Bean extends BindingAppender {
         // dataDecoder can be null
 
         BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
-        ResourceConfig populatorConfig = new ResourceConfig(dataSelector);
+        ResourceConfig populatorConfig = new DefaultResourceConfig(dataSelector);
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
 
@@ -492,7 +494,7 @@ public class Bean extends BindingAppender {
         // dataDecoder can be null
 
         BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
-        ResourceConfig populatorConfig = new ResourceConfig(dataSelector);
+        ResourceConfig populatorConfig = new DefaultResourceConfig(dataSelector);
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorConfig);
 
@@ -523,7 +525,7 @@ public class Bean extends BindingAppender {
 
         List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
         // Add the create bean visitor...
-        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new ContentHandlerBinding<>(beanInstanceCreator, createOnElement, targetNamespace, registry);
+        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanInstanceCreator, createOnElement, targetNamespace, registry);
         ResourceConfig beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getResourceConfig();
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanId", getBeanId());
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());
@@ -538,7 +540,7 @@ public class Bean extends BindingAppender {
 
         // Add the populate bean visitors...
         for(Binding binding : bindings) {
-            ContentHandlerBinding<Visitor> beanInstancePopulatorBinding = new ContentHandlerBinding<>(binding.beanInstancePopulator, binding.selector, targetNamespace, registry);
+            ContentHandlerBinding<Visitor> beanInstancePopulatorBinding = new DefaultContentHandlerBinding<>(binding.beanInstancePopulator, binding.selector, targetNamespace, registry);
             beanInstancePopulatorBinding.getResourceConfig().setParameter("beanId", getBeanId());
             visitorBindings.add(beanInstancePopulatorBinding);
             if(binding.assertTargetIsCollection) {
@@ -596,9 +598,9 @@ public class Bean extends BindingAppender {
     }
 
     private static class Binding {
-        private String selector;
-        private BeanInstancePopulator beanInstancePopulator;
-        private boolean assertTargetIsCollection;
+        private final String selector;
+        private final BeanInstancePopulator beanInstancePopulator;
+        private final boolean assertTargetIsCollection;
 
         private Binding(String selector, BeanInstancePopulator beanInstancePopulator, boolean assertTargetIsCollection) {
             this.selector = selector;

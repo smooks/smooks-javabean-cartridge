@@ -42,13 +42,13 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import org.smooks.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
-import org.smooks.cdr.ConfigSearch;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.extension.ExtensionContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.engine.resource.config.DefaultConfigSearch;
+import org.smooks.engine.resource.extension.ExtensionContext;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -62,7 +62,7 @@ import java.util.List;
 public class SetRetainParam implements DOMVisitBefore {
 
 	/* (non-Javadoc)
-	 * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.container.ExecutionContext)
+	 * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.api.ExecutionContext)
 	 */
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
@@ -75,7 +75,7 @@ public class SetRetainParam implements DOMVisitBefore {
         // this is the first bean config, we set it to "true" (i.e. retain it),
         // otherwise set it to "false" (i.e. do not retain it)...
         if(retain == null) {
-        	List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new ConfigSearch().resource(BeanInstanceCreator.class.getName()));
+        	List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new DefaultConfigSearch().resource(BeanInstanceCreator.class.getName()));
 
         	if(!creatorConfigs.isEmpty()) {
         		// This is not the first bean config... set retain to "false"

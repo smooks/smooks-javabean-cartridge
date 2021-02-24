@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.dynamic;
 
-import org.smooks.SmooksException;
+import org.smooks.api.SmooksException;
 import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
 
 /**

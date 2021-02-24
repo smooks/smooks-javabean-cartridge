@@ -42,12 +42,12 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
-import org.smooks.util.ClassUtil;
-import org.smooks.xml.DomUtils;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
+import org.smooks.support.ClassUtil;
+import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 
 import java.util.Collection;
@@ -77,22 +77,22 @@ public class PropertyChecker implements DOMVisitBefore {
         String bindingType = DomUtils.getName(element);
 
         if(isPropertSpecified && isSetterMethodSpecified) {
-        	throw new SmooksConfigurationException("'" + bindingType + "' binding specifies a 'property' and a 'setterMethod' attribute.  Only one of both may be set.");
+        	throw new SmooksConfigException("'" + bindingType + "' binding specifies a 'property' and a 'setterMethod' attribute.  Only one of both may be set.");
         }
         if(isPropertSpecified && beanType == BeanType.COLLECTION) {
-            throw new SmooksConfigurationException("'" + bindingType + "' binding specifies a 'property' attribute.  This is not valid for a Collection target.");
+            throw new SmooksConfigException("'" + bindingType + "' binding specifies a 'property' attribute.  This is not valid for a Collection target.");
         }
         if(isPropertSpecified && beanType == BeanType.ARRAY) {
-            throw new SmooksConfigurationException("'" + bindingType + "' binding specifies a 'property' attribute.  This is not valid for an Array target.");
+            throw new SmooksConfigException("'" + bindingType + "' binding specifies a 'property' attribute.  This is not valid for an Array target.");
         }
         if(isSetterMethodSpecified && beanType == BeanType.COLLECTION) {
-            throw new SmooksConfigurationException("'" + bindingType + "' binding specifies a 'setterMethod' attribute.  This is not valid for a Collection target.");
+            throw new SmooksConfigException("'" + bindingType + "' binding specifies a 'setterMethod' attribute.  This is not valid for a Collection target.");
         }
         if(isSetterMethodSpecified && beanType == BeanType.ARRAY) {
-            throw new SmooksConfigurationException("'" + bindingType + "' binding specifies a 'setterMethod' attribute.  This is not valid for an Array target.");
+            throw new SmooksConfigException("'" + bindingType + "' binding specifies a 'setterMethod' attribute.  This is not valid for an Array target.");
         }
         if(!isPropertSpecified && !isSetterMethodSpecified && beanType == BeanType.OTHER) {
-            throw new SmooksConfigurationException("'" + bindingType + "' binding for bean class '" + getBeanTypeName(element) + "' must specify a 'property' or 'setterMethod' attribute.");
+            throw new SmooksConfigException("'" + bindingType + "' binding for bean class '" + getBeanTypeName(element) + "' must specify a 'property' or 'setterMethod' attribute.");
         }
     }
 
@@ -121,7 +121,7 @@ public class PropertyChecker implements DOMVisitBefore {
         try {
             beanClass = ClassUtil.forName(beanClassName, getClass());
         } catch (ClassNotFoundException e) {
-            throw new SmooksConfigurationException("Bean class '" + beanClassName + "' not available on classpath.");
+            throw new SmooksConfigException("Bean class '" + beanClassName + "' not available on classpath.");
         }
         return beanClass;
     }

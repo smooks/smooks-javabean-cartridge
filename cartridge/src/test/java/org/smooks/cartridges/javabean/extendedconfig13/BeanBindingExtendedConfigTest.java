@@ -45,14 +45,14 @@ package org.smooks.cartridges.javabean.extendedconfig13;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.cartridges.javabean.B;
 import org.smooks.cartridges.javabean.Header;
 import org.smooks.cartridges.javabean.OrderItem;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
-import org.smooks.payload.JavaResult;
-import org.smooks.util.ClassUtil;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.support.ClassUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -138,7 +138,7 @@ public class BeanBindingExtendedConfigTest {
             new Smooks(getClass().getResourceAsStream("test_bean_02.xml"));
             fail("Expected SmooksException");
         } catch (SmooksException e) {
-            assertEquals("'wiring' binding specifies a 'property' attribute.  This is not valid for a Collection target.", e.getCause().getMessage());
+            assertEquals("'wiring' binding specifies a 'property' attribute.  This is not valid for a Collection target.", e.getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ public class BeanBindingExtendedConfigTest {
             new Smooks(getClass().getResourceAsStream("test_bean_03.xml"));
             fail("Expected SmooksException");
         } catch (SmooksException e) {
-            assertEquals("'wiring' binding specifies a 'property' attribute.  This is not valid for an Array target.", e.getCause().getMessage());
+            assertEquals("'wiring' binding specifies a 'property' attribute.  This is not valid for an Array target.", e.getMessage());
         }
     }
 
@@ -158,7 +158,7 @@ public class BeanBindingExtendedConfigTest {
             new Smooks(getClass().getResourceAsStream("test_bean_04.xml"));
             fail("Expected SmooksException");
         } catch (SmooksException e) {
-            assertEquals("'wiring' binding for bean class 'org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder' must specify a 'property' or 'setterMethod' attribute.", e.getCause().getMessage());
+            assertEquals("'wiring' binding for bean class 'org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder' must specify a 'property' or 'setterMethod' attribute.", e.getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ public class BeanBindingExtendedConfigTest {
             new Smooks(getClass().getResourceAsStream("test_bean_10.xml"));
             fail("Expected SmooksException");
         } catch (SmooksException e) {
-            assertEquals("'wiring' binding specifies a 'property' and a 'setterMethod' attribute.  Only one of both may be set.", e.getCause().getMessage());
+            assertEquals("'wiring' binding specifies a 'property' and a 'setterMethod' attribute.  Only one of both may be set.", e.getMessage());
         }
     }
 
@@ -208,7 +208,7 @@ public class BeanBindingExtendedConfigTest {
             assertEquals("The bindings attribute 'createOnElement' and wiring attribute 'wireOnElement' are both not set. " +
                     "One of them must at least be set. If the result of this binding should be a new populated Object then " +
                     "you need to set the 'createOnElement' bindings attribute. If you want to update an existing object in " +
-                    "the bean context then you must set the 'wireOnElement' attribute.", e.getCause().getMessage());
+                    "the bean context then you must set the 'wireOnElement' attribute.", e.getMessage());
         }
     }
 

@@ -42,15 +42,17 @@
  */
 package org.smooks.cartridges.javabean;
 
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.delivery.ContentHandlerBinding;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.Visitor;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.ext.SelectorPropertyResolver;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.converter.TypeConverter;
-import org.smooks.converter.TypeConverterFactoryLoader;
-import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.delivery.ContentHandlerBinding;
-import org.smooks.delivery.Visitor;
-import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.engine.converter.TypeConverterFactoryLoader;
+import org.smooks.engine.delivery.DefaultContentHandlerBinding;
+import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.engine.resource.config.DefaultResourceConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,7 +207,7 @@ public class Value extends BindingAppender {
 	public List<ContentHandlerBinding<Visitor>> addVisitors() {
 		List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
 		ValueBinder valueBinder = new ValueBinder(getBeanId());
-		ResourceConfig valueBinderSmooksResourceConfiguration = new ResourceConfig(dataSelector);
+		ResourceConfig valueBinderSmooksResourceConfiguration = new DefaultResourceConfig(dataSelector);
 
 		SelectorPropertyResolver.resolveSelectorTokens(valueBinderSmooksResourceConfiguration);
 
@@ -213,7 +215,7 @@ public class Value extends BindingAppender {
 		valueBinder.setDefaultValue(defaultValue);
 		valueBinder.setValueAttributeName(valueBinderSmooksResourceConfiguration.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
 
-		visitorBindings.add(new ContentHandlerBinding<>(valueBinder, valueBinderSmooksResourceConfiguration.getSelectorPath().getSelector(), targetNamespace, registry));
+		visitorBindings.add(new DefaultContentHandlerBinding<>(valueBinder, valueBinderSmooksResourceConfiguration.getSelectorPath().getSelector(), targetNamespace, registry));
 	
 		return visitorBindings;
 	}

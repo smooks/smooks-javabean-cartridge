@@ -40,39 +40,62 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cartridges.javabean.autodecode;
+package org.smooks.cartridges.javabean;
 
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.cartridges.javabean.OrderItem;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.expression.ExpressionEvaluationException;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
- * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
+ * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class AutoDecodeTest {
+public class BeanMapExpressionEvaluatorTest {
 
-    @Test
+	@Test
     public void test() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("config-01.xml"));
-        JavaResult jres = new JavaResult();
+        Smooks smooks;
+        ExecutionContext execContext;
+        Map<String, Object> bean = new HashMap<String, Object>();
 
+        DOMVisitor.visited = false;
+        smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
+        
+        execContext = smooks.createExecutionContext();
+        execContext.getBeanContext().addBean("aBean", bean, null);
+        bean.put("a", "hello");
+        
+        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        assertTrue(DOMVisitor.visited);
+
+        DOMVisitor.visited = false;
+        smooks = new Smooks(getClass().getResourceAsStream("smooks-config-01.xml"));
+
+        execContext = smooks.createExecutionContext();
+        execContext.getBeanContext().addBean("aBean", bean, null);
+        bean.put("a", "goodbye");        
+        
+        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        assertFalse(DOMVisitor.visited);
+    }
+
+	@Test
+    public void testInvalidExpression() {
+        // Just eval on an unbound variable...
         try {
-            smooks.filterSource(new StreamSource(getClass().getResourceAsStream("../order-01.xml")), jres);
-        } finally {
-            smooks.close();
+            new BeanMapExpressionEvaluator("x.y").eval(new HashMap());
+            fail("Expected ExpressionEvaluationException");
+        } catch(Exception e) {
+            assertTrue(e instanceof ExpressionEvaluationException);
         }
-
-        OrderItem orderItem = (OrderItem) jres.getBean("orderItem");
-
-        assertEquals(222, orderItem.getProductId());
-        assertEquals(7, (int)orderItem.getQuantity());
-        assertEquals(5.2, orderItem.getPrice(), 0d);
     }
 }

@@ -43,17 +43,12 @@
 package org.smooks.cartridges.javabean.performance.generator;
 
 
-import org.smooks.cartridges.javabean.performance.model.Address;
-import org.smooks.cartridges.javabean.performance.model.Article;
-import org.smooks.cartridges.javabean.performance.model.Customer;
-import org.smooks.cartridges.javabean.performance.model.Order;
-import org.smooks.cartridges.javabean.performance.model.Person;
-
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
+import org.smooks.cartridges.javabean.performance.model.*;
 
 public class CustomerGenerator implements TemplateSequenceModel {
 

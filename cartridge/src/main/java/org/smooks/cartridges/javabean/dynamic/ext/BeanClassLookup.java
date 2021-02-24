@@ -42,13 +42,13 @@
  */
 package org.smooks.cartridges.javabean.dynamic.ext;
 
-import org.smooks.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.cdr.extension.ExtensionContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.engine.resource.extension.ExtensionContext;
 import org.w3c.dom.Element;
 
 /**
@@ -70,17 +70,17 @@ public class BeanClassLookup implements DOMVisitBefore {
             String beanId = dmbWriterConfig.getParameterValue("beanId", String.class);
 
             if(beanId == null) {
-                throw new SmooksConfigurationException("One of the 'beanClass' or 'beanId' attributes must be configured on the <dmb:writer> configuration.");                
+                throw new SmooksConfigException("One of the 'beanClass' or 'beanId' attributes must be configured on the <dmb:writer> configuration.");                
             }
 
             ResourceConfig beanCreatorConfig = BeanConfigUtil.findBeanCreatorConfig(beanId, executionContext);
             if(beanCreatorConfig == null) {
-                throw new SmooksConfigurationException("Cannot find <jb:bean> configuration for beanId '" + beanId + "' for <dmb:writer>.  Reordered <dmb:writer> after <jb:bean> config.");
+                throw new SmooksConfigException("Cannot find <jb:bean> configuration for beanId '" + beanId + "' for <dmb:writer>.  Reordered <dmb:writer> after <jb:bean> config.");
             }
 
             String beanClass = beanCreatorConfig.getParameterValue(BeanConfigUtil.BEAN_CLASS_CONFIG, String.class);
             if(beanClass == null) {
-                throw new SmooksConfigurationException("Cannot create find BeanWriter for beanId '" + beanId + "'.  The associated <jb:bean> configuration does not define a bean Class name.");
+                throw new SmooksConfigException("Cannot create find BeanWriter for beanId '" + beanId + "'.  The associated <jb:bean> configuration does not define a bean Class name.");
             }
 
             dmbWriterConfig.setParameter(BeanConfigUtil.BEAN_CLASS_CONFIG, beanClass);

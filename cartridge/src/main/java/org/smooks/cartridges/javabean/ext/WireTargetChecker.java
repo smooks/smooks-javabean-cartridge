@@ -42,10 +42,10 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.w3c.dom.Element;
 
 /**
@@ -63,7 +63,7 @@ public class WireTargetChecker implements DOMVisitBefore {
         boolean isBeanAnnotationSpecified = element.hasAttribute("beanAnnotation");
 
         if(!isBeanIdRefSpecified && !isBeanTypeSpecified && !isBeanAnnotationSpecified) {
-        	throw new SmooksConfigurationException("One or more of attributes 'beanIdRef', 'beanType' and 'beanAnnotation' must be specified on a bean wiring configuration.");
+        	throw new SmooksConfigException("One or more of attributes 'beanIdRef', 'beanType' and 'beanAnnotation' must be specified on a bean wiring configuration.");
         }
     }
 }

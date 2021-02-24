@@ -44,26 +44,26 @@ package org.smooks.cartridges.javabean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.SmooksException;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.converter.TypeConverter;
-import org.smooks.converter.TypeConverterException;
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.memento.TextAccumulatorMemento;
-import org.smooks.delivery.ordering.Producer;
-import org.smooks.delivery.sax.ng.AfterVisitor;
-import org.smooks.delivery.sax.ng.BeforeVisitor;
-import org.smooks.delivery.sax.ng.ChildrenVisitor;
-import org.smooks.event.report.annotation.VisitAfterReport;
-import org.smooks.event.report.annotation.VisitBeforeReport;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.repository.BeanId;
-import org.smooks.registry.lookup.converter.NameTypeConverterFactoryLookup;
-import org.smooks.util.CollectionsUtil;
-import org.smooks.xml.DomUtils;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.bean.repository.BeanId;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterException;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.delivery.ordering.Producer;
+import org.smooks.api.resource.visitor.VisitAfterReport;
+import org.smooks.api.resource.visitor.VisitBeforeReport;
+import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
+import org.smooks.engine.delivery.fragment.NodeFragment;
+import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
+import org.smooks.engine.memento.TextAccumulatorMemento;
+import org.smooks.support.CollectionsUtil;
+import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
@@ -240,7 +240,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 	}
 
 	/**
-	 * @param decoder the decoder to set
+	 * @param typeConverter the decoder to set
 	 */
 	public void setTypeConverter(TypeConverter<? super String, ?> typeConverter) {
 		this.typeConverter = typeConverter;
@@ -248,10 +248,10 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 
 	/**
      * Set the resource configuration on the bean populator.
-     * @throws SmooksConfigurationException Incorrectly configured resource.
+     * @throws SmooksConfigException Incorrectly configured resource.
      */
     @PostConstruct
-    public void postConstruct() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigException {
     	isAttribute = (valueAttributeName.isPresent());
 
         beanId = appContext.getBeanIdStore().register(beanIdName);
@@ -278,7 +278,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 		}
 	}
 
-	private void bindValue(String dataString, ExecutionContext executionContext, Fragment source) {
+	private void bindValue(String dataString, ExecutionContext executionContext, Fragment<?> source) {
 		Object valueObj = decodeDataString(dataString, executionContext);
 
 		BeanContext beanContext = executionContext.getBeanContext();
@@ -295,18 +295,18 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 	}
 
 	private Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {
-        if((dataString == null || dataString.length() == 0) && defaultValue.isPresent()) {
-        	if(defaultValue.get().equals("null")) {
-        		return null;
-        	}
-            dataString = defaultValue.get();
-        }
+		if ((dataString == null || dataString.length() == 0) && defaultValue.isPresent()) {
+			if (defaultValue.get().equals("null")) {
+				return null;
+			}
+			dataString = defaultValue.get();
+		}
 
-        try {
-            return getTypeConverter(executionContext).convert(dataString);
-        } catch(TypeConverterException e) {
-            throw new TypeConverterException("Failed to convert the value '" + dataString + "' for the bean id '" + beanIdName +"'.", e);
-        }
+		try {
+			return getTypeConverter(executionContext).convert(dataString);
+		} catch (TypeConverterException e) {
+			throw new TypeConverterException("Failed to convert the value '" + dataString + "' for the bean id '" + beanIdName + "'.", e);
+		}
     }
 
 	private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {

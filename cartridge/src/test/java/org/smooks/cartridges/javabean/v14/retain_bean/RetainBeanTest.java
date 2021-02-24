@@ -42,22 +42,21 @@
  */
 package org.smooks.cartridges.javabean.v14.retain_bean;
 
+import org.junit.Test;
+import org.smooks.Smooks;
+import org.smooks.api.ExecutionContext;
+import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
+import org.smooks.cartridges.javabean.extendedconfig13.BeanBindingExtendedConfigTest;
+import org.smooks.io.payload.JavaResult;
+import org.smooks.support.ClassUtil;
+import org.xml.sax.SAXException;
+
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.transform.stream.StreamSource;
-
-import org.smooks.FilterSettings;
-import org.smooks.Smooks;
-import org.smooks.container.ExecutionContext;
-import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
-import org.smooks.cartridges.javabean.extendedconfig13.BeanBindingExtendedConfigTest;
-import org.smooks.payload.JavaResult;
-import org.smooks.util.ClassUtil;
-import org.xml.sax.SAXException;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * 

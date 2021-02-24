@@ -42,13 +42,13 @@
  */
 package org.smooks.cartridges.javabean.gen;
 
+import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.gen.model.BindingConfig;
 import org.smooks.cartridges.javabean.gen.model.ClassConfig;
-import org.smooks.converter.TypeConverterFactoryLoader;
-import org.smooks.converter.factory.TypeConverterFactory;
-import org.smooks.registry.lookup.converter.SourceTargetTypeConverterFactoryLookup;
-import org.smooks.util.FreeMarkerTemplate;
+import org.smooks.engine.converter.TypeConverterFactoryLoader;
+import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.support.FreeMarkerTemplate;
 
 import java.io.*;
 import java.lang.reflect.Field;

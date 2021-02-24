@@ -44,10 +44,10 @@ package org.smooks.cartridges.javabean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -128,7 +128,7 @@ public abstract class BeanUtils {
         bean =  execContext.getBeanContext().getBean(beanId);
 
         if (bean == null) {
-            throw new SmooksConfigurationException("Bean instance [" + beanId + "] not available and bean runtime class not set on configuration.");
+            throw new SmooksConfigException("Bean instance [" + beanId + "] not available and bean runtime class not set on configuration.");
         }
 
         return bean;

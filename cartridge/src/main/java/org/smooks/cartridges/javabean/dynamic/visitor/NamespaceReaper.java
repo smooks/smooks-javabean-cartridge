@@ -42,11 +42,11 @@
  */
 package org.smooks.cartridges.javabean.dynamic.visitor;
 
-import org.smooks.SmooksException;
-import org.smooks.container.ExecutionContext;
-import org.smooks.container.TypedKey;
-import org.smooks.delivery.sax.SAXUtil;
-import org.smooks.delivery.sax.ng.BeforeVisitor;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.TypedKey;
+import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
+import org.smooks.support.SAXUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

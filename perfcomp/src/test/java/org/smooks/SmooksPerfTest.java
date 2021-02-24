@@ -44,13 +44,14 @@ package org.smooks;
 
 import org.TestConstants;
 import org.junit.Test;
-import org.smooks.container.ExecutionContext;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleEvent;
-import org.smooks.javabean.lifecycle.BeanContextLifecycleObserver;
-import org.smooks.javabean.lifecycle.BeanLifecycle;
-import org.smooks.javabean.repository.BeanId;
-import org.smooks.payload.JavaResult;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
+import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
+import org.smooks.api.bean.lifecycle.BeanLifecycle;
+import org.smooks.api.bean.repository.BeanId;
+import org.smooks.engine.bean.repository.DefaultBeanId;
+import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -94,7 +95,7 @@ public class SmooksPerfTest {
 
     static class NoddyObserver implements BeanContextLifecycleObserver {
 
-        private BeanId beanId = new BeanId(null, 0, null);
+        private BeanId beanId = new DefaultBeanId(null, 0, null);
 
         public void onBeanLifecycleEvent(BeanContextLifecycleEvent event) {
             if (event.getBeanId() == beanId && event.getLifecycle() == BeanLifecycle.ADD) {

@@ -42,9 +42,9 @@
  */
 package org.smooks.cartridges.javabean.binding.model;
 
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanRuntimeInfo;
-import org.smooks.cdr.ResourceConfig;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -42,17 +42,17 @@
  */
 package org.smooks.cartridges.javabean.context;
 
-import org.smooks.SmooksException;
-import org.smooks.cdr.Parameter;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.SmooksConfigurationException;
-import org.smooks.container.ApplicationContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.fragment.Fragment;
-import org.smooks.delivery.fragment.NodeFragment;
-import org.smooks.delivery.sax.ng.ElementVisitor;
-import org.smooks.javabean.context.BeanContext;
-import org.smooks.javabean.repository.BeanId;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.SmooksException;
+import org.smooks.api.bean.context.BeanContext;
+import org.smooks.api.bean.repository.BeanId;
+import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.Parameter;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.sax.ng.ElementVisitor;
+import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
@@ -87,7 +87,7 @@ public class StaticVariableBinder implements ElementVisitor {
     private ApplicationContext appContext;
 
     @PostConstruct
-    public void postConstruct() throws SmooksConfigurationException {
+    public void postConstruct() throws SmooksConfigException {
         beanId = appContext.getBeanIdStore().getBeanId(STATVAR);
 
         if(beanId == null) {
@@ -106,22 +106,22 @@ public class StaticVariableBinder implements ElementVisitor {
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
     }
 
-    private void bindParamaters(ExecutionContext executionContext, Fragment source) {
-        List<?> params = resourceConfig.getParameterList();
+    private void bindParamaters(ExecutionContext executionContext, Fragment<?> source) {
+        List<?> params = resourceConfig.getParameterValues();
 
         for (Object parameter : params) {
             // It's either an object, or list of objects...
             if (parameter instanceof List<?>) {
                 // Bind the first paramater...
-                bindParameter((Parameter) ((List<?>) parameter).get(0), executionContext, source);
+                bindParameter((Parameter<?>) ((List<?>) parameter).get(0), executionContext, source);
             } else if (parameter instanceof Parameter) {
-                bindParameter((Parameter) parameter, executionContext, source);
+                bindParameter((Parameter<?>) parameter, executionContext, source);
             }
         }
     }
 
 
-	private void bindParameter(Parameter parameter, ExecutionContext executionContext, Fragment source) {
+	private void bindParameter(Parameter<?> parameter, ExecutionContext executionContext, Fragment<?> source) {
         Map<String, Object> params = null;
 
         BeanContext beanContext = executionContext.getBeanContext();

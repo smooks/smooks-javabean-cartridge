@@ -42,12 +42,12 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import org.smooks.SmooksException;
+import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
+import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
-import org.smooks.cdr.ResourceConfig;
-import org.smooks.cdr.extension.ExtensionContext;
-import org.smooks.container.ExecutionContext;
-import org.smooks.delivery.dom.DOMVisitBefore;
+import org.smooks.engine.resource.extension.ExtensionContext;
 import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;

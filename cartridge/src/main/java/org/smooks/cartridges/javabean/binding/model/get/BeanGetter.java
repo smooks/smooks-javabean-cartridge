@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.binding.model.get;
 
 import org.smooks.cartridges.javabean.binding.BeanSerializationException;
-import org.smooks.util.ClassUtil;
+import org.smooks.support.ClassUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -55,7 +55,7 @@ import java.lang.reflect.Method;
  */
 public class BeanGetter<T extends Object> implements Getter<T> {
 
-    private Method getterMethod;
+    private final Method getterMethod;
 
     public BeanGetter(Class<?> beanClass, String property) {
         getterMethod = ClassUtil.getGetterMethodByProperty(property, beanClass, null);
@@ -67,9 +67,7 @@ public class BeanGetter<T extends Object> implements Getter<T> {
     public Object get(final T contextObject) throws BeanSerializationException {
         try {
             return getterMethod.invoke(contextObject);
-        } catch (IllegalArgumentException e) {
-            throw new BeanSerializationException("Error invoking bean getter method '" + getterMethod.getName() + "' on bean type '" + contextObject.getClass().getName() + "'.", e);
-        } catch (IllegalAccessException e) {
+        } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new BeanSerializationException("Error invoking bean getter method '" + getterMethod.getName() + "' on bean type '" + contextObject.getClass().getName() + "'.", e);
         } catch (InvocationTargetException e) {
             throw new BeanSerializationException("Error invoking bean getter method '" + getterMethod.getName() + "' on bean type '" + contextObject.getClass().getName() + "'.", e.getCause());
