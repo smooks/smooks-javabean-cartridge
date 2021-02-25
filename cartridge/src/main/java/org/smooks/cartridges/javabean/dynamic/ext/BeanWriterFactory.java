@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.dynamic.ext;
 
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.api.resource.ContentHandler;
+import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
