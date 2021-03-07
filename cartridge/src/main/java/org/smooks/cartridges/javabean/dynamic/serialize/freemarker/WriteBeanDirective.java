@@ -54,7 +54,7 @@ import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
 import org.smooks.cartridges.javabean.dynamic.BeanRegistrationException;
 import org.smooks.cartridges.javabean.dynamic.Model;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;
