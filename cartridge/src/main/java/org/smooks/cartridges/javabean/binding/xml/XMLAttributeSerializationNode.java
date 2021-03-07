@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.binding.xml;
 
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.Bean;
-import org.smooks.xml.XmlUtil;
+import org.smooks.support.XmlUtil;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;

@@ -90,7 +90,7 @@ public class ModelBuilderTest {
             test_2_schema(new ModelBuilder(NS_DESCRIPTOR, true), "bbb-message-invalid.xml");
             fail("Expected SAXParseException");
         } catch (SAXParseException e) {
-            assertTrue(e.getMessage().contains("Invalid content was found starting with element '{\"http://boohoo.com\":ddd}'"));
+            assertTrue(e.getMessage().contains("Invalid content was found starting with element 'boo:ddd'"));
         }
     }
 
@@ -146,7 +146,6 @@ public class ModelBuilderTest {
 
         StringWriter writer = new StringWriter();
         model.writeModel(writer);
-//        System.out.println(writer);
         XMLUnit.setIgnoreWhitespace(true);
         XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("bbb-message.xml")), new StringReader(writer.toString()));
     }
