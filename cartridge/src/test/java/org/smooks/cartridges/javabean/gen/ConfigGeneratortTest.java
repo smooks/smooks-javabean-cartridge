@@ -44,6 +44,7 @@ package org.smooks.cartridges.javabean.gen;
 
 import org.junit.Test;
 import org.smooks.cartridges.javabean.Order;
+import org.smooks.support.StreamUtils;
 
 import static org.junit.Assert.assertTrue;
 
@@ -63,8 +64,8 @@ public class ConfigGeneratortTest {
 
         generator.generate();
 
-        String expected = org.smooks.io.StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"), "UTF-8");
-        assertTrue("Generated config not as expected.", org.smooks.io.StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
+        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"), "UTF-8");
+        assertTrue("Generated config not as expected.", StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
     }
 
     @Test

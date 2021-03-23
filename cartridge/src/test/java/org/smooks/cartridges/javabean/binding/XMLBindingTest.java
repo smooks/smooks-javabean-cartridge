@@ -50,7 +50,7 @@ import org.smooks.cartridges.javabean.binding.config5.Person;
 import org.smooks.cartridges.javabean.binding.model.ModelSet;
 import org.smooks.cartridges.javabean.binding.ordermodel.Order;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
-import org.smooks.io.StreamUtils;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
