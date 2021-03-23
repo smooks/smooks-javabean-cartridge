@@ -46,8 +46,8 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.cartridges.javabean.jaxb.model.POType;
-import org.smooks.io.StreamUtils;
 import org.smooks.io.payload.StringSource;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

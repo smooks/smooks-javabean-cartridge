@@ -46,9 +46,9 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.smooks.Smooks;
-import org.smooks.io.StreamUtils;
 import org.smooks.io.payload.JavaSource;
 import org.smooks.io.payload.StringResult;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
