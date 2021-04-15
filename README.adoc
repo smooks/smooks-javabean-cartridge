@@ -1120,3 +1120,9 @@ Note that as of Smooks v1.2, if a link:/javadoc/v1.7.1/smooks/org/milyn/payload/
 xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
 ....
 // end::smooks-javabean-cartridge[]
+
+== License
+
+Smooks JavaBean Cartridge is open source and licensed under the terms of the Apache License Version 2.0, or the GNU Lesser General Public License version 3.0 or later. You may use Smooks JavaBean Cartridge according to either of these licenses as is most appropriate for your project.
+
+`+SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later+`
