@@ -46,7 +46,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.TypedKey;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.support.SAXUtil;
+import org.smooks.support.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -77,7 +77,7 @@ public class NamespaceReaper implements BeforeVisitor {
 
             if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
                 String uri = attr.getValue();
-                QName attrQName = SAXUtil.toQName(uri, attr.getLocalName(), attr.getNodeName());
+                QName attrQName = XmlUtil.toQName(uri, attr.getLocalName(), attr.getNodeName());
 
                 if (attrQName != null) {
                     addMapping(namespacePrefixMappings, uri, attrQName.getLocalPart());

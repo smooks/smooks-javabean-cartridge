@@ -77,6 +77,7 @@ import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.memento.TextAccumulatorMemento;
+import org.smooks.engine.memento.TextAccumulatorVisitorMemento;
 import org.smooks.support.ClassUtil;
 import org.smooks.support.CollectionsUtil;
 import org.smooks.support.DomUtils;
@@ -405,7 +406,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
             if (isAttribute) {
                 dataString = DomUtils.getAttributeValue(element, valueAttributeName.orElse(null), valueAttributeNS);
             } else {
-                TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(element), this);
+                TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorVisitorMemento(new NodeFragment(element), this);
                 executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
                 dataString = textAccumulatorMemento.getText();
             }
@@ -681,7 +682,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     @Override
     public void visitChildText(CharacterData characterData, ExecutionContext executionContext) throws SmooksException {
         if (!isBeanWiring && !isAttribute && (expressionEvaluator == null || expressionHasDataVariable)) {
-            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorMemento(new NodeFragment(characterData.getParentNode()), this);
+            TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorVisitorMemento(new NodeFragment(characterData.getParentNode()), this);
             executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
             textAccumulatorMemento.accumulateText(characterData.getTextContent());
             executionContext.getMementoCaretaker().capture(textAccumulatorMemento);
