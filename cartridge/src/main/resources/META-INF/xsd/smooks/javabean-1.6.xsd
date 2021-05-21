@@ -153,14 +153,6 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="phase" type="xs:string">
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            The phase when to populate the bean, i.e. ASSEMBLY or PROCESSING.
-                            By default the value is 'PROCESSING'.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

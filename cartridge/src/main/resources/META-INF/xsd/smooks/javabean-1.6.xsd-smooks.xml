@@ -106,19 +106,12 @@
     </resource-config>
 
     <resource-config selector="jb:bean">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">phase</param>
-        <param name="mapTo">VisitPhase</param>
-    </resource-config>
-    
-    <resource-config selector="jb:bean">
         <resource>org.smooks.cartridges.javabean.ext.SetRetainParam</resource>
     </resource-config>
 
     <!--
         Bean Instance Populator Resource (Value)...
     -->
-
     <resource-config selector="jb:bean/value">
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.smooks.engine.resource.extension.CloneResourceConfig</resource>

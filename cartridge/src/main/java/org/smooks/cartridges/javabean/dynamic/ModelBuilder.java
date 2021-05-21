@@ -52,14 +52,12 @@ import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.delivery.fragment.Fragment;
-import org.smooks.api.delivery.sax.SAXElement;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
 import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
 import org.smooks.engine.delivery.fragment.NodeFragment;
-import org.smooks.engine.delivery.fragment.SAXElementFragment;
 import org.smooks.engine.report.HtmlReportGenerator;
 import org.smooks.engine.resource.config.ParameterAccessor;
 import org.smooks.io.payload.JavaResult;
@@ -264,21 +262,8 @@ public class ModelBuilder {
                         beans.add(beanMetadata);
 
                         beanMetadata.setPreText(UnknownElementDataReaper.getPreText((Element) node, beans));
-                    } else if (source instanceof SAXElementFragment) {
-                        SAXElement saxElement = (SAXElement) source.unwrap();
-
-                        namespaceURI = saxElement.getName().getNamespaceURI();
-
-                        beanMetadata.setNamespace(namespaceURI);
-                        beanMetadata.setNamespacePrefix(saxElement.getName().getPrefix());
-                        beanMetadata.setCreateSource(source);
-
-                        beans.add(beanMetadata);
-
-                        // SAX pretext is gathered by an instance of the UnknownElementDataReaper
                     }
 
-                    
                     if (beanWriters != null) {
                         BeanWriter beanWriter = beanWriters.get(namespaceURI);
 
