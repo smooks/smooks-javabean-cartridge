@@ -99,17 +99,17 @@ public abstract class XMLSerializationNode {
     public abstract void serialize(Writer outputStream, SerializationContext context) throws IOException;
 
     protected String getValue(SerializationContext context) {
-        if(nodeGetter != null) {
+        if (nodeGetter != null) {
             Object value = context.getValue(nodeGetter.contextObjectName, nodeGetter.getter);
 
-            if(value == null) {
+            if (value == null) {
                 value = defaultVal;
-                if(value == null) {
+                if (value == null) {
                     return null;
                 }
             }
 
-            if(typeConverter != null) {
+            if (typeConverter != null) {
                 return ((TypeConverter<Object, String>) typeConverter).convert(value);
             } else {
                 return value.toString();
@@ -172,13 +172,10 @@ public abstract class XMLSerializationNode {
     }
 
     protected boolean hasData(SerializationContext context) {
-        if(nodeGetter == null || context.getValue(nodeGetter.contextObjectName, nodeGetter.getter) != null) {
-            return true;
-        }
-        return false;
+        return nodeGetter == null || context.getValue(nodeGetter.contextObjectName, nodeGetter.getter) != null;
     }
 
-    protected class NodeGetter {
+    protected static class NodeGetter {
         protected String contextObjectName;
         protected Getter getter;
 

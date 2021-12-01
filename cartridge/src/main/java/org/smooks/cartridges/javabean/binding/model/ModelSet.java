@@ -48,22 +48,15 @@ import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.lookup.UserDefinedResourceConfigListLookup;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.engine.resource.config.xpath.DefaultSelectorPath;
 import org.smooks.engine.xml.NamespaceManager;
-import org.smooks.support.DollarBraceDecoder;
 
-import javax.xml.namespace.QName;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Bean binding model set.
@@ -93,7 +86,7 @@ public class ModelSet {
      */
     private Boolean isBindingOnlyConfig;
 
-    private ModelSet(ResourceConfigSeq userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigException {
+    public ModelSet(ResourceConfigSeq userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigException {
         createBaseBeanMap(userConfigList, javaContentHandlerFactory);
         createExpandedModels();
         resolveModelSelectors(userConfigList);
@@ -160,16 +153,12 @@ public class ModelSet {
     }
 
     private boolean isNonBindingResource(Object javaResource) {
-        if(javaResource instanceof TypeConverter) {
+        if (javaResource instanceof TypeConverter) {
             return false;
         }
 
         // Ignore resource that do not manipulate the event stream...
-        if(javaResource instanceof NamespaceManager) {
-            return false;
-        }
-
-        return true;
+        return !(javaResource instanceof NamespaceManager);
     }
 
     private boolean isGlobalParamsConfig(ResourceConfig config) {
@@ -187,61 +176,14 @@ public class ModelSet {
         for(Bean model : models.values()) {
             resolveModelSelectors(model);
         }
-
-        // Now run over all configs.. there may be router configs etc using hashed selectors...
-        for(int i = 0; i < userConfigList.size(); i++) {
-            expandSelector(userConfigList.get(i), false, null);
-        }
     }
 
     private void resolveModelSelectors(Bean model) {
-        ResourceConfig beanConfig = model.getConfig();
-
-        expandSelector(beanConfig, true, null);
-
         for(Binding binding : model.getBindings()) {
-            ResourceConfig bindingConfig = binding.getConfig();
-            expandSelector(bindingConfig, true, beanConfig);
-
             if(binding instanceof WiredBinding) {
                 resolveModelSelectors(((WiredBinding) binding).getWiredBean());
             }
         }
-    }
-
-    private void expandSelector(ResourceConfig resourceConfiguration, boolean failOnMissingBean, ResourceConfig context) {
-        SelectorPath selectorPath = resourceConfiguration.getSelectorPath();
-        QName targetElement = selectorPath.get(0).getElement();
-
-        if(targetElement == null) {
-            return;
-        }
-
-        String localPart = targetElement.getLocalPart();
-        if(localPart.equals("#") && context != null) {
-            resourceConfiguration.setSelectorPath(concat(context.getSelectorPath(), selectorPath));
-            return;
-        }
-
-        List<String> dollarBraceTokens = DollarBraceDecoder.getTokens(localPart);
-        if(dollarBraceTokens.size() == 1) {
-            String beanId = dollarBraceTokens.get(0);
-            Bean bean = baseBeans.get(beanId);
-
-            if(bean != null) {
-                resourceConfiguration.setSelectorPath(concat(bean.getConfig().getSelectorPath(), selectorPath));
-            } else if(failOnMissingBean) {
-                throw new SmooksConfigException("Invalid selector '" + selectorPath.toString() + "'.  Unknown beanId '" + beanId + "'.");
-            }
-
-        }
-    }
-
-    private SelectorPath concat(SelectorPath context, SelectorPath beanSelectorPath) {
-        SelectorPath newSelectorPath = new DefaultSelectorPath();
-        newSelectorPath.addAll(Stream.concat(context.stream(), beanSelectorPath.subList(1, beanSelectorPath.size()).stream()).collect(Collectors.toList()));
-        
-        return newSelectorPath;
     }
 
     public static void build(ApplicationContext appContext) {

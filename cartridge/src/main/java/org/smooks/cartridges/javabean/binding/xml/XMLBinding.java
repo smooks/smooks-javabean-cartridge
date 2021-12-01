@@ -63,6 +63,8 @@ import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
+import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.io.payload.StringSource;
 import org.smooks.support.ClassUtil;
 import org.xml.sax.SAXException;
@@ -93,15 +95,15 @@ public class XMLBinding extends AbstractBinding {
 
     private ModelSet beanModelSet;
     private List<XMLElementSerializationNode> graphs;
-    private Set<QName> rootElementNames = new HashSet<QName>();
-    private Map<Class, RootNodeSerializer> serializers = new LinkedHashMap<Class, RootNodeSerializer>();
+    private final Set<QName> rootElementNames = new HashSet<>();
+    private final Map<Class, RootNodeSerializer> serializers = new LinkedHashMap<>();
     private boolean omitXMLDeclaration = false;
 
     /**
      * Public constructor.
      * <p/>
      * Must be followed by calls to the {@link #add(java.io.InputStream)} (or {@link #add(String)}) method
-     * and then the {@link #intialise()} method.
+     * and then the {@link #initialise()} method.
      */
     public XMLBinding() {
         super();
@@ -136,8 +138,8 @@ public class XMLBinding extends AbstractBinding {
     }
 
     @Override
-    public XMLBinding intialise() {
-        super.intialise();
+    public XMLBinding initialise() {
+        super.initialise();
 
         beanModelSet = ModelSet.get(getSmooks().getApplicationContext());
         graphs = createExpandedXMLOutputGraphs(getUserDefinedResourceList());
@@ -198,10 +200,10 @@ public class XMLBinding extends AbstractBinding {
 
         Class<?> objectClass = object.getClass();
         RootNodeSerializer rootNodeSerializer = serializers.get(objectClass);
-        if(rootNodeSerializer == null) {
+        if (rootNodeSerializer == null) {
             throw new BeanSerializationException("No serializer for Java type '" + objectClass.getName() + "'.");
         }
-        if(!omitXMLDeclaration) {
+        if (!omitXMLDeclaration) {
             outputWriter.write("<?xml version=\"1.0\"?>\n");
         }
 
@@ -252,12 +254,12 @@ public class XMLBinding extends AbstractBinding {
     private void merge(XMLElementSerializationNode serializer, Bean bean) {
         boolean isCollection = bean.isCollection();
 
-        for(Binding binding : bean.getBindings()) {
+        for (Binding binding : bean.getBindings()) {
             BeanInstancePopulator populator = binding.getPopulator();
 
-            if(!isCollection && binding instanceof DataBinding) {
+            if (!isCollection && binding instanceof DataBinding) {
                 XMLSerializationNode node = serializer.findNode(populator.getConfig().getSelectorPath());
-                if(node != null) {
+                if (node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
                     Method getterMethodByProperty = ClassUtil.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
                     TypeConverter<? super String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig());
@@ -270,12 +272,12 @@ public class XMLBinding extends AbstractBinding {
                         node.setTypeConverter(xmlBindingTypeConverter);
                     }
                 }
-            } else if(binding instanceof WiredBinding) {
+            } else if (binding instanceof WiredBinding) {
                 Bean wiredBean = ((WiredBinding) binding).getWiredBean();
                 XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getCreator().getConfig().getSelectorPath());
 
-                if(node != null) {
-                    if(isCollection) {
+                if (node != null) {
+                    if (isCollection) {
                         // Mark the node that creates the wiredBean as being a collection item node...
                         Bean collectionBean = wiredBean.getWiredInto();
                         GetterGraph getter = constructContextualGetter(collectionBean);
@@ -331,24 +333,24 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigSeq smooksResourceConfigurationList) {
-        final List<XMLElementSerializationNode> graphRoots = new ArrayList<XMLElementSerializationNode>();
+    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigSeq resourceConfigSeq) {
+        final List<XMLElementSerializationNode> graphRoots = new ArrayList<>();
 
-        for (int i = 0; i < smooksResourceConfigurationList.size(); i++) {
-            final ResourceConfig smooksResourceConfiguration = smooksResourceConfigurationList.get(i);
+        for (int i = 0; i < resourceConfigSeq.size(); i++) {
+            final ResourceConfig resourceConfig = resourceConfigSeq.get(i);
             final Object javaResource;
-            if (smooksResourceConfiguration.isJavaResource()) {
-                javaResource = getSmooks().getApplicationContext().getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(smooksResourceConfiguration);
+            if (resourceConfig.isJavaResource()) {
+                javaResource = getSmooks().getApplicationContext().getRegistry().lookup(new ContentHandlerFactoryLookup("class")).create(resourceConfig);
             } else {
                 javaResource = null;
             }
 
             if (javaResource instanceof BeanInstanceCreator) {
-                assertSelectorOK(smooksResourceConfiguration);
-                constructNodePath(smooksResourceConfiguration.getSelectorPath(), graphRoots);
+                assertSelectorOK(resourceConfig);
+                constructNodePath(resourceConfig.getSelectorPath(), graphRoots);
             } else if (javaResource instanceof BeanInstancePopulator) {
-                assertSelectorOK(smooksResourceConfiguration);
-                constructNodePath(smooksResourceConfiguration.getSelectorPath(), graphRoots);
+                assertSelectorOK(resourceConfig);
+                constructNodePath(resourceConfig.getSelectorPath(), graphRoots);
             }
         }
 
@@ -356,49 +358,49 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private XMLSerializationNode constructNodePath(SelectorPath selectorPath, List<XMLElementSerializationNode> graphRoots) {
-        if(selectorPath == null || selectorPath.size() == 0) {
+        if (selectorPath == null || selectorPath.size() == 0) {
             throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
         }
 
-        SelectorStep rootSelectorStep = selectorPath.get(0);
+        SelectorStep rootSelectorStep = selectorPath.get(1);
         XMLElementSerializationNode root = XMLElementSerializationNode.getElement(rootSelectorStep, graphRoots, true);
 
-        if(selectorPath.size() > 1) {
-            return root.getPathNode(selectorPath, 1, true);
-        } else if(rootSelectorStep.getAttribute() != null) {
+        if (selectorPath.size() == 3 && selectorPath.get(2) instanceof AttributeSelectorStep) {
             // It's an attribute node...
-            return XMLElementSerializationNode.addAttributeNode(root, rootSelectorStep, true);
+            return XMLElementSerializationNode.addAttributeNode(root, selectorPath.get(2), true);
+        } else if (selectorPath.size() > 2) {
+            return root.getPathNode(selectorPath, 2, true);
         } else {
             return root;
         }
     }
 
     private XMLSerializationNode findNode(List<XMLElementSerializationNode> graphs, SelectorPath selectorPath) {
-        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorPath.get(0), graphs, false);
+        XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorPath.get(1), graphs, false);
         XMLSerializationNode node = root;
 
-        if(selectorPath.size() > 1) {
-            node = root.getPathNode(selectorPath, 1, false);
+        if (selectorPath.size() > 2) {
+            node = root.getPathNode(selectorPath, 2, false);
         }
 
-        if(node == null) {
-            throw new IllegalStateException("Unexpected exception.  Failed to locate the node '" + selectorPath.toString() + "'.");
+        if (node == null) {
+            throw new IllegalStateException("Unexpected exception.  Failed to locate the node '" + selectorPath + "'.");
         }
 
         return node;
     }
 
-    private void assertSelectorOK(ResourceConfig config) {
-        String selector = config.getSelectorPath().getSelector();
+    private void assertSelectorOK(ResourceConfig resourceConfig) {
+        String selector = resourceConfig.getSelectorPath().getSelector();
 
-        if(selector != null) {
-            if(selector.contains(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
+        if (selector != null) {
+            if (selector.contains(ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR)) {
                 throw new SmooksConfigException("Cannot use the document selector with the XMLBinding class.  Must use an absolute path.  Selector value '" + selector + "'.");
             }
-            if(!selector.startsWith("/") && !selector.startsWith("${") && !selector.startsWith("#")) {
+            if (!selector.startsWith("/") && !selector.startsWith(" ${") && !selector.startsWith("#")) {
                 throw new SmooksConfigException("Invalid selector value '" + selector + "'.  Selector paths must be absolute.");
             }
-            rootElementNames.add(config.getSelectorPath().get(0).getElement());
+            rootElementNames.add(((ElementSelectorStep) resourceConfig.getSelectorPath().get(1)).getQName());
         }
     }
 

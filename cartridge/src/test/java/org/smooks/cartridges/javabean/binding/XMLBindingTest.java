@@ -90,7 +90,7 @@ public class XMLBindingTest {
     @Test
     public void test_Person_binding() throws IOException, SAXException {
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream("config5/person-binding-config.xml"));
-        xmlBinding.intialise();
+        xmlBinding.initialise();
 
         Person person = xmlBinding.fromXML("<person name='Max' age='50' />", Person.class);
         String xml = xmlBinding.toXML(person);
@@ -121,7 +121,7 @@ public class XMLBindingTest {
         String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"), "UTF-8");
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
         XMLBinding xmlBinding = new XMLBinding(smooks);
-        xmlBinding.intialise();
+        xmlBinding.initialise();
 
         assertTrue("Should be a binding only config.", ModelSet.get(smooks.getApplicationContext()).isBindingOnlyConfig());
 
@@ -131,7 +131,7 @@ public class XMLBindingTest {
     private void test_post_created_Smooks(String config) throws IOException, SAXException {
         String inputXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream(config + "/order.xml"), "UTF-8");
         XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream(config + "/order-binding-config.xml"));
-        xmlBinding.intialise();
+        xmlBinding.initialise();
 
         test(inputXML, xmlBinding);
     }

@@ -106,13 +106,13 @@ import java.util.Map;
 public class ModelBuilder {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelBuilder.class);
-	private static DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+	private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
 	static {
-		documentBuilderFactory.setNamespaceAware(true);
+		DOCUMENT_BUILDER_FACTORY.setNamespaceAware(true);
 	}
 
-    private Descriptor descriptor;
-	private boolean validate = true;
+    private final Descriptor descriptor;
+	private boolean validate;
     private String reportPath;
 
     public ModelBuilder(Descriptor descriptor, boolean validate) throws SAXException, IOException {
@@ -162,44 +162,44 @@ public class ModelBuilder {
         AssertArgument.isNotNull(message, "message");
         AssertArgument.isNotNull(modelRoot, "modelRoot");
 
-		JavaResult result = new JavaResult();
-		ExecutionContext executionContext = descriptor.getSmooks().createExecutionContext();
+        JavaResult result = new JavaResult();
+        ExecutionContext executionContext = descriptor.getSmooks().createExecutionContext();
         Map<Class<?>, Map<String, BeanWriter>> beanWriters = descriptor.getBeanWriters();
-		BeanTracker beanTracker = new BeanTracker(beanWriters);
+        BeanTracker beanTracker = new BeanTracker(beanWriters);
 
-        if(reportPath != null) {
-            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath));            
+        if (reportPath != null) {
+            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath));
         }
 
-		executionContext.getBeanContext().addObserver(beanTracker);
+        executionContext.getBeanContext().addObserver(beanTracker);
 
         if (validate && descriptor.getSchema() != null) {
-			// Validate the message against the schemas...
-			Document messageDoc = toDocument(message);
+            // Validate the message against the schemas...
+            Document messageDoc = toDocument(message);
 
-	        // Validate the document and then filter it through smooks...
-	        descriptor.getSchema().newValidator().validate(new DOMSource(messageDoc));
-			descriptor.getSmooks().filterSource(executionContext, new DOMSource(messageDoc), result);
-		} else {
-			descriptor.getSmooks().filterSource(executionContext, new StreamSource(message), result);
-		}
+            // Validate the document and then filter it through smooks...
+            descriptor.getSchema().newValidator().validate(new DOMSource(messageDoc));
+            descriptor.getSmooks().filterSource(executionContext, new DOMSource(messageDoc), result);
+        } else {
+            descriptor.getSmooks().filterSource(executionContext, new StreamSource(message), result);
+        }
 
         Model<T> model;
 
-        if(modelRoot == JavaResult.class) {
+        if (modelRoot == JavaResult.class) {
             model = new Model<>(modelRoot.cast(result), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
         } else {
             model = new Model<>(modelRoot.cast(result.getBean(modelRoot)), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
         }
 
         return model;
-	}
+    }
 
 	private Document toDocument(Reader message) {
 		DocumentBuilder docBuilder;
 		
 		try {
-			docBuilder = documentBuilderFactory.newDocumentBuilder();
+			docBuilder = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
 			throw new SmooksException("Unable to parse message and dynamically bind into object model.  DOM Parser confguration exception.", e);
 		}

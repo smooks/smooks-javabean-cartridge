@@ -46,12 +46,12 @@
                       xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
                       xmlns:dmb="https://www.smooks.org/xsd/smooks/dmb-1.5.xsd">
 
-    <jb:bean beanId="bbb" class="org.smooks.cartridges.javabean.dynamic.BBB" createOnElement="#document">
+    <jb:bean beanId="bbb" class="org.smooks.cartridges.javabean.dynamic.BBB" createOnElement="root">
         <jb:wiring property="aaas" beanIdRef="aaas" />
         <jb:value property="floatProperty" data="bbb/value/@property" />
     </jb:bean>
 
-    <jb:bean beanId="aaas" class="java.util.ArrayList" createOnElement="#document">
+    <jb:bean beanId="aaas" class="java.util.ArrayList" createOnElement="root">
         <jb:wiring beanIdRef="aaa" />
     </jb:bean>
 

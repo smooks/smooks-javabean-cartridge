@@ -64,12 +64,12 @@ public class InitValExpressionSetter implements DOMVisitBefore {
 
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
 		String initValExpression = DomUtils.getAttributeValue(element, initValAttrib);
-		
-		if(initValExpression != null) {
-	        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
+
+		if (initValExpression != null) {
+			ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
 			ResourceConfig creatorConfig = extensionContext.getResourceByName(BeanInstanceCreator.class.getName());
 			String propertyName = DomUtils.getAttributeValue(element, "property");
-	        
+
 			creatorConfig.setParameter(BeanInstanceCreator.INIT_VAL_EXPRESSION, "this." + propertyName + " = (" + initValExpression + ");");
 		}
 	}

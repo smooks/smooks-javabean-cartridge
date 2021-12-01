@@ -132,7 +132,7 @@ public class AbstractBinding {
     /**
      * Initialize the binding instance.
      */
-    public AbstractBinding intialise() {
+    public AbstractBinding initialise() {
         assertNotInitialized();
         smooks.createExecutionContext();
         this.allConfigsAdded = true;

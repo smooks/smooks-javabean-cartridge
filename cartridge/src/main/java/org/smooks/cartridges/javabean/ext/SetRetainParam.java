@@ -65,22 +65,22 @@ public class SetRetainParam implements DOMVisitBefore {
 	 * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.api.ExecutionContext)
 	 */
 	public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-        
-        // The current config on the stack must be a <jb:bean>...
-		ResourceConfig beanConfig = extensionContext.getResourceStack().peek();
-        String retain = beanConfig.getParameterValue("retain", String.class);
-		
-        // If the "retain" attribute is not configured we configure it.  If
-        // this is the first bean config, we set it to "true" (i.e. retain it),
-        // otherwise set it to "false" (i.e. do not retain it)...
-        if(retain == null) {
-        	List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new DefaultConfigSearch().resource(BeanInstanceCreator.class.getName()));
+		ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
 
-        	if(!creatorConfigs.isEmpty()) {
-        		// This is not the first bean config... set retain to "false"
-        		beanConfig.setParameter("retain", "false");
-        	}
-        }
+		// The current config on the stack must be a <jb:bean>...
+		ResourceConfig resourceConfig = extensionContext.getResourceStack().peek();
+		String retain = resourceConfig.getParameterValue("retain", String.class);
+
+		// If the "retain" attribute is not configured we configure it.  If
+		// this is the first bean config, we set it to "true" (i.e. retain it),
+		// otherwise set it to "false" (i.e. do not retain it)...
+		if (retain == null) {
+			List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new DefaultConfigSearch().resource(BeanInstanceCreator.class.getName()));
+
+			if (!creatorConfigs.isEmpty()) {
+				// This is not the first bean config... set retain to "false"
+				resourceConfig.setParameter("retain", "false");
+			}
+		}
 	}
 }

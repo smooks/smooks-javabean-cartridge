@@ -42,6 +42,7 @@
  */
 package org.smooks.cartridges.javabean;
 
+import org.smooks.api.Registry;
 import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.delivery.ContentHandlerBinding;
@@ -56,6 +57,7 @@ import org.smooks.engine.resource.config.DefaultResourceConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -113,13 +115,11 @@ import java.util.Set;
 public class Value extends BindingAppender {
 
 	private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
-	
-	private String dataSelector;
 
+	private final Registry registry;
+	private final String dataSelector;
 	private String targetNamespace;
-
 	private String defaultValue;
-
 	private TypeConverter<? super String, ?> typeConverter;
 	
 	/**
@@ -128,12 +128,13 @@ public class Value extends BindingAppender {
 	 * @param beanId The bean id under which the value will be stored.
 	 * @param data The data selector for the data value to be bound.
 	 */
-	public Value(String beanId, String data) {
+	public Value(String beanId, String data, Registry registry) {
 		super(beanId);
 		AssertArgument.isNotNullAndNotEmpty(beanId, "beanId");
 		AssertArgument.isNotNullAndNotEmpty(data, "dataSelector");
 
 		this.dataSelector = data;
+		this.registry = registry;
 	}
 
 	/**
@@ -143,8 +144,8 @@ public class Value extends BindingAppender {
 	 * @param data The data selector for the data value to be bound.
 	 * @param type Data type.
 	 */
-	public Value(String beanId, String data, Class<?> type) {
-		this(beanId, data);
+	public Value(String beanId, String data, Class<?> type, Registry registry) {
+		this(beanId, data, registry);
 		AssertArgument.isNotNull(type, "type");
 
 		
@@ -207,7 +208,7 @@ public class Value extends BindingAppender {
 	public List<ContentHandlerBinding<Visitor>> addVisitors() {
 		List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
 		ValueBinder valueBinder = new ValueBinder(getBeanId());
-		ResourceConfig valueBinderSmooksResourceConfiguration = new DefaultResourceConfig(dataSelector);
+		ResourceConfig valueBinderSmooksResourceConfiguration = new DefaultResourceConfig(dataSelector, new Properties());
 
 		SelectorPropertyResolver.resolveSelectorTokens(valueBinderSmooksResourceConfiguration);
 

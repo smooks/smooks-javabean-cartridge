@@ -42,11 +42,8 @@
  */
 package org.smooks.cartridges.javabean;
 
-import org.smooks.api.Registry;
 import org.smooks.api.delivery.VisitorAppender;
 import org.smooks.assertion.AssertArgument;
-
-import javax.inject.Inject;
 
 /**
  * Abstract Binding Appender.
@@ -55,8 +52,6 @@ import javax.inject.Inject;
  */
 public abstract class BindingAppender implements VisitorAppender {
 
-	@Inject
-	protected Registry registry;
 	private String beanId;
 
 	/**
@@ -75,9 +70,5 @@ public abstract class BindingAppender implements VisitorAppender {
 	 */
 	public String getBeanId() {
 	    return beanId;
-	}
-
-	public void setRegistry(Registry registry) {
-		this.registry = registry;
 	}
 }

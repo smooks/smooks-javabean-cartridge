@@ -76,8 +76,8 @@ public class ProgrammaticBeanConfigTest {
     @Test
     public void test_01_fluent() {
         Smooks smooks = new Smooks();
-        Bean orderBean = new Bean(Order.class, "order", "/order");
-                
+        Bean orderBean = new Bean(Order.class, "order", "/order", smooks.getApplicationContext().getRegistry());
+
         orderBean.bindTo("header",
             orderBean.newBean(Header.class, "/order")
                 .bindTo("order", orderBean)
@@ -105,13 +105,7 @@ public class ProgrammaticBeanConfigTest {
     @Test
     public void test_01_factory() {
         Smooks smooks = new Smooks();
-        Bean orderBean = new Bean(Order.class, "order", "/order", new Factory<Order>() {
-
-			public Order create(ExecutionContext executionContext) {
-				return new Order();
-			}
-
-        });
+        Bean orderBean = new Bean(Order.class, "order", "/order", executionContext -> new Order(), smooks.getApplicationContext().getRegistry());
 
         orderBean.bindTo("header",
             orderBean.newBean(Header.class, "/order")
@@ -140,7 +134,7 @@ public class ProgrammaticBeanConfigTest {
     @Test
     public void test_invalid_bindTo() {
         Smooks smooks = new Smooks();
-        Bean orderBean = new Bean(Order.class, "order", "/order");
+        Bean orderBean = new Bean(Order.class, "order", "/order", smooks.getApplicationContext().getRegistry());
 
         smooks.addVisitors(orderBean);
 
@@ -159,13 +153,12 @@ public class ProgrammaticBeanConfigTest {
     @Test
     public void test_01_flat() {
         Smooks smooks = new Smooks();
-        Bean orderBean = new Bean(Order.class, "order", "/order");
-                
-        Bean headerBean = new Bean(Header.class, "header", "/order")
-                                    .bindTo("order", orderBean)
-                                    .bindTo("customerNumber", "header/customer/@number")
-                                    .bindTo("customerName", "header/customer")
-                                    .bindTo("privatePerson", "header/privatePerson");
+        Bean orderBean = new Bean(Order.class, "order", "/order", smooks.getApplicationContext().getRegistry());
+        Bean headerBean = new Bean(Header.class, "header", "/order", smooks.getApplicationContext().getRegistry())
+                    .bindTo("order", orderBean)
+                    .bindTo("customerNumber", "header/customer/@number")
+                    .bindTo("customerName", "header/customer")
+                    .bindTo("privatePerson", "header/privatePerson");
 
         orderBean.bindTo("header", headerBean);
         orderBean.bindTo("orderItems", orderBean.newBean(ArrayList.class, "/order")
@@ -200,8 +193,7 @@ public class ProgrammaticBeanConfigTest {
     public void test_02_Map_fluid() {
         Smooks smooks = new Smooks();
 
-        Bean orderBean = new Bean(HashMap.class, "order", "/order");
-                
+        Bean orderBean = new Bean(HashMap.class, "order", "/order", smooks.getApplicationContext().getRegistry());
         orderBean.bindTo("header",
                 orderBean.newBean(HashMap.class, "/order")
                     .bindTo("customerNumber", "header/customer/@number", new StringToIntegerConverterFactory().createTypeConverter())
@@ -248,10 +240,9 @@ public class ProgrammaticBeanConfigTest {
     public void test_02_arrays_programmatic() {
         Smooks smooks = new Smooks();
 
-        Bean orderBean = new Bean(Order.class, "order", "order");
-
-        Bean orderItemArray = new Bean(OrderItem[].class, "orderItemsArray", "order");
-        Bean orderItem = new Bean(OrderItem.class, "orderItem", "order-item");
+        Bean orderBean = new Bean(Order.class, "order", "order", smooks.getApplicationContext().getRegistry());
+        Bean orderItemArray = new Bean(OrderItem[].class, "orderItemsArray", "order", smooks.getApplicationContext().getRegistry());
+        Bean orderItem = new Bean(OrderItem.class, "orderItem", "order-item", smooks.getApplicationContext().getRegistry());
 
         orderItem.bindTo("productId", "order-item/product");
         orderItemArray.bindTo(orderItem);

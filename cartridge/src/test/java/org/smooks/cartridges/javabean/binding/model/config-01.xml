@@ -52,9 +52,9 @@
     </core:namespaces>
 
     <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.binding.ordermodel.OrderItem" createOnElement="/ordi:order-item">
-        <jb:value property="productId" data="#/ordi:product" />
-        <jb:value property="quantity" data="#/ordi:quantity" />
-        <jb:value property="price" data="#/ordi:price" />
+        <jb:value property="productId" data="#/ordi:product"/>
+        <jb:value property="quantity" data="#/ordi:quantity"/>
+        <jb:value property="price" data="#/ordi:price"/>
     </jb:bean>
 
 </smooks-resource-list>

@@ -60,8 +60,7 @@ public class POTypeTest {
 
     @Test
     public void test() throws IOException, SAXException {
-        XMLBinding xmlBinding =
-                new XMLBinding().add(getClass().getResourceAsStream("POType-binding.xml")).intialise();
+        XMLBinding xmlBinding = new XMLBinding().add(getClass().getResourceAsStream("POType-binding.xml")).initialise();
 
         String poXML = StreamUtils.readStreamAsString(getClass().getResourceAsStream("po.xml"), "UTF-8");
         POType po = xmlBinding.fromXML(new StringSource(poXML), POType.class);

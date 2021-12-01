@@ -45,8 +45,10 @@ package org.smooks.cartridges.javabean.ext;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
+import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.extension.ExtensionContext;
 import org.w3c.dom.Element;
 
@@ -71,17 +73,18 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
         resolveSelectorTokens(populatorConfig);
     }
 
-    public static void resolveSelectorTokens(ResourceConfig populatorConfig) {
-        QName valueAttributeQName = populatorConfig.getSelectorPath().isEmpty() ? null : populatorConfig.getSelectorPath().getTargetSelectorStep().getAttribute();
-        
-        if(valueAttributeQName != null) {
-	        String valueAttributeName = valueAttributeQName.getLocalPart();
-	        String valueAttributePrefix = valueAttributeQName.getPrefix();
-	
-	        populatorConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
-	        if(valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
-	        	populatorConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
-	        }
+    public static void resolveSelectorTokens(ResourceConfig resourceConfig) {
+        SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
+
+        if (selectorStep instanceof AttributeSelectorStep) {
+            QName valueAttributeQName = ((AttributeSelectorStep) selectorStep).getQName();
+            String valueAttributeName = valueAttributeQName.getLocalPart();
+            String valueAttributePrefix = valueAttributeQName.getPrefix();
+
+            resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
+            if (valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
+                resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
+            }
         }
     }
 }
