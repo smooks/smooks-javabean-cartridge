@@ -47,6 +47,8 @@ import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.get.Getter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
+import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.support.XmlUtil;
 
 import javax.xml.namespace.QName;
@@ -64,8 +66,8 @@ import java.util.List;
  */
 public class XMLElementSerializationNode extends XMLSerializationNode {
 
-    private List<XMLAttributeSerializationNode> attributes = new ArrayList<XMLAttributeSerializationNode>();
-    private List<XMLElementSerializationNode> elements = new ArrayList<XMLElementSerializationNode>();
+    private final List<XMLAttributeSerializationNode> attributes = new ArrayList<>();
+    private final List<XMLElementSerializationNode> elements = new ArrayList<>();
 
     public XMLElementSerializationNode(QName qName) {
         super(qName);
@@ -198,32 +200,32 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     }
 
     public XMLSerializationNode findNode(SelectorPath selectorPath) {
-        if(selectorPath.size() == 1) {
-            if(selectorPath.get(0).getAttribute() != null) {
-                return getAttribute(selectorPath.get(0), attributes, false);
-            }
+        if (selectorPath.size() == 3 && selectorPath.get(2) instanceof AttributeSelectorStep) {
+            return getAttribute(selectorPath.get(2), attributes, false);
+        } else if (selectorPath.size() == 2) {
             return this;
+        } else {
+            return getPathNode(selectorPath, 2, false);
         }
-        return getPathNode(selectorPath, 1, false);
     }
 
     public XMLSerializationNode getPathNode(SelectorPath selectorPath, int stepIndex, boolean create) {
-        if(stepIndex >= selectorPath.size()) {
+        if (stepIndex >= selectorPath.size()) {
             throw new IllegalStateException("Unexpected call to 'addPathNode'.  SelectorStep index out of bounds.");
         }
 
         SelectorStep selectorStep = selectorPath.get(stepIndex);
 
-        if(stepIndex == selectorPath.size() - 1 && selectorStep.getAttribute() != null) {
+        if (stepIndex == selectorPath.size() - 1 && selectorStep instanceof AttributeSelectorStep) {
             // It's an attribute node...
-            XMLElementSerializationNode elementNode = getElement(selectorStep, elements, create);
+            XMLElementSerializationNode elementNode = getElement(selectorPath.get(stepIndex - 1), getParent().elements, create);
             return addAttributeNode(elementNode, selectorStep, create);
         } else {
             // It's an element...
             XMLElementSerializationNode childElement = getElement(selectorStep, elements, create);
-            if(childElement != null) {
+            if (childElement != null) {
                 childElement.setParent(this);
-                if(stepIndex < selectorPath.size() - 1) {
+                if (stepIndex < selectorPath.size() - 1) {
                     // Drill down again...
                     return childElement.getPathNode(selectorPath, stepIndex + 1, create);
                 } else {
@@ -237,17 +239,17 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
 
     public static XMLSerializationNode addAttributeNode(XMLElementSerializationNode elementNode, SelectorStep selectorStep, boolean create) {
         XMLAttributeSerializationNode attribute = getAttribute(selectorStep, elementNode.attributes, create);
-        if(attribute != null) {
+        if (attribute != null) {
             attribute.setParent(elementNode);
         }
         return attribute;
     }
 
     public static XMLElementSerializationNode getElement(SelectorStep step, Collection<XMLElementSerializationNode> elementList, boolean create) {
-        QName qName = step.getElement();
+        QName qName = ((ElementSelectorStep) step).getQName();
         XMLElementSerializationNode element = getNode(qName, elementList);
 
-        if(element == null && create) {
+        if (element == null && create) {
             element = new XMLElementSerializationNode(qName);
             elementList.add(element);
         }
@@ -256,10 +258,10 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     }
 
     public static XMLAttributeSerializationNode getAttribute(SelectorStep step, Collection<XMLAttributeSerializationNode> attributeList, boolean create) {
-        QName qName = step.getAttribute();
+        QName qName = ((AttributeSelectorStep) step).getQName();
         XMLAttributeSerializationNode attribute = getNode(qName, attributeList);
 
-        if(attribute == null && create) {
+        if (attribute == null && create) {
             attribute = new XMLAttributeSerializationNode(qName);
             attributeList.add(attribute);
         }
@@ -272,12 +274,12 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
         XMLElementSerializationNode clone = new XMLElementSerializationNode(qName);
 
         copyProperties(clone);
-        for(XMLElementSerializationNode element : elements) {
+        for (XMLElementSerializationNode element : elements) {
             XMLElementSerializationNode elementClone = (XMLElementSerializationNode) element.clone();
             clone.elements.add(elementClone);
             elementClone.setParent(clone);
         }
-        for(XMLAttributeSerializationNode attribute : attributes) {
+        for (XMLAttributeSerializationNode attribute : attributes) {
             XMLAttributeSerializationNode attributeClone = (XMLAttributeSerializationNode) attribute.clone();
             clone.attributes.add(attributeClone);
             attributeClone.setParent(clone);

@@ -56,6 +56,8 @@ import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.resource.config.XMLConfigDigester;
+import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
+import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
 import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -248,13 +250,13 @@ public class Descriptor {
                         resourceConfigSeq = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
                         for(int i = 0; i < resourceConfigSeq.size(); i++) {
                             ResourceConfig config = resourceConfigSeq.get(i);
-                            
-                            if(config.getSelectorPath().getSelectorNamespaceURI() == null) {
+
+                            if (config.getSelectorPath().getSelectorNamespaceURI() == null) {
                                 SelectorStep selectorStep = config.getSelectorPath().getTargetSelectorStep();
 
                                 // And if there isn't a namespace prefix specified on the element (unresolved at this point),
                                 // then assign the binding config namespace...
-                                if(selectorStep.getElement().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                                if (((NamedSelectorStep) selectorStep).getQName().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
                                     config.getSelectorPath().setSelectorNamespaceURI(namespace.uri);
                                 }
                             }

@@ -55,7 +55,7 @@
     </resource-config>
 
     <resource-config selector="jb:bean">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cartridges.javabean.MapToSelectorFromContextAwareAttribute</resource>
         <param name="attribute">createOnElement</param>
         <param name="mapTo">selector</param>
 
@@ -63,7 +63,7 @@
         	If not set then the $void selector is used to make sure that the  BeanInstanceCreator gets
             initialized but never executed on an element.
         -->
-        <param name="defaultValue">$void</param>
+        <param name="defaultValue">none</param>
     </resource-config>
     
     <resource-config selector="jb:bean">
@@ -75,7 +75,7 @@
         	If not set then the $void selector is used to make sure that the  BeanInstanceCreator gets
             initialized but never executed on an element.
         -->
-        <param name="defaultValue">$void</param>
+        <param name="defaultValue">none</param>
     </resource-config>
 
     <resource-config selector="jb:bean">
@@ -116,12 +116,11 @@
         <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
         <resource>org.smooks.engine.resource.extension.CloneResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
-        <param name="unset">beanClass</param>
-        <param name="unset">extendLifecycle</param>
+        <param name="unset">beanClass,extendLifecycle,selector</param>
     </resource-config>
 
     <resource-config selector="jb:bean/value">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cartridges.javabean.MapToSelectorFromContextAwareAttribute</resource>
         <param name="attribute">data</param>
         <param name="mapTo">selector</param>
     </resource-config>
@@ -200,7 +199,7 @@
     </resource-config>
 
     <resource-config selector="jb:bean/wiring">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.cartridges.javabean.MapToSelectorFromContextAwareAttribute</resource>
         <param name="attribute">wireOnElement</param>
         <param name="mapTo">selector</param>
     </resource-config>

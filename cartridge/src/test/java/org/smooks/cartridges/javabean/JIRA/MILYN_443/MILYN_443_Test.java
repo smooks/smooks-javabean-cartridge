@@ -78,10 +78,10 @@ public class MILYN_443_Test {
 		namespaces.setProperty("f", "http://www.blah");
 		smooks.setNamespaces(namespaces);
 		
-		Bean beanConfig = new Bean(HashMap.class, "theBean");
-		beanConfig.bindTo("attr1", "test1/@e:attr1");
-		beanConfig.bindTo("attr2", "test1/@f:attr2");		
-		smooks.addVisitors(beanConfig);
+		Bean bean = new Bean(HashMap.class, "theBean", smooks.getApplicationContext().getRegistry());
+		bean.bindTo("attr1", "test1/@e:attr1");
+		bean.bindTo("attr2", "test1/@f:attr2");
+		smooks.addVisitors(bean);
 		
 		test(smooks);
     }
