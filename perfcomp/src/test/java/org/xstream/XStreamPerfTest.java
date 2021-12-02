@@ -60,6 +60,10 @@ public class XStreamPerfTest {
     @Test
     public void test() {
         XStream xstream = new XStream(new StaxDriver());
+        xstream.allowTypesByWildcard(new String[] {
+                "org.smooks.Order",
+                "org.smooks.OrderItem"
+        });
 
         xstream.alias("order", Order.class);
         xstream.alias("orderItem", OrderItem.class);
