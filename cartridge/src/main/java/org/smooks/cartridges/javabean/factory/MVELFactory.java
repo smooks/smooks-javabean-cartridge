@@ -42,7 +42,6 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.smooks.api.ExecutionContext;
 import org.smooks.cartridges.javabean.BeanMapExpressionEvaluator;
 
@@ -82,9 +81,7 @@ public class MVELFactory<T> implements Factory<T> {
 	 */
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this)
-					.append("expressionEvaluator", expressionEvaluator)
-					.toString();
+		return String.format("%s[expressionEvaluator=%s]", this, expressionEvaluator);
 	}
 
 }

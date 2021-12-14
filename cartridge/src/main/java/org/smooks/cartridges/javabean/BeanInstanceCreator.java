@@ -42,7 +42,6 @@
  */
 package org.smooks.cartridges.javabean;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.api.ApplicationContext;
@@ -187,7 +186,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         beanId = appContext.getBeanIdStore().register(beanIdName);
         beanId.setCreateResourceConfiguration(config);
 
-        if (StringUtils.isNotBlank(beanFactoryDefinition.orElse(null))) {
+        if (!beanFactoryDefinition.orElse("").isEmpty()) {
             String alias = null;
             String definition = beanFactoryDefinition.get();
 

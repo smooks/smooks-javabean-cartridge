@@ -62,17 +62,17 @@ public abstract class AbstractCachingFactoryDefinitionParser implements FactoryD
 	public Factory<?> parse(String factoryDefinition) {
 		Factory<?> factory = factoryCache.get(factoryDefinition);
 
-		if(factory == null) {
+		if (factory == null) {
 
 			factory = createFactory(factoryDefinition);
 
-			if(factory == null) {
+			if (factory == null) {
 				throw new NullPointerException("Null was returned by the createFactory method.");
 			}
 
 			// Make sure that we always return the same factory
 			Factory<?> cachedFactory = factoryCache.putIfAbsent(factoryDefinition, factory);
-			if(cachedFactory != null) {
+			if (cachedFactory != null) {
 				factory = cachedFactory;
 			}
 		}
