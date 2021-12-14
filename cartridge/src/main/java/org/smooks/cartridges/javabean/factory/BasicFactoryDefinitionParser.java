@@ -42,8 +42,6 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.smooks.api.ExecutionContext;
 import org.smooks.support.ClassUtil;
 
@@ -82,18 +80,15 @@ public class BasicFactoryDefinitionParser extends
 	 */
 	@Override
 	protected Factory<?> createFactory(String factoryDefinition) {
-
-		String[] defParts = StringUtils.split(factoryDefinition, '#');
+		String[] defParts = factoryDefinition.split("#");
 		if (defParts.length == 2) {
 			String className = defParts[0];
 			String methodDef = defParts[1];
 			try {
-				String[] methodParts = StringUtils.split(methodDef, '.');
+				String[] methodParts = methodDef.split("\\.");
 
 				if (methodParts.length == 1) {
-
 					return createStaticMethodFactory(factoryDefinition, className, methodDef);
-
 				} else if (methodParts.length == 2) {
 
 					String staticGetInstanceMethodDef = methodParts[0];
@@ -190,22 +185,15 @@ public class BasicFactoryDefinitionParser extends
 		public Object create(ExecutionContext executionContext) {
 			try {
 				return factoryMethod.invoke(null);
-			} catch (IllegalAccessException e) {
-				throw new FactoryException("Could not invoke the static factory method '" + toClassDefinition(factoryMethod)+ "' defined by the factory definition '"+ factoryDefinition +"'");
-			} catch (InvocationTargetException e) {
+			} catch (IllegalAccessException | InvocationTargetException e) {
 				throw new FactoryException("Could not invoke the static factory method '" + toClassDefinition(factoryMethod)+ "' defined by the factory definition '"+ factoryDefinition +"'");
 			}
 		}
 
 		@Override
 		public String toString() {
-			ToStringBuilder builder = new ToStringBuilder(this);
-							builder.append("factoryDefinition", factoryDefinition)
-							.append("factoryMethod", factoryMethod);
-
-			return builder.toString();
+			return String.format("%s[factoryDefinition=%s,factoryMethod=%s]", this, factoryDefinition, factoryMethod);
 		}
-
 	}
 
 	/**
@@ -241,20 +229,14 @@ public class BasicFactoryDefinitionParser extends
 
 			try {
 				return factoryMethod.invoke(factoryObj);
-			} catch (IllegalAccessException e) {
-				throw new FactoryException("Could not invoke the method '" + toClassDefinition(factoryMethod) + "' on the factory object '" + factoryObj + "'. This factory is defined by the factory definition '" + factoryDefinition + "'");
-			} catch (InvocationTargetException e) {
+			} catch (IllegalAccessException | InvocationTargetException e) {
 				throw new FactoryException("Could not invoke the method '" + toClassDefinition(factoryMethod) + "' on the factory object '" + factoryObj + "'. This factory is defined by the factory definition '" + factoryDefinition + "'");
 			}
 		}
 
 		@Override
 		public String toString() {
-			ToStringBuilder builder = new ToStringBuilder(this);
-			builder.append("factoryDefinition", factoryDefinition)
-					.append("factoryMethod", factoryMethod);
-
-			return builder.toString();
+			return String.format("%s[factoryDefinition=%s,factoryMethod=%s]", this, factoryDefinition, factoryMethod);
 		}
 
 	}

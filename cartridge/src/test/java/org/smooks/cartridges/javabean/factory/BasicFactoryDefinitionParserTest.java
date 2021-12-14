@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.Test;
 import org.smooks.tck.MockExecutionContext;
 
@@ -53,7 +53,7 @@ import static org.junit.Assert.*;
 
 public class BasicFactoryDefinitionParserTest {
 
-        @Test
+	@Test
 	public void test_create_StaticMethodFactory() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -67,7 +67,7 @@ public class BasicFactoryDefinitionParserTest {
 
 	}
 
-        @Test
+	@Test
 	public void test_create_FactoryInstanceFactory() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -81,7 +81,7 @@ public class BasicFactoryDefinitionParserTest {
 
 	}
 
-        @Test
+	@Test
 	public void test_caching() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -95,7 +95,7 @@ public class BasicFactoryDefinitionParserTest {
 
 	}
 
-        @Test
+	@Test
 	public void test_invalid_definition() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -108,14 +108,14 @@ public class BasicFactoryDefinitionParserTest {
 			exception = e;
 		}
 
-		if(exception == null) {
+		if (exception == null) {
 			fail("The parser didn't throw an exception");
 		}
 
 		assertTrue(exception.getMessage().contains("garbage"));
 	}
 
-        @Test
+	@Test
 	public void test_null_factory() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -130,12 +130,12 @@ public class BasicFactoryDefinitionParserTest {
 			exception = e;
 		}
 
-		if(exception == null) {
+		if (exception == null) {
 			fail("The parser didn't throw an NullPointerException");
 		}
 	}
 
-        @Test
+	@Test
 	public void test_invalid_class() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -149,14 +149,14 @@ public class BasicFactoryDefinitionParserTest {
 			exception = e;
 		}
 
-		if(exception == null) {
+		if (exception == null) {
 			fail("The parser didn't throw a FactoryException");
 		}
 
 		assertTrue(ExceptionUtils.indexOfThrowable(exception, ClassNotFoundException.class) >= 0);
 	}
 
-        @Test
+	@Test
 	public void test_invalid_method() {
 
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
@@ -169,18 +169,16 @@ public class BasicFactoryDefinitionParserTest {
 			exception = e;
 		}
 
-		if(exception == null) {
+		if (exception == null) {
 			fail("The parser didn't throw a FactoryException");
 		}
 
 		assertTrue(ExceptionUtils.indexOfThrowable(exception, NoSuchMethodException.class) >= 0);
 	}
 
-        @Test
+	@Test
 	public void test_not_static_method() {
-
 		BasicFactoryDefinitionParser parser = new BasicFactoryDefinitionParser();
-
 		FactoryException exception = null;
 
 		try {
@@ -189,11 +187,11 @@ public class BasicFactoryDefinitionParserTest {
 			exception = e;
 		}
 
-		if(exception == null) {
+		if (exception == null) {
 			fail("The parser didn't throw a FactoryException");
 		}
 
 		assertTrue(ExceptionUtils.indexOfThrowable(exception, NoSuchMethodException.class) >= 0);
-		assertTrue(ExceptionUtils.getFullStackTrace(exception).contains("static"));
+		assertTrue(ExceptionUtils.getStackTrace(exception).contains("static"));
 	}
 }

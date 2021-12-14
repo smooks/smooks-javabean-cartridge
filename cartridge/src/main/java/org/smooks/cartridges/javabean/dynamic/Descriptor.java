@@ -56,7 +56,6 @@ import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.resource.config.XMLConfigDigester;
-import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
 import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
@@ -265,7 +264,7 @@ public class Descriptor {
                         throw new SmooksConfigException("Unexpected configuration digest exception.", e);
                     }
 
-                    smooks.getApplicationContext().getRegistry().registerResourceConfigList(resourceConfigSeq);
+                    smooks.getApplicationContext().getRegistry().registerResourceConfigSeq(resourceConfigSeq);
                 } else {
                     throw new SAXException("Binding configuration resolver '" + bindingResolver.getClass().getName() + "' failed to resolve binding configuration for namespace '" + namespace + "'.  Resolver must return an InputStream in the InputSource.");
                 }

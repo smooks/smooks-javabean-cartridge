@@ -42,7 +42,6 @@
  */
 package org.smooks.cartridges.javabean.ext;
 
-import org.apache.commons.lang.StringUtils;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
@@ -71,11 +70,13 @@ public class WireOnElementChecker implements DOMVisitBefore {
 	}
 
 	private boolean isCreateOnElementSet(Element element) {
-		return StringUtils.isNotEmpty(((Element)element.getParentNode()).getAttribute("createOnElement"));
+		String createOnElement = ((Element) element.getParentNode()).getAttribute("createOnElement");
+		return !createOnElement.isEmpty();
     }
 
 	private boolean isWireOnElementSet(Element element) {
-        return StringUtils.isNotEmpty(element.getAttribute("wireOnElement"));
+		String wireOnElement = element.getAttribute("wireOnElement");
+		return !wireOnElement.isEmpty();
     }
 
 
