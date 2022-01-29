@@ -56,6 +56,7 @@ import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.resource.config.XMLConfigDigester;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
 import org.smooks.support.ClassUtil;
 import org.xml.sax.EntityResolver;
@@ -251,7 +252,7 @@ public class Descriptor {
                             ResourceConfig config = resourceConfigSeq.get(i);
 
                             if (config.getSelectorPath().getSelectorNamespaceURI() == null) {
-                                SelectorStep selectorStep = config.getSelectorPath().getTargetSelectorStep();
+                                SelectorStep selectorStep = ((IndexedSelectorPath) config.getSelectorPath()).getTargetSelectorStep();
 
                                 // And if there isn't a namespace prefix specified on the element (unresolved at this point),
                                 // then assign the binding config namespace...

@@ -48,6 +48,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.extension.ExtensionContext;
 import org.w3c.dom.Element;
@@ -67,23 +68,26 @@ import javax.xml.namespace.QName;
  */
 public class SelectorPropertyResolver implements DOMVisitBefore {
 
+    @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
-        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-        ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
-        resolveSelectorTokens(populatorConfig);
+        final ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
+        final ResourceConfig populatorResourceConfig = extensionContext.getResourceStack().peek();
+        resolveSelectorTokens(populatorResourceConfig);
     }
 
     public static void resolveSelectorTokens(ResourceConfig resourceConfig) {
-        SelectorStep selectorStep = resourceConfig.getSelectorPath().getTargetSelectorStep();
+        if (resourceConfig.getSelectorPath() instanceof IndexedSelectorPath) {
+            final SelectorStep selectorStep = ((IndexedSelectorPath) resourceConfig.getSelectorPath()).getTargetSelectorStep();
 
-        if (selectorStep instanceof AttributeSelectorStep) {
-            QName valueAttributeQName = ((AttributeSelectorStep) selectorStep).getQName();
-            String valueAttributeName = valueAttributeQName.getLocalPart();
-            String valueAttributePrefix = valueAttributeQName.getPrefix();
+            if (selectorStep instanceof AttributeSelectorStep) {
+                QName valueAttributeQName = ((AttributeSelectorStep) selectorStep).getQName();
+                String valueAttributeName = valueAttributeQName.getLocalPart();
+                String valueAttributePrefix = valueAttributeQName.getPrefix();
 
-            resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
-            if (valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
-                resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
+                resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
+                if (valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
+                    resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
+                }
             }
         }
     }
