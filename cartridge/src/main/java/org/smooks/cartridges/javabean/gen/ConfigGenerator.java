@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -80,17 +80,16 @@ import java.util.*;
  */
 public class ConfigGenerator {
 
-    private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
-
     public static final String ROOT_BEAN_CLASS = "root.beanClass";
     public static final String PACKAGES_INCLUDED = "packages.included";
     public static final String PACKAGES_EXCLUDED = "packages.excluded";
 
-    private Writer outputWriter;
+    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories;
+    private final Writer outputWriter;
+    private final Stack<Class<?>> classStack = new Stack<>();
     private Class<?> rootBeanClass;
     private List<String> packagesIncluded;
     private List<String> packagesExcluded;
-    private Stack<Class<?>> classStack = new Stack<Class<?>>();
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         String rootBeanClassName = getArgument("-c", "Root Bean Class Name", true, args);
@@ -110,7 +109,7 @@ public class ConfigGenerator {
         Writer outputWriter = new FileWriter(outputFile);
 
         try {
-            ConfigGenerator generator = new ConfigGenerator(properties, outputWriter);
+            ConfigGenerator generator = new ConfigGenerator(properties, outputWriter, ConfigGenerator.class.getClassLoader());
             generator.generate();
         } finally {
             try {
@@ -121,10 +120,11 @@ public class ConfigGenerator {
         }
     }
 
-    public ConfigGenerator(Properties bindingProperties, Writer outputWriter) throws ClassNotFoundException {
+    public ConfigGenerator(Properties bindingProperties, Writer outputWriter, ClassLoader classLoader) throws ClassNotFoundException {
         AssertArgument.isNotNull(bindingProperties, "bindingProperties");
         AssertArgument.isNotNull(outputWriter, "outputWriter");
         this.outputWriter = outputWriter;
+        typeConverterFactories = new TypeConverterFactoryLoader().load(classLoader);
 
         configure(bindingProperties);
     }
@@ -142,7 +142,7 @@ public class ConfigGenerator {
     }
 
     private ClassConfig addClassConfig(List<ClassConfig> classConfigs, Class<?> beanClass, String beanId) {
-        if(classStack.contains(beanClass)) {
+        if (classStack.contains(beanClass)) {
             // Don't go into an endless loop... stack overflow etc...
             return null;
         }
@@ -155,31 +155,31 @@ public class ConfigGenerator {
 
             // Determine the package name for the root bean class.
             String rootPackage = rootBeanClass.getPackage() != null
-                                ? rootBeanClass.getPackage().getName()
-                                // Fallback case in the rare situation where the
-                                // bean class is in the default package.
-                                : "";
+                    ? rootBeanClass.getPackage().getName()
+                    // Fallback case in the rare situation where the
+                    // bean class is in the default package.
+                    : "";
 
             classConfigs.add(classConfig);
 
-            for(Field field : fields) {
+            for (Field field : fields) {
                 Class<?> type = field.getType();
-                TypeConverterFactory<? super String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<>(String.class, type).lookup(TYPE_CONVERTER_FACTORIES);
+                TypeConverterFactory<? super String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<>(String.class, type).lookup(typeConverterFactories);
 
-                if(typeConverterFactory != null) {
-                    bindings.add(new BindingConfig(field));
+                if (typeConverterFactory != null) {
+                    bindings.add(new BindingConfig(field, typeConverterFactories));
                 } else {
-                    if(type.isArray()) {
+                    if (type.isArray()) {
                         addArrayConfig(classConfigs, bindings, rootPackage, field);
-                    } else if(Collection.class.isAssignableFrom(type)) {
+                    } else if (Collection.class.isAssignableFrom(type)) {
                         addCollectionConfig(classConfigs, bindings, rootPackage, field);
                     } else {
                         String typePackage = type.getPackage().getName();
 
-                        if(isExcluded(typePackage)) {
+                        if (isExcluded(typePackage)) {
                             continue;
-                        } else if(typePackage.startsWith(rootPackage) || isIncluded(typePackage)) {
-                            bindings.add(new BindingConfig(field, field.getName()));
+                        } else if (typePackage.startsWith(rootPackage) || isIncluded(typePackage)) {
+                            bindings.add(new BindingConfig(field, field.getName(), typeConverterFactories));
                             addClassConfig(classConfigs, type, field.getName());
                         }
                     }
@@ -198,16 +198,16 @@ public class ConfigGenerator {
         String wireBeanId = field.getName() + "_entry";
         String typePackage = arrayType.getPackage().getName();
 
-        if(isExcluded(typePackage)) {
+        if (isExcluded(typePackage)) {
             return;
-        } else if(typePackage.startsWith(rootPackage) || isIncluded(typePackage)) {
+        } else if (typePackage.startsWith(rootPackage) || isIncluded(typePackage)) {
             ClassConfig arrayConfig = new ClassConfig(arrayType, field.getName());
 
-            arrayConfig.getBindings().add(new BindingConfig(wireBeanId));
+            arrayConfig.getBindings().add(new BindingConfig(wireBeanId, typeConverterFactories));
             arrayConfig.setArray(true);
             classConfigs.add(arrayConfig);
 
-            bindings.add(new BindingConfig(field, field.getName()));
+            bindings.add(new BindingConfig(field, field.getName(), typeConverterFactories));
             addClassConfig(classConfigs, arrayType, wireBeanId);
         }
     }
@@ -216,44 +216,44 @@ public class ConfigGenerator {
         ParameterizedType paramType = (ParameterizedType) field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
 
-        if(types.length == 0) {
+        if (types.length == 0) {
             // No generics info.  Can't infer anything...
         } else {
             Class<?> type = (Class<?>) types[0];
             String wireBeanId = field.getName() + "_entry";
             String typePackage = type.getPackage().getName();
 
-            if(isExcluded(typePackage)) {
+            if (isExcluded(typePackage)) {
                 return;
-            } else if(typePackage.startsWith(rootPackage) || isIncluded(typePackage)) {
+            } else if (typePackage.startsWith(rootPackage) || isIncluded(typePackage)) {
                 ClassConfig listConfig = new ClassConfig(ArrayList.class, field.getName());
 
-                listConfig.getBindings().add(new BindingConfig(wireBeanId));
+                listConfig.getBindings().add(new BindingConfig(wireBeanId, typeConverterFactories));
                 classConfigs.add(listConfig);
 
-                bindings.add(new BindingConfig(field, field.getName()));
+                bindings.add(new BindingConfig(field, field.getName(), typeConverterFactories));
                 addClassConfig(classConfigs, type, wireBeanId);
             }
         }
     }
 
     private boolean isIncluded(String packageName) {
-        if(packagesIncluded != null) {
-          return isInPackageList(packagesIncluded, packageName);
+        if (packagesIncluded != null) {
+            return isInPackageList(packagesIncluded, packageName);
         }
         return false;
     }
 
     private boolean isExcluded(String packageName) {
-        if(packagesExcluded != null) {
-          return isInPackageList(packagesExcluded, packageName);
+        if (packagesExcluded != null) {
+            return isInPackageList(packagesExcluded, packageName);
         }
         return false;
     }
 
     private boolean isInPackageList(List<String> packages, String typePackage) {
         for (String packageName : packages) {
-            if(typePackage.startsWith(packageName)) {
+            if (typePackage.startsWith(packageName)) {
                 return true;
             }
         }
@@ -266,15 +266,15 @@ public class ConfigGenerator {
         String packagesIncludedConfig = bindingProperties.getProperty(ConfigGenerator.PACKAGES_INCLUDED);
         String packagesExcludedConfig = bindingProperties.getProperty(ConfigGenerator.PACKAGES_EXCLUDED);
 
-        if(rootBeanClassConfig == null) {
+        if (rootBeanClassConfig == null) {
             throw new IllegalArgumentException("Binding configuration property '" + ConfigGenerator.ROOT_BEAN_CLASS + "' not defined.");
         }
         rootBeanClass = Class.forName(rootBeanClassConfig);
 
-        if(packagesIncludedConfig != null) {
+        if (packagesIncludedConfig != null) {
             packagesIncluded = parsePackages(packagesIncludedConfig);
         }
-        if(packagesExcludedConfig != null) {
+        if (packagesExcludedConfig != null) {
             packagesExcluded = parsePackages(packagesExcludedConfig);
         }
     }
@@ -283,7 +283,7 @@ public class ConfigGenerator {
         String[] packages = packagesString.split(";");
         List<String> packagesSet = new ArrayList<String>();
 
-        for(String aPackage : packages) {
+        for (String aPackage : packages) {
             packagesSet.add(aPackage.trim());
         }
 
@@ -293,10 +293,10 @@ public class ConfigGenerator {
     private static Properties loadProperties(String fileName) throws IOException {
         Properties properties = new Properties();
 
-        if(fileName != null) {
+        if (fileName != null) {
             File propertiesFile = new File(fileName);
 
-            if(!propertiesFile.exists()) {
+            if (!propertiesFile.exists()) {
                 throw new IllegalArgumentException("Binding configuration properties file '" + propertiesFile.getAbsolutePath() + "' doesn't exist.  See class Javadoc.");
             }
 
@@ -313,13 +313,13 @@ public class ConfigGenerator {
     }
 
     private static String getArgument(String argAlias, String argName, boolean mandatory, String[] args) {
-        for(int i = 0; i < args.length; i++) {
-            if(args[i].equalsIgnoreCase(argAlias) && i + 1 < args.length) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase(argAlias) && i + 1 < args.length) {
                 return args[i + 1].trim();
             }
         }
 
-        if(mandatory) {
+        if (mandatory) {
             throw new IllegalArgumentException("Binding configuration error.  Missing value for commandline arg '" + argAlias + "' (" + argName + ")'.");
         }
 

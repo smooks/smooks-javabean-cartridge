@@ -60,7 +60,7 @@ public class ConfigGeneratortTest {
 
         properties.setProperty(ConfigGenerator.ROOT_BEAN_CLASS, Order.class.getName());
 
-        ConfigGenerator generator = new ConfigGenerator(properties, writer);
+        ConfigGenerator generator = new ConfigGenerator(properties, writer, getClass().getClassLoader());
 
         generator.generate();
 
