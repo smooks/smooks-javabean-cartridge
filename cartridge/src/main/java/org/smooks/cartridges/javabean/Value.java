@@ -114,7 +114,7 @@ import java.util.Set;
  */
 public class Value extends BindingAppender {
 
-	private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+	private static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES;
 
 	private final Registry registry;
 	private final String dataSelector;
@@ -132,6 +132,14 @@ public class Value extends BindingAppender {
 		super(beanId);
 		AssertArgument.isNotNullAndNotEmpty(beanId, "beanId");
 		AssertArgument.isNotNullAndNotEmpty(data, "dataSelector");
+
+		if (TYPE_CONVERTER_FACTORIES == null) {
+			synchronized (Bean.class) {
+				if (TYPE_CONVERTER_FACTORIES == null) {
+					TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load(registry.getClassLoader());
+				}
+			}
+		}
 
 		this.dataSelector = data;
 		this.registry = registry;

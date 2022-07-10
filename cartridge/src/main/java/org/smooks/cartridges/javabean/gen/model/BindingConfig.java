@@ -54,22 +54,22 @@ import java.util.Set;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BindingConfig {
-    private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories;
+    private final Field property;
+    private final String wireBeanId;
 
-    private Field property;
-    private String wireBeanId;
-
-    public BindingConfig(Field property) {
-        this.property = property;
+    public BindingConfig(Field property, Set<TypeConverterFactory<?, ?>> typeConverterFactories) {
+        this(property, null, typeConverterFactories);
     }
 
-    public BindingConfig(String wireBeanId) {
-        this.wireBeanId = wireBeanId;
+    public BindingConfig(String wireBeanId, Set<TypeConverterFactory<?, ?>> typeConverterFactories) {
+        this(null, wireBeanId, typeConverterFactories);
     }
 
-    public BindingConfig(Field property, String wireBeanId) {
+    public BindingConfig(Field property, String wireBeanId, Set<TypeConverterFactory<?, ?>> typeConverterFactories) {
         this.property = property;
         this.wireBeanId = wireBeanId;
+        this.typeConverterFactories = typeConverterFactories;
     }
 
     public Field getProperty() {
@@ -99,7 +99,7 @@ public class BindingConfig {
             return "$DELETE:NOT-APPLICABLE$";
         }
 
-        final TypeConverterFactory<? extends String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<String, Object>(String.class, type).lookup(TYPE_CONVERTER_FACTORIES);
+        final TypeConverterFactory<? extends String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<String, Object>(String.class, type).lookup(typeConverterFactories);
         if (typeConverterFactory != null && typeConverterFactory.getClass().isAnnotationPresent(Resource.class) && !typeConverterFactory.getClass().getAnnotation(Resource.class).name().equals("")) {
             return typeConverterFactory.getClass().getAnnotation(Resource.class).name();
         } else {

@@ -149,7 +149,8 @@ import java.util.*;
  * @see Value
  */
 public class Bean extends BindingAppender {
-    private static final Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load();
+
+    private static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = null;
 
     private final Registry registry;
     private final BeanInstanceCreator beanInstanceCreator;
@@ -236,11 +237,18 @@ public class Bean extends BindingAppender {
         AssertArgument.isNotNull(beanClass, "beanClass");
         AssertArgument.isNotNull(createOnElement, "createOnElement");
 
+        if (TYPE_CONVERTER_FACTORIES == null) {
+            synchronized (Bean.class) {
+                if (TYPE_CONVERTER_FACTORIES == null) {
+                    TYPE_CONVERTER_FACTORIES = new TypeConverterFactoryLoader().load(registry.getClassLoader());
+                }
+            }
+        }
+
         this.beanClass = beanClass;
         this.createOnElement = createOnElement;
         this.targetNamespace = createOnElementNS;
         this.registry = registry;
-
         beanInstanceCreator = new BeanInstanceCreator(beanId, beanClass, factory);
     }
 
