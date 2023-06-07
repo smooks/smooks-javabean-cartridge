@@ -49,7 +49,7 @@ import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.support.CollectionsUtil;
 import org.w3c.dom.Element;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Map.Entry;
 import java.util.Set;

@@ -12,9 +12,7 @@
     <name>Smooks JavaBean Cartridge</name>
     <url>https://www.smooks.org</url>
 
-    <description>The Smooks JavaBean Cartridge allows you to create and populate Java objects from your message data
-        (i.e. bind data to).
-    </description>
+    <description>The Smooks JavaBean Cartridge allows you to create and populate Java objects from your message data (i.e. bind data to).</description>
 
     <licenses>
         <license>

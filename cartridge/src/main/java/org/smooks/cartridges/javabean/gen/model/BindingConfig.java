@@ -46,7 +46,7 @@ import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.engine.converter.TypeConverterFactoryLoader;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.Set;
 
