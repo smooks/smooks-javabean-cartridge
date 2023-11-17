@@ -79,7 +79,6 @@ import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup
 import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.memento.TextAccumulatorVisitorMemento;
 import org.smooks.support.ClassUtil;
-import org.smooks.support.CollectionsUtil;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -91,6 +90,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Bean instance populator visitor class.
@@ -666,7 +667,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     }
 
     public Set<?> getProducts() {
-        return CollectionsUtil.toSet(beanIdName + "." + property.orElse(null), "]." + property.orElse(null));
+        return Stream.of(beanIdName + "." + property.orElse(null), "]." + property.orElse(null)).collect(Collectors.toSet());
     }
 
     public boolean consumes(Object object) {

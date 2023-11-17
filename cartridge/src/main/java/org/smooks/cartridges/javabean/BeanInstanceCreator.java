@@ -70,7 +70,6 @@ import org.smooks.cartridges.javabean.factory.FactoryDefinitionParser.FactoryDef
 import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
-import org.smooks.support.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import jakarta.annotation.PostConstruct;
@@ -81,6 +80,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Bean instance creator visitor class.
@@ -349,7 +350,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     }
 
     public Set<?> getProducts() {
-        return CollectionsUtil.toSet(beanIdName);
+        return Stream.of(beanIdName).collect(Collectors.toSet());
     }
 
     private String getId() {
