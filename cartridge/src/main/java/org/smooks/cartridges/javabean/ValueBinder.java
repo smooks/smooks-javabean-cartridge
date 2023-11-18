@@ -63,7 +63,6 @@ import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.memento.TextAccumulatorVisitorMemento;
-import org.smooks.support.CollectionsUtil;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -74,6 +73,8 @@ import javax.inject.Named;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Value Binder.
@@ -292,7 +293,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
 	}
 
 	public Set<?> getProducts() {
-		return CollectionsUtil.toSet(beanIdName);
+		return Stream.of(beanIdName).collect(Collectors.toSet());
 	}
 
 	private Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {

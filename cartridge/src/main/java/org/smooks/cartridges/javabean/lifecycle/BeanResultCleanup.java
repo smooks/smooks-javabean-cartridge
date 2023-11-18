@@ -46,13 +46,14 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
-import org.smooks.support.CollectionsUtil;
 import org.w3c.dom.Element;
 
 import jakarta.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Bean Result Cleanup resource.
@@ -69,7 +70,7 @@ public class BeanResultCleanup implements ExecutionLifecycleCleanable, BeforeVis
 
     @PostConstruct
     public void postConstruct() {
-        beanIDSet = CollectionsUtil.toSet(beanIDs);
+        beanIDSet = Stream.of(beanIDs).collect(Collectors.toSet());
     }
 
     /**
