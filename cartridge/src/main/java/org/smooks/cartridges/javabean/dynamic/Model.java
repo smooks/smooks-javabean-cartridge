@@ -68,23 +68,24 @@ public class Model<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
 
-	private final T modelRoot;
-	private final List<BeanMetadata> modelMetadata;
+    private final T modelRoot;
+    private final List<BeanMetadata> modelMetadata;
     private final Map<Class<?>, Map<String, BeanWriter>> beanWriters;
     private final Map<String, String> namespacePrefixMappings;
     private Set<String> knownNamespaces;
 
     /**
-	 * Public constructor.
-	 * @param modelRoot The model root object.
-     * @param builder Associated model builder instance.
-	 */
-	public Model(T modelRoot, ModelBuilder builder) {
+     * Public constructor.
+     *
+     * @param modelRoot The model root object.
+     * @param builder   Associated model builder instance.
+     */
+    public Model(T modelRoot, ModelBuilder builder) {
         AssertArgument.isNotNull(modelRoot, "modelRoot");
         AssertArgument.isNotNull(builder, "builder");
 
-		this.modelRoot = modelRoot;
-		this.modelMetadata = new ArrayList<>();
+        this.modelRoot = modelRoot;
+        this.modelMetadata = new ArrayList<>();
         this.beanWriters = builder.getDescriptor().getBeanWriters();
         this.namespacePrefixMappings = new LinkedHashMap<>();
 
@@ -92,37 +93,38 @@ public class Model<T> {
 
         // Register the model root bean...
         registerBean(modelRoot);
-	}
+    }
 
-	/**
-	 * Protected constructor.
+    /**
+     * Protected constructor.
      * <p/>
      * Used by the {@link ModelBuilder}.
      *
-	 * @param modelRoot The model root object.
-	 * @param modelMetadata Model metadata.
-	 */
-	protected Model(T modelRoot, List<BeanMetadata> modelMetadata, Map<Class<?>, Map<String, BeanWriter>> beanWriters, Map<String, String> namespacePrefixMappings) {
+     * @param modelRoot     The model root object.
+     * @param modelMetadata Model metadata.
+     */
+    protected Model(T modelRoot, List<BeanMetadata> modelMetadata, Map<Class<?>, Map<String, BeanWriter>> beanWriters, Map<String, String> namespacePrefixMappings) {
         AssertArgument.isNotNull(modelRoot, "modelRoot");
         AssertArgument.isNotNull(modelMetadata, "modelMetadata");
         AssertArgument.isNotNull(beanWriters, "beanWriters");
         AssertArgument.isNotNull(namespacePrefixMappings, "namespacePrefixMappings");
 
-		this.modelRoot = modelRoot;
-		this.modelMetadata = modelMetadata;
+        this.modelRoot = modelRoot;
+        this.modelMetadata = modelMetadata;
         this.beanWriters = beanWriters;
         this.namespacePrefixMappings = namespacePrefixMappings;
 
         resolveKnownNamespaces();
-	}
+    }
 
-	/**
-	 * Get the model root object instance.
-	 * @return the model root object instance.
-	 */
-	public T getModelRoot() {
-		return modelRoot;
-	}
+    /**
+     * Get the model root object instance.
+     *
+     * @return the model root object instance.
+     */
+    public T getModelRoot() {
+        return modelRoot;
+    }
 
     /**
      * Resolve the set of known namespaces.
@@ -131,7 +133,7 @@ public class Model<T> {
         // Extract the set of known namespaces based on the set of bean writers we have...
         knownNamespaces = new HashSet<String>();
         Collection<Map<String, BeanWriter>> namespacedBeanWritersI = beanWriters.values();
-        for(Map<String, BeanWriter>  namespacedBeanWritersII : namespacedBeanWritersI) {
+        for (Map<String, BeanWriter> namespacedBeanWritersII : namespacedBeanWritersI) {
             knownNamespaces.addAll(namespacedBeanWritersII.keySet());
         }
     }
@@ -156,15 +158,15 @@ public class Model<T> {
      *
      * @return Model metadata.
      * @throws BeanRegistrationException Bean instance
-     * {@link BeanRegistrationException#throwBeanInstanceAlreadyRegisteredException(Object) already registered}, or
-     * bean type
-     * {@link BeanRegistrationException#throwBeanNotAnnotatedWithDefaultNamespace(Object) not annotated with the
-     * DefaultNamespace annotation}.
+     *                                   {@link BeanRegistrationException#throwBeanInstanceAlreadyRegisteredException(Object) already registered}, or
+     *                                   bean type
+     *                                   {@link BeanRegistrationException#throwBeanNotAnnotatedWithDefaultNamespace(Object) not annotated with the
+     *                                   DefaultNamespace annotation}.
      */
     public BeanMetadata registerBean(Object beanInstance) throws BeanRegistrationException {
         AssertArgument.isNotNull(beanInstance, "beanInstance");
 
-        if(getBeanMetadata(beanInstance) != null) {
+        if (getBeanMetadata(beanInstance) != null) {
             BeanRegistrationException.throwBeanInstanceAlreadyRegisteredException(beanInstance);
         }
 
@@ -174,7 +176,7 @@ public class Model<T> {
         // Set the namespace to the default namespace for that bean.  Can be
         // changed later, if needed...
         DefaultNamespace defaultNs = beanInstance.getClass().getAnnotation(DefaultNamespace.class);
-        if(defaultNs == null) {
+        if (defaultNs == null) {
             BeanRegistrationException.throwBeanNotAnnotatedWithDefaultNamespace(beanInstance);
         }
         metadata.setNamespace(defaultNs.uri());
@@ -184,53 +186,54 @@ public class Model<T> {
     }
 
     /**
-	 * Get the model metadata.
-	 * <p/>
-	 * A {@link BeanMetadata} list containing metadata about objects
-	 * wired into the object graph, routed at the {@link #getModelRoot() model root}.
-	 *
-	 * @return Model metadata.
-	 */
-	public List<BeanMetadata> getModelMetadata() {
-		return modelMetadata;
-	}
+     * Get the model metadata.
+     * <p/>
+     * A {@link BeanMetadata} list containing metadata about objects
+     * wired into the object graph, routed at the {@link #getModelRoot() model root}.
+     *
+     * @return Model metadata.
+     */
+    public List<BeanMetadata> getModelMetadata() {
+        return modelMetadata;
+    }
 
     /**
-	 * Get the model metadata.
-	 * <p/>
-	 * A {@link BeanMetadata} list containing metadata about objects
-	 * wired into the object graph, routed at the {@link #getModelRoot() model root}.
-	 *
-	 * @return Model metadata.
-	 */
-	public BeanMetadata getBeanMetadata(Object beanInstance) {
-		AssertArgument.isNotNull(beanInstance, "beanInstance");
-		for(BeanMetadata beanMetadata: modelMetadata) {
-			if(beanMetadata.getBean() == beanInstance) {
-				return beanMetadata;
-			}
-		}
-		return null;
-	}
+     * Get the model metadata.
+     * <p/>
+     * A {@link BeanMetadata} list containing metadata about objects
+     * wired into the object graph, routed at the {@link #getModelRoot() model root}.
+     *
+     * @return Model metadata.
+     */
+    public BeanMetadata getBeanMetadata(Object beanInstance) {
+        AssertArgument.isNotNull(beanInstance, "beanInstance");
+        for (BeanMetadata beanMetadata : modelMetadata) {
+            if (beanMetadata.getBean() == beanInstance) {
+                return beanMetadata;
+            }
+        }
+        return null;
+    }
 
     /**
      * Write the bean model to the specified {@link Writer} instance.
+     *
      * @param writer The writer instance.
      * @throws BeanRegistrationException One of the "namespace root" beans in the model is not {@link #registerBean(Object) registered}.
-     * @throws IOException Error while writing the model to the supplied {@link Writer} instance.
+     * @throws IOException               Error while writing the model to the supplied {@link Writer} instance.
      */
     public synchronized void writeModel(Writer writer) throws BeanRegistrationException, IOException {
         AssertArgument.isNotNull(writer, "writer");
 
         Object rootBean;
 
-        if(modelRoot instanceof JavaResult) {
+        if (modelRoot instanceof JavaResult) {
             JavaResult javaResult = (JavaResult) modelRoot;
             Map<String, Object> beanMap = javaResult.getResultMap();
 
-            if(beanMap.isEmpty()) {
+            if (beanMap.isEmpty()) {
                 throw new IOException("Unable to serialize empty JavaResult Model.");
-            } else if(beanMap.size() > 1) {
+            } else if (beanMap.size() > 1) {
                 throw new IOException("Unable to serialize JavaResult Model that contains more than 1 bean instance.");
             }
             rootBean = beanMap.values().iterator().next();
@@ -247,6 +250,7 @@ public class Model<T> {
 
     /**
      * Get the current namespace prefix mappings for this Model instance.
+     *
      * @return The current namespace prefix mappings for this Model instance.
      */
     public Map<String, String> getNamespacePrefixMappings() {
@@ -255,6 +259,7 @@ public class Model<T> {
 
     /**
      * Get the {@link BeanWriter} instance for the specified bean, if one exists.
+     *
      * @param bean The bean.
      * @return The {@link BeanWriter} instance for the specified bean, if one exists, otherwise null.
      * @throws BeanRegistrationException No {@link BeanMetadata} for specified bean instance.
@@ -262,7 +267,7 @@ public class Model<T> {
     public BeanWriter getBeanWriter(Object bean) throws BeanRegistrationException {
         BeanMetadata beanMetadata = getBeanMetadata(bean);
 
-        if(beanMetadata == null) {
+        if (beanMetadata == null) {
             BeanRegistrationException.throwUnregisteredBeanInstanceException(bean);
         }
 
@@ -283,9 +288,9 @@ public class Model<T> {
      * namespace prefixes match those declared in the prefix mappings.
      */
     private void updateMetadataPrefixes() {
-        for(BeanMetadata metaData : modelMetadata) {
+        for (BeanMetadata metaData : modelMetadata) {
             String declaredPrefix = namespacePrefixMappings.get(metaData.getNamespace());
-            if(declaredPrefix != null) {
+            if (declaredPrefix != null) {
                 metaData.setNamespacePrefix(declaredPrefix);
             }
         }
@@ -299,8 +304,8 @@ public class Model<T> {
         // Need to create a clone so as to avoid concurrent mod exceptions...
         Set<String> namespaceUris = new HashSet<>(namespacePrefixMappings.keySet());
 
-        for(String namespaceUri : namespaceUris) {
-            if(knownNamespaces.contains(namespaceUri) && !isNamespaceInModel(namespaceUri)) {
+        for (String namespaceUri : namespaceUris) {
+            if (knownNamespaces.contains(namespaceUri) && !isNamespaceInModel(namespaceUri)) {
                 namespacePrefixMappings.remove(namespaceUri);
             }
         }
@@ -311,17 +316,17 @@ public class Model<T> {
      * namespace-to-prefix mappings.
      */
     private void addMissingNamespaceMappings() {
-        for(BeanMetadata metaData : modelMetadata) {
+        for (BeanMetadata metaData : modelMetadata) {
             String uri = metaData.getNamespace();
-            if(!namespacePrefixMappings.containsKey(uri)) {
+            if (!namespacePrefixMappings.containsKey(uri)) {
                 namespacePrefixMappings.put(uri, metaData.getNamespacePrefix());
             }
         }
     }
 
     private boolean isNamespaceInModel(String namespaceUri) {
-        for(BeanMetadata metaData : modelMetadata) {
-            if(namespaceUri.equals(metaData.getNamespace())) {
+        for (BeanMetadata metaData : modelMetadata) {
+            if (namespaceUri.equals(metaData.getNamespace())) {
                 return true;
             }
         }
@@ -330,15 +335,15 @@ public class Model<T> {
     }
 
     private void resolveUnmappedBeanWriters() throws IOException {
-        for(BeanMetadata metaData : modelMetadata) {
-            if(metaData.getWriter() == null) {
+        for (BeanMetadata metaData : modelMetadata) {
+            if (metaData.getWriter() == null) {
                 // Install the writer for the configured namespace...
                 Map<String, BeanWriter> classBeanWriters = beanWriters.get(metaData.getBean().getClass());
 
-                if(classBeanWriters != null) {
+                if (classBeanWriters != null) {
                     BeanWriter beanWriter = classBeanWriters.get(metaData.getNamespace());
 
-                    if(beanWriter == null) {
+                    if (beanWriter == null) {
                         throw new IOException("BeanWriters are configured for Object type '" + metaData.getBean().getClass() + "', but not for namespace '" + metaData.getNamespace() + "'.");
                     }
 

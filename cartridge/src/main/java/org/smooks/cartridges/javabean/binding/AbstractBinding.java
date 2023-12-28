@@ -210,14 +210,14 @@ public class AbstractBinding {
     private GetterGraph addToContextualGetter(GetterGraph contextualGetter, Bean bean) {
         Bean theBean = bean;
 
-        while(theBean != null) {
+        while (theBean != null) {
             Bean parentBean = theBean.getWiredInto();
 
-            if(parentBean != null) {
-                if(parentBean.isCollection()){
+            if (parentBean != null) {
+                if (parentBean.isCollection()) {
                     // Contextual selectors stop once they hit a parent Collection theBean...
                     Bean wiredInto = parentBean.getWiredInto();
-                    if(wiredInto != null) {
+                    if (wiredInto != null) {
                         // Use the collection item's beanId as the context object name
                         // because collection items don't have property names...
                         contextualGetter.setContextObjectName(theBean.getBeanId());
@@ -227,7 +227,7 @@ public class AbstractBinding {
 
                 WiredBinding binding = parentBean.getWiredBinding(theBean);
 
-                if(binding == null) {
+                if (binding == null) {
                     throw new IllegalStateException("Failed to locate a wiring of theBean '" + theBean + "' on theBean '" + parentBean + "'.");
                 }
 
@@ -241,19 +241,19 @@ public class AbstractBinding {
     }
 
     protected void assertInitialized() {
-        if(!initialized) {
+        if (!initialized) {
             throw new IllegalStateException("Illegal call to method before instance is initialized.  Must call the 'initialize' method first.");
         }
     }
 
     protected void assertNotAllConfigsAdded() {
-        if(allConfigsAdded) {
+        if (allConfigsAdded) {
             throw new IllegalStateException("Illegal call to method after all configurations have been added.");
         }
     }
 
     protected void assertNotInitialized() {
-        if(initialized) {
+        if (initialized) {
             throw new IllegalStateException("Illegal call to method after instance is initialized.");
         }
     }

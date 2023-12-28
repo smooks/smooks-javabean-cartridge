@@ -66,20 +66,20 @@ public class BeanClassLookup implements DOMVisitBefore {
         // The current config on the stack must be <dmb:writer>...
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
         ResourceConfig dmbWriterConfig = extensionContext.getResourceStack().peek();
-        if(dmbWriterConfig.getParameterValue("beanClass", String.class) == null) {
+        if (dmbWriterConfig.getParameterValue("beanClass", String.class) == null) {
             String beanId = dmbWriterConfig.getParameterValue("beanId", String.class);
 
-            if(beanId == null) {
-                throw new SmooksConfigException("One of the 'beanClass' or 'beanId' attributes must be configured on the <dmb:writer> configuration.");                
+            if (beanId == null) {
+                throw new SmooksConfigException("One of the 'beanClass' or 'beanId' attributes must be configured on the <dmb:writer> configuration.");
             }
 
             ResourceConfig beanCreatorConfig = BeanConfigUtil.findBeanCreatorConfig(beanId, executionContext);
-            if(beanCreatorConfig == null) {
+            if (beanCreatorConfig == null) {
                 throw new SmooksConfigException("Cannot find <jb:bean> configuration for beanId '" + beanId + "' for <dmb:writer>.  Reordered <dmb:writer> after <jb:bean> config.");
             }
 
             String beanClass = beanCreatorConfig.getParameterValue(BeanConfigUtil.BEAN_CLASS_CONFIG, String.class);
-            if(beanClass == null) {
+            if (beanClass == null) {
                 throw new SmooksConfigException("Cannot create find BeanWriter for beanId '" + beanId + "'.  The associated <jb:bean> configuration does not define a bean Class name.");
             }
 
