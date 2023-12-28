@@ -89,7 +89,7 @@ public class Bean {
     }
 
     public Bean wiredInto(Bean wiredInto) {
-        if(cloneable) {
+        if (cloneable) {
             throw new IllegalStateException("Illegal wiring of a bean that is cloneable.  Only non cloneable beans (e.g. non base beans) can be wired together.");
         }
 
@@ -102,10 +102,10 @@ public class Bean {
     }
 
     public WiredBinding getWiredBinding(Bean wiredBean) {
-        for(Binding binding : bindings) {
-            if(binding instanceof WiredBinding) {
+        for (Binding binding : bindings) {
+            if (binding instanceof WiredBinding) {
                 WiredBinding wiredBinding = (WiredBinding) binding;
-                if(wiredBinding.getWiredBean() == wiredBean) {
+                if (wiredBinding.getWiredBean() == wiredBean) {
                     return wiredBinding;
                 }
             }
@@ -115,23 +115,23 @@ public class Bean {
     }
 
     protected Bean clone(Map<String, Bean> baseBeans, Bean parentBean) {
-        if(!cloneable) {
+        if (!cloneable) {
             throw new IllegalStateException("Illegal call to clone a Bean instance that is not cloneable.");
         }
 
         Bean beanClone = new Bean(creator).wiredInto(parentBean);
 
-        for(Binding binding : bindings) {
+        for (Binding binding : bindings) {
             Binding bindingClone = (Binding) binding.clone();
 
             bindingClone.setParentBean(beanClone);
-            if(bindingClone instanceof WiredBinding) {
+            if (bindingClone instanceof WiredBinding) {
                 WiredBinding wiredBinding = (WiredBinding) bindingClone;
                 String wiredBeanId = wiredBinding.getWiredBeanId();
                 Bean beanToBeWired = baseBeans.get(wiredBeanId);
 
-                if(beanToBeWired != null) {
-                    if(parentBean == null || (!parentBean.getBeanId().equals(wiredBeanId) && parentBean.getParentBean(wiredBeanId) == null)) {
+                if (beanToBeWired != null) {
+                    if (parentBean == null || (!parentBean.getBeanId().equals(wiredBeanId) && parentBean.getParentBean(wiredBeanId) == null)) {
                         wiredBinding.setWiredBean(beanToBeWired.clone(baseBeans, beanClone));
                         beanClone.bindings.add(wiredBinding);
                     }
@@ -145,8 +145,8 @@ public class Bean {
     }
 
     public Bean getParentBean(String beanId) {
-        if(wiredInto != null) {
-            if(wiredInto.getBeanId().equals(beanId)) {
+        if (wiredInto != null) {
+            if (wiredInto.getBeanId().equals(beanId)) {
                 return wiredInto;
             } else {
                 return wiredInto.getParentBean(beanId);

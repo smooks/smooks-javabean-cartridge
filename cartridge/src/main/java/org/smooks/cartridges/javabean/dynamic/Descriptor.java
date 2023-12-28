@@ -76,7 +76,7 @@ import java.util.*;
 
 /**
  * Model Descriptor.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class Descriptor {
@@ -97,22 +97,22 @@ public class Descriptor {
     }
 
     public Descriptor(String descriptorPath) throws SAXException, IOException {
-		AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
+        AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
 
-		List<Properties> descriptors = loadDescriptors(descriptorPath, getClass().getClassLoader());
-		intialize(descriptors, new DefaultSchemaResolver(descriptors), new DefaultBindingConfigResolver(descriptors));
-	}
+        List<Properties> descriptors = loadDescriptors(descriptorPath, getClass().getClassLoader());
+        intialize(descriptors, new DefaultSchemaResolver(descriptors), new DefaultBindingConfigResolver(descriptors));
+    }
 
-	public Descriptor(String descriptorPath, EntityResolver schemaResolver, EntityResolver bindingResolver, ClassLoader classloader) throws SAXException, IOException {
-		AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
-		AssertArgument.isNotNull(bindingResolver, "bindingResolver");
+    public Descriptor(String descriptorPath, EntityResolver schemaResolver, EntityResolver bindingResolver, ClassLoader classloader) throws SAXException, IOException {
+        AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
+        AssertArgument.isNotNull(bindingResolver, "bindingResolver");
         AssertArgument.isNotNull(classloader, "classloader");
 
         this.classloader = classloader;
 
-		List<Properties> descriptors = loadDescriptors(descriptorPath, classloader);
-		intialize(descriptors, schemaResolver, bindingResolver);
-	}
+        List<Properties> descriptors = loadDescriptors(descriptorPath, classloader);
+        intialize(descriptors, schemaResolver, bindingResolver);
+    }
 
     public Descriptor(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver, ClassLoader classloader) throws SAXException, IOException {
         AssertArgument.isNotNullAndNotEmpty(descriptors, "descriptors");
@@ -142,11 +142,11 @@ public class Descriptor {
         try {
             List<URL> resources = ClassUtil.getResources(descriptorPath, classLoader);
 
-            if(resources.isEmpty()) {
+            if (resources.isEmpty()) {
                 throw new IllegalStateException("Failed to locate any model descriptor file by the name '" + descriptorPath + "' on the classpath.");
             }
 
-            for(URL resource : resources) {
+            for (URL resource : resources) {
                 InputStream resStream = resource.openStream();
                 descriptorFiles.add(loadDescriptor(resStream));
             }
@@ -170,22 +170,22 @@ public class Descriptor {
 
     private void intialize(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver) throws SAXException, IOException {
 
-        if(schemaResolver instanceof AbstractResolver) {
-            if(((AbstractResolver)schemaResolver).getClassLoader() != classloader) {
+        if (schemaResolver instanceof AbstractResolver) {
+            if (((AbstractResolver) schemaResolver).getClassLoader() != classloader) {
                 throw new SmooksException("Schema EntityResolver '" + schemaResolver.getClass().getName() + "' not using the same ClassLoader as this Descriptor instance.");
             }
         }
-        if(bindingResolver instanceof AbstractResolver) {
-            if(((AbstractResolver)bindingResolver).getClassLoader() != classloader) {
+        if (bindingResolver instanceof AbstractResolver) {
+            if (((AbstractResolver) bindingResolver).getClassLoader() != classloader) {
                 throw new SmooksException("Binding EntityResolver '" + bindingResolver.getClass().getName() + "' not using the same ClassLoader as this Descriptor instance.");
             }
         }
 
-        if(schemaResolver != null) {
+        if (schemaResolver != null) {
             this.schema = newSchemaInstance(descriptors, schemaResolver);
         }
-		this.smooks = newSmooksInstance(descriptors, bindingResolver);
-	}
+        this.smooks = newSmooksInstance(descriptors, bindingResolver);
+    }
 
     private Schema newSchemaInstance(List<Properties> descriptors, EntityResolver schemaResolver) throws SAXException, IOException {
         List<Source> schemas = getSchemas(descriptors, schemaResolver);
@@ -195,12 +195,12 @@ public class Descriptor {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             return schemaFactory.newSchema(schemas.toArray(new Source[schemas.size()]));
         } finally {
-            for(Source schemaSource : schemas) {
-                if(schemaSource instanceof StreamSource) {
-                    StreamSource streamSource = (StreamSource)schemaSource;
-                    if(streamSource.getInputStream() != null) {
+            for (Source schemaSource : schemas) {
+                if (schemaSource instanceof StreamSource) {
+                    StreamSource streamSource = (StreamSource) schemaSource;
+                    if (streamSource.getInputStream() != null) {
                         streamSource.getInputStream().close();
-                    } else if(streamSource.getReader() != null) {
+                    } else if (streamSource.getReader() != null) {
                         streamSource.getReader().close();
                     }
                 }
@@ -215,10 +215,10 @@ public class Descriptor {
         for (Namespace namespace : namespaces) {
             InputSource schemaSource = schemaResolver.resolveEntity(namespace.uri, namespace.uri);
 
-            if(schemaSource != null) {
-                if(schemaSource.getByteStream() != null) {
+            if (schemaSource != null) {
+                if (schemaSource.getByteStream() != null) {
                     xsdSources.add(new StreamSource(schemaSource.getByteStream()));
-                } else if(schemaSource.getCharacterStream() != null) {
+                } else if (schemaSource.getCharacterStream() != null) {
                     xsdSources.add(new StreamSource(schemaSource.getCharacterStream()));
                 } else {
                     throw new SAXException("Schema resolver '" + schemaResolver.getClass().getName() + "' failed to resolve schema for namespace '" + namespace + "'.  Resolver must return a Reader or InputStream in the InputSource.");
@@ -238,17 +238,17 @@ public class Descriptor {
 
         // Now create a Smooks instance for processing configurations for these namespaces...
         Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classloader).build());
-        
+
         for (Namespace namespace : namespaces) {
             InputSource bindingSource = bindingResolver.resolveEntity(namespace.uri, namespace.uri);
 
-            if(bindingSource != null) {
-                if(bindingSource.getByteStream() != null) {
+            if (bindingSource != null) {
+                if (bindingSource.getByteStream() != null) {
                     ResourceConfigSeq resourceConfigSeq;
 
                     try {
                         resourceConfigSeq = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
-                        for(int i = 0; i < resourceConfigSeq.size(); i++) {
+                        for (int i = 0; i < resourceConfigSeq.size(); i++) {
                             ResourceConfig config = resourceConfigSeq.get(i);
 
                             if (config.getSelectorPath().getSelectorNamespaceURI() == null) {
@@ -278,7 +278,7 @@ public class Descriptor {
     private static Set<Namespace> resolveNamespaces(List<Properties> descriptors) {
         List<Namespace> namespaces = new ArrayList<Namespace>();
 
-        for(Properties descriptor : descriptors) {
+        for (Properties descriptor : descriptors) {
             extractNamespaceDecls(descriptor, namespaces);
         }
 
@@ -300,14 +300,14 @@ public class Descriptor {
 
     private static List<Namespace> extractNamespaceDecls(Properties descriptor, List<Namespace> namespaces) {
         Set<Map.Entry<Object, Object>> properties = descriptor.entrySet();
-        for(Map.Entry<Object, Object> property: properties) {
+        for (Map.Entry<Object, Object> property : properties) {
             String key = ((String) property.getKey()).trim();
-            if(key.endsWith(DESCRIPTOR_NAMESPACE_POSTFIX)) {
+            if (key.endsWith(DESCRIPTOR_NAMESPACE_POSTFIX)) {
                 Namespace namespace = new Namespace();
                 String namespaceUri = (String) property.getValue();
                 String namespaceId = getNamespaceId(namespaceUri, descriptor);
 
-                if(namespaceId == null) {
+                if (namespaceId == null) {
                     throw new SmooksConfigException("Unable to resolve namespace ID for namespace URI '" + namespaceUri + "'.");
                 }
 
@@ -316,7 +316,7 @@ public class Descriptor {
                 namespace.uri = namespaceUri;
                 try {
                     namespace.order = Integer.parseInt(namespaceOrder);
-                } catch(NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new SmooksConfigException("Invalid value for descriptor config value '" + namespaceId + DESCRIPTOR_ORDER_POSTFIX + "'.  Must be a valid Integer value.");
                 }
 
@@ -328,9 +328,9 @@ public class Descriptor {
     }
 
     public static String getNamespaceId(String namespaceURI, List<Properties> descriptors) {
-        for(Properties descriptor : descriptors) {
+        for (Properties descriptor : descriptors) {
             String id = getNamespaceId(namespaceURI, descriptor);
-            if(id != null) {
+            if (id != null) {
                 return id;
             }
         }
@@ -339,10 +339,10 @@ public class Descriptor {
 
     private static String getNamespaceId(String namespaceURI, Properties descriptor) {
         Set<Map.Entry<Object, Object>> properties = descriptor.entrySet();
-        for(Map.Entry<Object, Object> property: properties) {
+        for (Map.Entry<Object, Object> property : properties) {
             String key = ((String) property.getKey()).trim();
             String value = ((String) property.getValue()).trim();
-            if(key.endsWith(DESCRIPTOR_NAMESPACE_POSTFIX) && value.equals(namespaceURI)) {
+            if (key.endsWith(DESCRIPTOR_NAMESPACE_POSTFIX) && value.equals(namespaceURI)) {
                 return key.substring(0, (key.length() - DESCRIPTOR_NAMESPACE_POSTFIX.length()));
             }
         }
@@ -358,9 +358,9 @@ public class Descriptor {
     }
 
     private static String getDescriptorValue(String name, List<Properties> descriptors) {
-        for(Properties descriptor : descriptors) {
+        for (Properties descriptor : descriptors) {
             String value = descriptor.getProperty(name);
-            if(value != null) {
+            if (value != null) {
                 return value;
             }
         }

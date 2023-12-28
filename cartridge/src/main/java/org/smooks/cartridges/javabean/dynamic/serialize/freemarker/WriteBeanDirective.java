@@ -73,12 +73,12 @@ public class WriteBeanDirective extends AbstractBeanDirective {
 
         SimpleScalar indentScalar = (SimpleScalar) params.get("indent");
         int indent = 0;
-        if(indentScalar != null) {
+        if (indentScalar != null) {
             String indentParamVal = indentScalar.getAsString().trim();
             try {
                 indent = Integer.parseInt(indentParamVal);
                 indent = Math.min(indent, 100);
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 LOGGER.debug("Invalid <@writeNamespaces> 'indent' parameter value '" + indentParamVal + "'.  Must be a valid integer (<= 100).");
             }
         }
@@ -87,17 +87,17 @@ public class WriteBeanDirective extends AbstractBeanDirective {
         Model model = (Model) modelBeanModel.getWrappedObject();
         BeanMetadata beanMetadata = model.getBeanMetadata(bean);
 
-        if(beanMetadata == null) {
+        if (beanMetadata == null) {
             BeanRegistrationException.throwUnregisteredBeanInstanceException(bean);
         }
 
         BeanWriter beanWriter = beanMetadata.getWriter();
 
-        if(beanMetadata.getPreText() != null) {
+        if (beanMetadata.getPreText() != null) {
             environment.getOut().write(beanMetadata.getPreText());
         }
 
-        if(indent > 0) {
+        if (indent > 0) {
             StringWriter beanWriteBuffer = new StringWriter();
 
             beanWriteBuffer.write('\n');

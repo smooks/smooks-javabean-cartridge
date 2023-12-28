@@ -6,7 +6,7 @@
 
     <groupId>org.smooks.cartridges</groupId>
     <artifactId>smooks-javabean-pom</artifactId>
-    <version>2.0.0-RC3-SNAPSHOT</version>
+    <version>2.0.0-RC3</version>
     <packaging>pom</packaging>
 
     <name>Smooks JavaBean Cartridge</name>
@@ -41,7 +41,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
-        <smooks.version>2.0.0-RC3-SNAPSHOT</smooks.version>
+        <smooks.version>2.0.0-RC3</smooks.version>
     </properties>
 
     <modules>
