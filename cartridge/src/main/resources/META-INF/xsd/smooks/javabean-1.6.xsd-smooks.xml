@@ -65,18 +65,6 @@
         -->
         <param name="defaultValue">none</param>
     </resource-config>
-    
-    <resource-config selector="jb:bean">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
-        <param name="attribute">createOnElementNS</param>
-        <param name="mapTo">namespaceURI</param>
-
-        <!--
-        	If not set then the $void selector is used to make sure that the  BeanInstanceCreator gets
-            initialized but never executed on an element.
-        -->
-        <param name="defaultValue">none</param>
-    </resource-config>
 
     <resource-config selector="jb:bean">
         <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
