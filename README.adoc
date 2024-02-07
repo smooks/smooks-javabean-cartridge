@@ -208,7 +208,6 @@ This configuration simply creates an instance of the `+example.model.Order+` cla
 * `+beanId+`: The id of this bean. Please see link:#the-bean-context[The Bean Context] for more details.
 * `+class+`: The fully qualified class name of the bean.
 * `+createOnElement+`: attribute controls when the bean instance is created. Population of the bean properties is controlled through the binding configurations (child elements of the element).
-* `+createOnElementNS+`: The namespace of the createOnElement can be specified via the `+createOnElementNS+` attribute.
 
 The Javabean cartridge has the following conditions for javabeans:
 

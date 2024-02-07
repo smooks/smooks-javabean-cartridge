@@ -85,7 +85,10 @@ public class BeanWriterFactory implements ContentHandler {
         try {
             BeanWriter beanWriter = beanWriterClass.newInstance();
             appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(beanWriter, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), resourceConfig, beanWriter)));
-            getBeanWriters(beanClass, appContext).put(resourceConfig.getSelectorPath().getSelectorNamespaceURI(), beanWriter);
+            Map<String, BeanWriter> beanWriters = getBeanWriters(beanClass, appContext);
+            for (Object namespaceUri : resourceConfig.getSelectorPath().getNamespaces().values()) {
+                beanWriters.put((String) namespaceUri, beanWriter);
+            }
         } catch (InstantiationException | IllegalAccessException e) {
             throw new SmooksConfigException("Unable to create BeanWriter instance.", e);
         }

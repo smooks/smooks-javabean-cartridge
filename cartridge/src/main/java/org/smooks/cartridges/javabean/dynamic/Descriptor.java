@@ -250,15 +250,12 @@ public class Descriptor {
                         resourceConfigSeq = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
                         for (int i = 0; i < resourceConfigSeq.size(); i++) {
                             ResourceConfig config = resourceConfigSeq.get(i);
+                            SelectorStep selectorStep = ((IndexedSelectorPath) config.getSelectorPath()).getTargetSelectorStep();
 
-                            if (config.getSelectorPath().getSelectorNamespaceURI() == null) {
-                                SelectorStep selectorStep = ((IndexedSelectorPath) config.getSelectorPath()).getTargetSelectorStep();
-
-                                // And if there isn't a namespace prefix specified on the element (unresolved at this point),
-                                // then assign the binding config namespace...
-                                if (((NamedSelectorStep) selectorStep).getQName().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-                                    config.getSelectorPath().setSelectorNamespaceURI(namespace.uri);
-                                }
+                            // And if there isn't a namespace prefix specified on the element (unresolved at this point),
+                            // then assign the binding config namespace...
+                            if (((NamedSelectorStep) selectorStep).getQName().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                                config.getSelectorPath().getNamespaces().put(namespace.id, namespace.uri);
                             }
                         }
                     } catch (URISyntaxException e) {
@@ -276,23 +273,19 @@ public class Descriptor {
     }
 
     private static Set<Namespace> resolveNamespaces(List<Properties> descriptors) {
-        List<Namespace> namespaces = new ArrayList<Namespace>();
+        List<Namespace> namespaces = new ArrayList<>();
 
         for (Properties descriptor : descriptors) {
             extractNamespaceDecls(descriptor, namespaces);
         }
 
-        Comparator<Namespace> namspaceSorter = new Comparator<Namespace>() {
-            public int compare(Namespace o1, Namespace o2) {
-                return o1.order - o2.order;
-            }
-        };
+        Comparator<Namespace> namspaceSorter = Comparator.comparingInt(o -> o.order);
 
         Namespace[] namespaceArray = new Namespace[namespaces.size()];
         namespaces.toArray(namespaceArray);
         Arrays.sort(namespaceArray, namspaceSorter);
 
-        Set<Namespace> orderedNamespaceSet = new LinkedHashSet<Namespace>();
+        Set<Namespace> orderedNamespaceSet = new LinkedHashSet<>();
         orderedNamespaceSet.addAll(Arrays.asList(namespaceArray));
 
         return orderedNamespaceSet;
@@ -314,6 +307,7 @@ public class Descriptor {
                 String namespaceOrder = descriptor.getProperty(namespaceId + DESCRIPTOR_ORDER_POSTFIX, Integer.toString(Integer.MAX_VALUE)).trim();
 
                 namespace.uri = namespaceUri;
+                namespace.id = namespaceId;
                 try {
                     namespace.order = Integer.parseInt(namespaceOrder);
                 } catch (NumberFormatException e) {
@@ -370,6 +364,7 @@ public class Descriptor {
 
     private static class Namespace {
         private String uri;
+        private String id;
         private int order;
     }
 }

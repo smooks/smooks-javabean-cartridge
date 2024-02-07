@@ -18,7 +18,7 @@
                 created (and bound) when the element event
                 specified in the "createOnElement" attribute
                 is encountered in the Source data event
-                stream (see also "createOnElementNS").
+                stream.
                 <h3>Bean Property/Member Population</h3>
                 Bean property/member population is
                 controlled by the binding sub-elements
@@ -122,18 +122,10 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="createOnElementNS" type="xs:anyURI">
-                    <xs:annotation>
-                        <xs:documentation xml:lang="en">
-                            Namespace control for the
-                            "createOnElement" attribute.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
                 <xs:attribute name="retain" type="xs:boolean">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
-                            Retain the bean in Smooks BenaContext after the creating
+                            Retain the bean in Smooks BeanContext after the creating
                             fragment has been processed.
                             <p/>
                             Default the value is 'false'.

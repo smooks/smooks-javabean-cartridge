@@ -224,7 +224,7 @@ public class Value extends BindingAppender {
 		valueBinder.setDefaultValue(defaultValue);
 		valueBinder.setValueAttributeName(valueBinderSmooksResourceConfiguration.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
 
-		visitorBindings.add(new DefaultContentHandlerBinding<>(valueBinder, valueBinderSmooksResourceConfiguration.getSelectorPath().getSelector(), targetNamespace, registry));
+		visitorBindings.add(new DefaultContentHandlerBinding<>(valueBinder, valueBinderSmooksResourceConfiguration.getSelectorPath().getSelector(), registry));
 	
 		return visitorBindings;
 	}
