@@ -64,7 +64,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class NamespaceReaper implements BeforeVisitor {
 
-    private static final TypedKey<Map<String, String>> NAMESPACE_REAPER_TYPED_KEY = new TypedKey<>();
+    private static final TypedKey<Map<String, String>> NAMESPACE_REAPER_TYPED_KEY = TypedKey.of();
     
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
