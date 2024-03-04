@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.dynamic.resolvers;
 
 import org.smooks.cartridges.javabean.dynamic.Descriptor;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -88,7 +88,7 @@ public abstract class AbstractResolver implements EntityResolver {
 				throw new SAXException("Failed to resolve schemaLocation for namespace '" + systemId + "'.");
 			}
 			
-			InputStream stream = ClassUtil.getResourceAsStream(schemaLocation, classLoader);
+			InputStream stream = ClassUtils.getResourceAsStream(schemaLocation, classLoader);
 	
 			if(stream == null) {
 				throw new SAXException("schemaLocation '" + schemaLocation + "' for namespace '" + systemId + "' does not resolve to a Classpath resource.");
@@ -110,7 +110,7 @@ public abstract class AbstractResolver implements EntityResolver {
 				throw new SAXException("Failed to resolve bindingConfigLocation for namespace '" + systemId + "'.");
 			}
 			
-			InputStream stream = ClassUtil.getResourceAsStream(bindingConfigLocation, classLoader);
+			InputStream stream = ClassUtils.getResourceAsStream(bindingConfigLocation, classLoader);
 	
 			if(stream == null) {
 				throw new SAXException("bindingConfigLocation '" + bindingConfigLocation + "' for namespace '" + systemId + "' does not resolve to a Classpath resource.");

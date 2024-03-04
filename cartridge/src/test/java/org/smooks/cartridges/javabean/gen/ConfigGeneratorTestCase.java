@@ -47,11 +47,12 @@ import org.smooks.cartridges.javabean.Order;
 import org.smooks.support.StreamUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.smooks.tck.Assertions.compareCharStreams;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class ConfigGeneratortTestCase {
+public class ConfigGeneratorTestCase {
 
     @Test
     public void test() throws ClassNotFoundException, java.io.IOException {
@@ -65,7 +66,7 @@ public class ConfigGeneratortTestCase {
         generator.generate();
 
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"), "UTF-8");
-        assertTrue("Generated config not as expected.", StreamUtils.compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
+        assertTrue("Generated config not as expected.", compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
     }
 
     @Test

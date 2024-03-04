@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.io.payload.JavaResult;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -94,6 +94,6 @@ public class ValueBinderExtendedConfigTestCase {
 	 * @return
 	 */
 	private InputStream getInput(String file) {
-		return ClassUtil.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
+		return ClassUtils.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
 	}
 }

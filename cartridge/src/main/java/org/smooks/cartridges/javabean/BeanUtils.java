@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -70,14 +70,14 @@ public abstract class BeanUtils {
      * @return The bean setter method.
      */
     public static Method createSetterMethod(String setterName, Object bean, Class<?> setterParamType) {
-        Method beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, setterParamType);
+        Method beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, setterParamType);
 
         // Try it as a list...
         if (beanSetterMethod == null && List.class.isAssignableFrom(setterParamType)) {
             String setterNamePlural = setterName + "s";
 
             // Try it as a List using the plural name...
-            beanSetterMethod = ClassUtil.getSetterMethod(setterNamePlural, bean, setterParamType);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterNamePlural, bean, setterParamType);
             if (beanSetterMethod == null) {
                 // Try it as an array using the non-plural name...
             }
@@ -85,28 +85,28 @@ public abstract class BeanUtils {
 
         // Try it as a primitive...
         if(beanSetterMethod == null && Integer.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Integer.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Integer.TYPE);
         }
         if(beanSetterMethod == null && Long.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Long.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Long.TYPE);
         }
         if(beanSetterMethod == null && Float.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Float.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Float.TYPE);
         }
         if(beanSetterMethod == null && Double.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Double.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Double.TYPE);
         }
         if(beanSetterMethod == null && Character.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Character.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Character.TYPE);
         }
         if(beanSetterMethod == null && Short.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Short.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Short.TYPE);
         }
         if(beanSetterMethod == null && Byte.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Byte.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Byte.TYPE);
         }
         if(beanSetterMethod == null && Boolean.class.isAssignableFrom(setterParamType)) {
-            beanSetterMethod = ClassUtil.getSetterMethod(setterName, bean, Boolean.TYPE);
+            beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Boolean.TYPE);
         }
 
         return beanSetterMethod;

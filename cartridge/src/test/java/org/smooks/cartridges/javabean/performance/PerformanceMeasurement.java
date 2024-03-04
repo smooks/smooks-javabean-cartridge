@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.io.payload.JavaResult;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -100,7 +100,7 @@ public class PerformanceMeasurement {
 	private static void test(String configFile, String warmupFilename, String inFilename) throws IOException, SAXException {
 		Long beginTime = System.currentTimeMillis();
 
-		String packagePath = ClassUtil.toFilePath(PerformanceMeasurement.class.getPackage());
+		String packagePath = ClassUtils.toFilePath(PerformanceMeasurement.class.getPackage());
 		Smooks smooks = new Smooks(packagePath + configFile);
 
 		ExecutionContext executionContext = smooks.createExecutionContext();

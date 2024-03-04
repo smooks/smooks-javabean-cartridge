@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.binding.model.get;
 
 import org.smooks.cartridges.javabean.binding.BeanSerializationException;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,7 +58,7 @@ public class BeanGetter<T extends Object> implements Getter<T> {
     private final Method getterMethod;
 
     public BeanGetter(Class<?> beanClass, String property) {
-        getterMethod = ClassUtil.getGetterMethodByProperty(property, beanClass, null);
+        getterMethod = ClassUtils.getGetterMethodByProperty(property, beanClass, null);
         if(getterMethod == null) {
             throw new IllegalStateException("Failed to get getter method for property '" + property + "' on bean type '" + beanClass.getName() + "'.");
         }

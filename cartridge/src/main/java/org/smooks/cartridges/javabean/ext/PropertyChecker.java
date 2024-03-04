@@ -46,7 +46,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 
@@ -119,7 +119,7 @@ public class PropertyChecker implements DOMVisitBefore {
 
         Class<?> beanClass;
         try {
-            beanClass = ClassUtil.forName(beanClassName, getClass());
+            beanClass = ClassUtils.forName(beanClassName, getClass());
         } catch (ClassNotFoundException e) {
             throw new SmooksConfigException("Bean class '" + beanClassName + "' not available on classpath.");
         }

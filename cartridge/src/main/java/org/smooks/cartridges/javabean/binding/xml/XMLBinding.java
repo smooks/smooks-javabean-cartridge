@@ -66,7 +66,7 @@ import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.io.payload.StringSource;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -151,6 +151,7 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Turn on/off outputting of the XML declaration when executing the {@link #toXML(Object, java.io.Writer)} method.
+     *
      * @param omitXMLDeclaration True if the order is to be omitted, otherwise false.
      * @return <code>this</code> instance.
      */
@@ -161,9 +162,10 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Bind from the XML into the Java Object model.
+     *
      * @param inputSource The XML input.
-     * @param toType The Java type to which the XML data is to be bound.
-     * @param <T> The Java type to which the XML data is to be bound.
+     * @param toType      The Java type to which the XML data is to be bound.
+     * @param <T>         The Java type to which the XML data is to be bound.
      * @return The populated Java instance.
      */
     public <T> T fromXML(String inputSource, Class<T> toType) {
@@ -176,9 +178,10 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Bind from the XML into the Java Object model.
+     *
      * @param inputSource The XML input.
-     * @param toType The Java type to which the XML data is to be bound.
-     * @param <T> The Java type to which the XML data is to be bound.
+     * @param toType      The Java type to which the XML data is to be bound.
+     * @param <T>         The Java type to which the XML data is to be bound.
      * @return The populated Java instance.
      */
     public <T> T fromXML(Source inputSource, Class<T> toType) throws IOException {
@@ -187,12 +190,13 @@ public class XMLBinding extends AbstractBinding {
 
     /**
      * Write the supplied Object instance to XML.
-     * @param object The Object instance.
+     *
+     * @param object       The Object instance.
      * @param outputWriter The output writer.
-     * @param <W> The Writer type.
+     * @param <W>          The Writer type.
      * @return The supplied {@link Writer} instance}.
      * @throws BeanSerializationException Error serializing the bean.
-     * @throws IOException Error writing to the supplied Writer instance.
+     * @throws IOException                Error writing to the supplied Writer instance.
      */
     public <W extends Writer> W toXML(Object object, W outputWriter) throws BeanSerializationException, IOException {
         AssertArgument.isNotNull(object, "object");
@@ -242,9 +246,9 @@ public class XMLBinding extends AbstractBinding {
     private void mergeBeanModelsIntoXMLGraphs() {
         Set<Map.Entry<Class, RootNodeSerializer>> serializerSet = serializers.entrySet();
 
-        for(Map.Entry<Class, RootNodeSerializer> rootNodeSerializer : serializerSet) {
+        for (Map.Entry<Class, RootNodeSerializer> rootNodeSerializer : serializerSet) {
             Bean model = beanModelSet.getModel(rootNodeSerializer.getKey());
-            if(model == null) {
+            if (model == null) {
                 throw new IllegalStateException("Unexpected error.  No Bean model for type '" + rootNodeSerializer.getKey().getName() + "'.");
             }
             merge(rootNodeSerializer.getValue().serializer, model);
@@ -261,7 +265,7 @@ public class XMLBinding extends AbstractBinding {
                 XMLSerializationNode node = serializer.findNode(populator.getConfig().getSelectorPath());
                 if (node != null) {
                     node.setGetter(constructContextualGetter((DataBinding) binding));
-                    Method getterMethodByProperty = ClassUtil.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
+                    Method getterMethodByProperty = ClassUtils.getGetterMethodByProperty(binding.getProperty(), bean.getBeanClass(), null);
                     TypeConverter<? super String, ?> beanPopulatorTypeConverter = binding.getPopulator().getTypeConverter(getSmooks().createExecutionContext().getContentDeliveryRuntime().getContentDeliveryConfig());
                     TypeConverterFactory<?, ? extends String> xmlBindingTypeFactory = getSmooks().getApplicationContext().getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(getterMethodByProperty.getReturnType(), String.class));
                     if (xmlBindingTypeFactory != null) {
@@ -297,18 +301,18 @@ public class XMLBinding extends AbstractBinding {
     private void createRootSerializers(List<XMLElementSerializationNode> graphs) {
         Collection<Bean> beanModels = beanModelSet.getModels().values();
 
-        for(Bean model : beanModels) {
+        for (Bean model : beanModels) {
             BeanInstanceCreator creator = model.getCreator();
             SelectorPath selectorPath = creator.getConfig().getSelectorPath();
             XMLElementSerializationNode createNode = (XMLElementSerializationNode) findNode(graphs, selectorPath);
 
             // Only create serializers for routed elements...
-            if(rootElementNames.contains(createNode.getQName())) {
+            if (rootElementNames.contains(createNode.getQName())) {
                 createNode = ((XMLElementSerializationNode) createNode.clone());
                 createNode.setParent(null);
 
                 Class<?> beanClass = creator.getBeanRuntimeInfo().getPopulateType();
-                if(!Collection.class.isAssignableFrom(beanClass)) {
+                if (!Collection.class.isAssignableFrom(beanClass)) {
                     // Ignore Collections... don't allow them to be serialized.... not enough type info.
                     serializers.put(beanClass, new RootNodeSerializer(creator.getBeanId(), createNode));
                     addNamespaceAttributes(createNode);
@@ -318,10 +322,10 @@ public class XMLBinding extends AbstractBinding {
     }
 
     private void addNamespaceAttributes(XMLElementSerializationNode serializer) {
-        Properties namespaces = getSmooks().getApplicationContext().getRegistry().lookup(new NamespaceManagerLookup());
-        if(namespaces != null) {
+        Properties namespaces = getSmooks().getApplicationContext().getRegistry().lookup(new NamespaceManagerLookup()).orElse(null);
+        if (namespaces != null) {
             Enumeration<String> namespacePrefixes = (Enumeration<String>) namespaces.propertyNames();
-            while(namespacePrefixes.hasMoreElements()) {
+            while (namespacePrefixes.hasMoreElements()) {
                 String prefix = namespacePrefixes.nextElement();
                 String namespace = namespaces.getProperty(prefix);
                 QName nsAttributeName = new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, XMLConstants.XMLNS_ATTRIBUTE);
