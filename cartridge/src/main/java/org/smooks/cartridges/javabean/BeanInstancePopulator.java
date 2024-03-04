@@ -78,7 +78,7 @@ import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.memento.TextAccumulatorVisitorMemento;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
@@ -268,8 +268,8 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         isAttribute = valueAttributeName.isPresent();
 
         if (valueAttributePrefix.isPresent()) {
-            Properties namespaces = appContext.getRegistry().lookup(new NamespaceManagerLookup());
-            valueAttributeNS = namespaces.getProperty(valueAttributePrefix.get());
+            Optional<Properties> namespaces = appContext.getRegistry().lookup(new NamespaceManagerLookup());
+            valueAttributeNS = namespaces.orElse(new Properties()).getProperty(valueAttributePrefix.get());
         }
 
         beanIdStore = appContext.getBeanIdStore();
@@ -527,7 +527,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
                     }
 
                     if (throwException) {
-                        throw new SmooksConfigException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + ClassUtil.toSetterName(property.get()) + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
+                        throw new SmooksConfigException("Bean [" + beanIdName + "] configuration invalid.  Bean setter method [" + ClassUtils.toSetterName(property.get()) + "(" + dataObject.getClass().getName() + ")] not found on type [" + beanRuntimeInfo.getPopulateType().getName() + "].  You may need to set a 'decoder' on the binding config.");
                     }
                 }
             }
@@ -537,7 +537,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
                 executionContext.getBeanContext().notifyObservers(event);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SmooksConfigException("Error invoking bean setter method [" + ClassUtil.toSetterName(property.orElse(null)) + "] on bean instance class type [" + bean.getClass() + "].", e);
+            throw new SmooksConfigException("Error invoking bean setter method [" + ClassUtils.toSetterName(property.orElse(null)) + "] on bean instance class type [" + bean.getClass() + "].", e);
         }
     }
 
@@ -548,7 +548,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
             if (setterMethod.isPresent() && !setterMethod.get().trim().equals("")) {
                 methodName = setterMethod.get();
             } else if (property.isPresent() && !property.get().trim().equals("")) {
-                methodName = ClassUtil.toSetterName(property.get());
+                methodName = ClassUtils.toSetterName(property.get());
             }
 
             if (methodName != null) {

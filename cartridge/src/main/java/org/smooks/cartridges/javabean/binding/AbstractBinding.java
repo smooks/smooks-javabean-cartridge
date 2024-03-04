@@ -51,7 +51,7 @@ import org.smooks.cartridges.javabean.binding.model.DataBinding;
 import org.smooks.cartridges.javabean.binding.model.WiredBinding;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
-import org.smooks.engine.lookup.UserDefinedResourceConfigListLookup;
+import org.smooks.engine.lookup.CustomResourceConfigSeqLookup;
 import org.smooks.engine.report.HtmlReportGenerator;
 import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
@@ -111,7 +111,7 @@ public class AbstractBinding {
     public AbstractBinding add(String smooksConfigURI) throws IOException, SAXException {
         assertNotAllConfigsAdded();
         assertNotInitialized();
-        smooks.addConfigurations(smooksConfigURI);
+        smooks.addResourceConfigs(smooksConfigURI);
         return this;
     }
 
@@ -125,7 +125,7 @@ public class AbstractBinding {
     public AbstractBinding add(InputStream smooksConfigStream) throws IOException, SAXException {
         assertNotAllConfigsAdded();
         assertNotInitialized();
-        smooks.addConfigurations(smooksConfigStream);
+        smooks.addResourceConfigs(smooksConfigStream);
         return this;
     }
 
@@ -182,7 +182,7 @@ public class AbstractBinding {
         ExecutionContext executionContext = smooks.createExecutionContext();
 
         if (reportPath != null) {
-            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath));
+            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath, smooks.getApplicationContext()));
         }
 
         smooks.filterSource(executionContext, inputSource, javaResult);
@@ -191,7 +191,7 @@ public class AbstractBinding {
     }
 
     protected ResourceConfigSeq getUserDefinedResourceList() {
-        return smooks.getApplicationContext().getRegistry().lookup(new UserDefinedResourceConfigListLookup(smooks.getApplicationContext().getRegistry()));
+        return smooks.getApplicationContext().getRegistry().lookup(new CustomResourceConfigSeqLookup(smooks.getApplicationContext().getRegistry()));
     }
 
     protected GetterGraph constructContextualGetter(DataBinding binding) {

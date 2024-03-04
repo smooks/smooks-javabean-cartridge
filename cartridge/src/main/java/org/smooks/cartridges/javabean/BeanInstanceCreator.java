@@ -51,11 +51,10 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.bean.repository.BeanId;
-import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleEvent;
-import org.smooks.api.delivery.event.ContentDeliveryConfigBuilderLifecycleListener;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.delivery.ordering.Producer;
-import org.smooks.api.lifecycle.VisitLifecycleCleanable;
+import org.smooks.api.lifecycle.ContentDeliveryConfigLifecycle;
+import org.smooks.api.lifecycle.PostFragmentLifecycle;
 import org.smooks.api.resource.config.Parameter;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.VisitAfterReport;
@@ -94,7 +93,7 @@ import java.util.stream.Stream;
 @VisitAfterReport(condition = "parameters.containsKey('setOn') || parameters.beanClass.value.endsWith('[]')",
         summary = "Ended bean lifecycle. Set bean on any targets.",
         detailTemplate = "reporting/BeanInstanceCreatorReport_After.html")
-public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, ContentDeliveryConfigBuilderLifecycleListener, Producer, VisitLifecycleCleanable {
+public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Producer, PostFragmentLifecycle, ContentDeliveryConfigLifecycle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstanceCreator.class);
 
@@ -121,7 +120,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     private ResourceConfig config;
 
     @Inject
-    private ApplicationContext appContext;
+    private ApplicationContext applicationContext;
 
     private BeanRuntimeInfo beanRuntimeInfo;
 
@@ -184,7 +183,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     public void postConstruct() throws SmooksConfigException {
         buildId();
 
-        beanId = appContext.getBeanIdStore().register(beanIdName);
+        beanId = applicationContext.getBeanIdStore().register(beanIdName);
         beanId.setCreateResourceConfiguration(config);
 
         if (!beanFactoryDefinition.orElse("").isEmpty()) {
@@ -209,10 +208,10 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
                 definition = definition.substring(aliasSplitterIndex + 1);
             }
 
-            factory = FactoryDefinitionParserFactory.getInstance(alias, appContext).parse(definition);
+            factory = FactoryDefinitionParserFactory.getInstance(alias, applicationContext).parse(definition);
         }
 
-        beanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(beanIdName, beanClassName.orElse(null), appContext);
+        beanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(beanIdName, beanClassName.orElse(null), applicationContext);
 
         if (factory == null) {
             checkForDefaultConstructor();
@@ -235,13 +234,6 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
 
             initValsExpression = new MVELExpressionEvaluator();
             initValsExpression.setExpression(initValsExpressionString.toString());
-        }
-    }
-
-    @Override
-    public void handle(ContentDeliveryConfigBuilderLifecycleEvent event) throws SmooksConfigException {
-        if (event == ContentDeliveryConfigBuilderLifecycleEvent.CONTENT_DELIVERY_BUILDER_CREATED) {
-            ModelSet.build(appContext);
         }
     }
 
@@ -382,7 +374,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
     }
 
     @Override
-    public void executeVisitLifecycleCleanup(Fragment fragment, ExecutionContext executionContext) {
+    public void onPostFragment(Fragment fragment, ExecutionContext executionContext) {
         BeanContext beanContext = executionContext.getBeanContext();
         Object bean = beanContext.getBean(beanId);
 
@@ -391,5 +383,20 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Content
         if (!retain) {
             beanContext.removeBean(beanId, null);
         }
+    }
+
+    @Override
+    public void onContentHandlersCreated() {
+
+    }
+
+    @Override
+    public void onContentDeliveryBuilderCreated() {
+        ModelSet.build(applicationContext);
+    }
+
+    @Override
+    public void onContentDeliveryConfigCreated() {
+
     }
 }

@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean;
 
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -169,7 +169,7 @@ public class BeanRuntimeInfo {
             this.setClassification(BeanRuntimeInfo.Classification.ARRAY_COLLECTION);
             String arrayTypeName = beanClass.substring(0, beanClass.length() - 2);
             try {
-            	this.setArrayType(ClassUtil.forName(arrayTypeName, getClass()));
+            	this.setArrayType(ClassUtils.forName(arrayTypeName, getClass()));
             } catch (ClassNotFoundException e) {
                 throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + arrayTypeName + " not on classpath.");
             }
@@ -178,7 +178,7 @@ public class BeanRuntimeInfo {
         } else {
 
 	        try {
-	            clazz = ClassUtil.forName(beanClass, getClass());
+	            clazz = ClassUtils.forName(beanClass, getClass());
 	        } catch (ClassNotFoundException e) {
 	            throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
 	        }

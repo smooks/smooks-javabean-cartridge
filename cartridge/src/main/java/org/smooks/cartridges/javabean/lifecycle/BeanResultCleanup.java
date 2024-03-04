@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.lifecycle;
 
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
-import org.smooks.api.lifecycle.ExecutionLifecycleCleanable;
+import org.smooks.api.lifecycle.PostExecutionLifecycle;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.w3c.dom.Element;
 
@@ -62,7 +62,7 @@ import java.util.stream.Stream;
  *
  * @author <a href="mailto:tom.fennelly@jboss.com">tom.fennelly@jboss.com</a>
  */
-public class BeanResultCleanup implements ExecutionLifecycleCleanable, BeforeVisitor {
+public class BeanResultCleanup implements PostExecutionLifecycle, BeforeVisitor {
 
     @Inject
     private String[] beanIDs;
@@ -79,7 +79,7 @@ public class BeanResultCleanup implements ExecutionLifecycleCleanable, BeforeVis
      * @param executionContext The execution context.
      */
     @Override
-    public void executeExecutionLifecycleCleanup(ExecutionContext executionContext) {
+    public void onPostExecution(ExecutionContext executionContext) {
         BeanContext beanContext = executionContext.getBeanContext();
         Set<Entry<String, Object>> beanSet = beanContext.getBeanMap().entrySet();
 

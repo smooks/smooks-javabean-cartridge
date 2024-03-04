@@ -57,7 +57,7 @@ import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -345,7 +345,7 @@ public class Bean extends BindingAppender {
         // dataDecoder can be null
 
         BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
-        ResourceConfig populatorResourceConfig = new DefaultResourceConfig(dataSelector, registry.lookup(new NamespaceManagerLookup()));
+        ResourceConfig populatorResourceConfig = new DefaultResourceConfig(dataSelector, registry.lookup(new NamespaceManagerLookup()).orElse(new Properties()));
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorResourceConfig);
 
@@ -551,7 +551,7 @@ public class Bean extends BindingAppender {
 
         // Check is the bindingMember defined by a property name.  If so, there should be a
         // bean setter method for that property...
-        String asPropertySetterMethod = ClassUtil.toSetterName(bindingMember);
+        String asPropertySetterMethod = ClassUtils.toSetterName(bindingMember);
         for (Method method : methods) {
             if (method.getName().equals(asPropertySetterMethod) && method.getParameterTypes().length == 1) {
                 return method;

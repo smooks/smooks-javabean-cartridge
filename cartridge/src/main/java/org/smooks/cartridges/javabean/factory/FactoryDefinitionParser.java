@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.engine.lookup.GlobalParamsLookup;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -108,7 +108,7 @@ public interface FactoryDefinitionParser {
 
                     //We couldn't find any class that uses that alias so maybe the alias is a class name.
                     try {
-                        clazz = ClassUtil.forName(alias, FactoryDefinitionParser.class);
+                        clazz = (Class<? extends FactoryDefinitionParser>) ClassUtils.forName(alias, FactoryDefinitionParser.class);
 
                         className = clazz.getName();
                     } catch (ClassNotFoundException e) {
@@ -123,7 +123,7 @@ public interface FactoryDefinitionParser {
 
                 try {
                     @SuppressWarnings("unchecked")
-                    Class<FactoryDefinitionParser> factoryDefinitionParserClass = ClassUtil.forName(className, FactoryDefinitionParser.class);
+                    Class<FactoryDefinitionParser> factoryDefinitionParserClass = (Class<FactoryDefinitionParser>) ClassUtils.forName(className, FactoryDefinitionParser.class);
 
                     FactoryDefinitionParser newFactoryDefinitionParser = factoryDefinitionParserClass.newInstance();
 
@@ -159,7 +159,7 @@ public interface FactoryDefinitionParser {
             if (aliasToClassMap == null) {
                 synchronized (FactoryDefinitionParserFactory.class) {
                     if (aliasToClassMap == null) {
-                        List<Class<FactoryDefinitionParser>> factories = ClassUtil.getClasses("META-INF/smooks-javabean-factory-definition-parsers.inf", FactoryDefinitionParser.class);
+                        List<Class<FactoryDefinitionParser>> factories = ClassUtils.getClasses("META-INF/smooks-javabean-factory-definition-parsers.inf", FactoryDefinitionParser.class);
 
                         Set<String> toRemove = new HashSet<String>();
 

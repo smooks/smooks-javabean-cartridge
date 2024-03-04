@@ -46,7 +46,7 @@ import freemarker.core.Environment;
 import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.smooks.support.XmlUtil;
 
 import java.io.IOException;
@@ -106,7 +106,7 @@ public class WriteAttribsDirective implements TemplateDirectiveModel {
                 attributeName = attribTokens[0];
             }
 
-            Method getterMethod = ClassUtil.getGetterMethodByProperty(propertyName, bean.getClass(), null);
+            Method getterMethod = ClassUtils.getGetterMethodByProperty(propertyName, bean.getClass(), null);
 
             if(getterMethod == null) {
                 throw new TemplateException("<@writeAttribs> directive unable to locate getter method for attribute property '" + propertyName + "' on bean class type '" + bean.getClass().getName() + "'.", environment);

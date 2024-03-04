@@ -168,7 +168,7 @@ public class ModelBuilder {
         BeanTracker beanTracker = new BeanTracker(beanWriters);
 
         if (reportPath != null) {
-            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath));
+            executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath, descriptor.getSmooks().getApplicationContext()));
         }
 
         executionContext.getBeanContext().addObserver(beanTracker);

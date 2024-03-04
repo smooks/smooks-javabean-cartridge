@@ -92,7 +92,7 @@ public class DecodeParamResolver implements DOMVisitBefore {
 
                 // Configure the new decoder config...
                 typeConverterConfig.setSelector("decoder:" + reType, new Properties());
-                typeConverterConfig.setTargetProfile(extensionContext.getDefaultProfile());
+                typeConverterConfig.setProfile(extensionContext.getDefaultProfile());
 
                 if (type != null) {
                     typeConverterConfig.setResource(typeConverterFactory.createTypeConverter().getClass().getName());

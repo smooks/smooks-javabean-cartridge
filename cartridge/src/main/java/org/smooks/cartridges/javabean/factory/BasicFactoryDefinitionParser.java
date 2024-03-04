@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -122,7 +122,7 @@ public class BasicFactoryDefinitionParser extends
 	 * @throws NoSuchMethodException
 	 */
 	private Factory<?> createStaticMethodFactory(String factoryDefinition, String className, String methodDef) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-		Class<?> factoryClass = ClassUtil.forName(className, this.getClass());
+		Class<?> factoryClass = ClassUtils.forName(className, this.getClass());
 		Method factoryMethod = factoryClass.getMethod(methodDef);
 
 		if(!Modifier.isStatic(factoryMethod.getModifiers())) {
@@ -145,7 +145,7 @@ public class BasicFactoryDefinitionParser extends
 	 * @throws NoSuchMethodException
 	 */
 	private Factory<?> createFactoryInstanceFactory(String factoryDefinition, String className, String staticGetInstanceMethodDef, String factoryMethodDef) throws ClassNotFoundException, SecurityException, NoSuchMethodException{
-		Class<?> factoryClass = ClassUtil.forName(className, this.getClass());
+		Class<?> factoryClass = ClassUtils.forName(className, this.getClass());
 		Method getInstanceMethod = factoryClass.getMethod(staticGetInstanceMethodDef);
 		Class<?> factoryType = getInstanceMethod.getReturnType();
 		Method factoryMethod = factoryType.getMethod(factoryMethodDef);

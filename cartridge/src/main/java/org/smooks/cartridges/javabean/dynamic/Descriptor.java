@@ -58,7 +58,7 @@ import org.smooks.engine.DefaultApplicationContextBuilder;
 import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -140,7 +140,7 @@ public class Descriptor {
         List<Properties> descriptorFiles = new ArrayList<Properties>();
 
         try {
-            List<URL> resources = ClassUtil.getResources(descriptorPath, classLoader);
+            List<URL> resources = ClassUtils.getResources(descriptorPath, classLoader);
 
             if (resources.isEmpty()) {
                 throw new IllegalStateException("Failed to locate any model descriptor file by the name '" + descriptorPath + "' on the classpath.");

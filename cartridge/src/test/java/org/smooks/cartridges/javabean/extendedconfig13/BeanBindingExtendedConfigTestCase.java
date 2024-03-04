@@ -52,7 +52,7 @@ import org.smooks.cartridges.javabean.Header;
 import org.smooks.cartridges.javabean.OrderItem;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
 import org.smooks.io.payload.JavaResult;
-import org.smooks.support.ClassUtil;
+import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.stream.StreamSource;
@@ -92,7 +92,7 @@ public class BeanBindingExtendedConfigTestCase {
     }
 
     private InputStream getInput(String file) {
-        return ClassUtil.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
+        return ClassUtils.getResourceAsStream("/org/smooks/cartridges/javabean/extendedconfig/" + file, this.getClass());
     }
 
     public static void assertOrderOK(ExtendedOrder order, boolean checkArrays) {
