@@ -54,7 +54,7 @@ import org.smooks.cartridges.javabean.dynamic.BeanMetadata;
 import org.smooks.cartridges.javabean.dynamic.BeanRegistrationException;
 import org.smooks.cartridges.javabean.dynamic.Model;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -103,7 +103,7 @@ public class WriteBeanDirective extends AbstractBeanDirective {
             beanWriteBuffer.write('\n');
             beanWriter.write(bean, beanWriteBuffer, model);
 
-            environment.getOut().write(XmlUtil.indent(beanWriteBuffer.toString(), indent));
+            environment.getOut().write(XmlUtils.indent(beanWriteBuffer.toString(), indent));
         } else {
             beanWriter.write(bean, environment.getOut(), model);
         }

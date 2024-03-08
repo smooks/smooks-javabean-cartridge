@@ -51,7 +51,7 @@ import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.engine.converter.PreprocessTypeConverter;
 import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.engine.resource.extension.ExtensionContext;
+import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.smooks.support.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -78,7 +78,7 @@ public class DecodeParamResolver implements DOMVisitBefore {
             ResourceConfig populatorConfig = extensionContext.getResourceStack().peek();
             ResourceConfig typeConverterConfig = new DefaultResourceConfig();
 
-            extensionContext.addResource(typeConverterConfig);
+            extensionContext.addResourceConfig(typeConverterConfig);
             try {
                 String type = populatorConfig.getParameterValue("type", String.class);
                 TypeConverterFactory<?, ?> typeConverterFactory = applicationContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(type));

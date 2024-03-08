@@ -48,7 +48,7 @@ import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.engine.resource.config.DefaultConfigSearch;
-import org.smooks.engine.resource.extension.ExtensionContext;
+import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public class SetRetainParam implements DOMVisitBefore {
 		// this is the first bean config, we set it to "true" (i.e. retain it),
 		// otherwise set it to "false" (i.e. do not retain it)...
 		if (retain == null) {
-			List<ResourceConfig> creatorConfigs = extensionContext.lookupResource(new DefaultConfigSearch().resource(BeanInstanceCreator.class.getName()));
+			List<ResourceConfig> creatorConfigs = extensionContext.lookupResourceConfigs(new DefaultConfigSearch().resource(BeanInstanceCreator.class.getName()));
 
 			if (!creatorConfigs.isEmpty()) {
 				// This is not the first bean config... set retain to "false"
