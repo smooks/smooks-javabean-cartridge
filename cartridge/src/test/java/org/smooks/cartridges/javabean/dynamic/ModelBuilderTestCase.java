@@ -42,12 +42,12 @@
  */
 package org.smooks.cartridges.javabean.dynamic;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xmlunit.builder.DiffBuilder;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -57,7 +57,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -117,8 +120,11 @@ public class ModelBuilderTestCase {
 
         StringWriter writer = new StringWriter();
         model.writeModel(writer);
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream(message)), new StringReader(writer.toString()));
+        assertFalse(DiffBuilder.compare(StreamUtils.readStreamAsString(getClass().getResourceAsStream(message), "UTF-8")).
+                withTest(writer.toString()).
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 
     @Test
@@ -146,11 +152,14 @@ public class ModelBuilderTestCase {
 
         StringWriter writer = new StringWriter();
         model.writeModel(writer);
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLAssert.assertXMLEqual(new InputStreamReader(getClass().getResourceAsStream("bbb-message.xml")), new StringReader(writer.toString()));
+        assertFalse(DiffBuilder.compare(StreamUtils.readStreamAsString(getClass().getResourceAsStream("bbb-message.xml"), "UTF-8")).
+                withTest(writer.toString()).
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Locale.setDefault(new Locale("en", "IE"));
     }

@@ -43,7 +43,7 @@
 package org.smooks;
 
 import org.TestConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;

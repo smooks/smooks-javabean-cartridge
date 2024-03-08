@@ -42,16 +42,18 @@
  */
 package org.smooks.cartridges.javabean.jaxb;
 
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.cartridges.javabean.jaxb.model.POType;
 import org.smooks.io.payload.StringSource;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
 
 import java.io.IOException;
 import java.io.StringWriter;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -68,7 +70,11 @@ public class POTypeTestCase {
         StringWriter writer = new StringWriter();
         xmlBinding.toXML(po, writer);
 
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLUnit.compareXML(poXML, writer.toString());
+        assertFalse(DiffBuilder.compare(poXML).
+                withTest(writer.toString()).
+                ignoreComments().
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 }

@@ -42,9 +42,7 @@
  */
 package org.xstream;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.junit.jupiter.api.Test;
 import org.smooks.Order;
 import org.smooks.OrderItem;
 import org.TestConstants;

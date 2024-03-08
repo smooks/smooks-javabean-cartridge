@@ -42,13 +42,13 @@
  */
 package org.smooks.cartridges.javabean.binding.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -71,6 +71,6 @@ public class ModelSetTestCase {
         smooks.createExecutionContext();
         ModelSet beanModel = ModelSet.get(smooks.getApplicationContext());
 
-        assertEquals("isBinding test failed", isBinding, beanModel.isBindingOnlyConfig());
+        assertEquals(isBinding, beanModel.isBindingOnlyConfig(), "isBinding test failed");
     }
 }

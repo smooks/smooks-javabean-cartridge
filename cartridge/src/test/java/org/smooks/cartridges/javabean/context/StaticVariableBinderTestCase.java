@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.context;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.cartridges.javabean.BeanMapExpressionEvaluator;
@@ -53,7 +53,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_364;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.io.payload.JavaResult;
 import org.smooks.io.payload.StringResult;
@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -60,23 +60,19 @@ public class MILYN_364_TestCase {
 
     @Test
     public void test() throws IOException, SAXException {
-        Smooks smooks = new Smooks(MILYN_364_TestCase.class.getResourceAsStream("config.xml"));
-        
-        try {
+        try (Smooks smooks = new Smooks(MILYN_364_TestCase.class.getResourceAsStream("config.xml"))) {
             StringResult xmlResult = new StringResult();
             JavaResult javaResult = new JavaResult();
-            
+
             smooks.filterSource(new StreamSource(MILYN_364_TestCase.class.getResourceAsStream("order.xml")), xmlResult, javaResult);
-            
+
             Header bean = (Header) javaResult.getBean("header");
-            
+
             // Truncate to avoid rounding differences etc...
-			assertEquals(81, (int)bean.getNetAmount());
-			assertEquals(18, bean.getNetAmountObj().intValue());
-			assertEquals(16, (int)bean.getTax());
-			assertEquals(98, (int)bean.getTotalAmount());
-        } finally {
-            smooks.close();
+            assertEquals(81, (int) bean.getNetAmount());
+            assertEquals(18, bean.getNetAmountObj().intValue());
+            assertEquals(16, (int) bean.getTax());
+            assertEquals(98, (int) bean.getTotalAmount());
         }
     }
 }

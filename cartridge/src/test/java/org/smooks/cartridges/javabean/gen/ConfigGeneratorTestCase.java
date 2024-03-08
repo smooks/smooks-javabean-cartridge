@@ -42,11 +42,11 @@
  */
 package org.smooks.cartridges.javabean.gen;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.cartridges.javabean.Order;
 import org.smooks.support.StreamUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smooks.tck.Assertions.compareCharStreams;
 
 /**
@@ -66,7 +66,7 @@ public class ConfigGeneratorTestCase {
         generator.generate();
 
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected-01.xml"), "UTF-8");
-        assertTrue("Generated config not as expected.", compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())));
+        assertTrue(compareCharStreams(new java.io.StringReader(expected), new java.io.StringReader(writer.toString())), "Generated config not as expected");
     }
 
     @Test

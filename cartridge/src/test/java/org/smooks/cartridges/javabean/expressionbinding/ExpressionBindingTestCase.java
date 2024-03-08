@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.expressionbinding;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
@@ -53,7 +53,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.util.Date;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
