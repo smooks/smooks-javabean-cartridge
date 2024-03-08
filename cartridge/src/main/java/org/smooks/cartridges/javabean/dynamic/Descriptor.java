@@ -43,6 +43,7 @@
 package org.smooks.cartridges.javabean.dynamic;
 
 import org.smooks.Smooks;
+import org.smooks.api.ApplicationContextBuilder;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -54,8 +55,6 @@ import org.smooks.cartridges.javabean.dynamic.resolvers.AbstractResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
-import org.smooks.engine.DefaultApplicationContextBuilder;
-import org.smooks.engine.resource.config.XMLConfigDigester;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
 import org.smooks.support.ClassUtils;
@@ -70,9 +69,16 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * Model Descriptor.
@@ -234,10 +240,10 @@ public class Descriptor {
         AssertArgument.isNotNull(bindingResolver, "bindingResolver");
 
         Set<Namespace> namespaces = resolveNamespaces(descriptors);
-        Map<String, Smooks> extendedConfigDigesters = new HashMap<>();
 
         // Now create a Smooks instance for processing configurations for these namespaces...
-        Smooks smooks = new Smooks(new DefaultApplicationContextBuilder().setClassLoader(classloader).build());
+        ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
+        Smooks smooks = new Smooks(applicationContextBuilder.withClassLoader(classloader).build());
 
         for (Namespace namespace : namespaces) {
             InputSource bindingSource = bindingResolver.resolveEntity(namespace.uri, namespace.uri);
@@ -246,20 +252,16 @@ public class Descriptor {
                 if (bindingSource.getByteStream() != null) {
                     ResourceConfigSeq resourceConfigSeq;
 
-                    try {
-                        resourceConfigSeq = XMLConfigDigester.digestConfig(bindingSource.getByteStream(), "./", extendedConfigDigesters, classloader);
-                        for (int i = 0; i < resourceConfigSeq.size(); i++) {
-                            ResourceConfig config = resourceConfigSeq.get(i);
-                            SelectorStep selectorStep = ((IndexedSelectorPath) config.getSelectorPath()).getTargetSelectorStep();
+                    resourceConfigSeq = smooks.getApplicationContext().getResourceConfigLoader().load(bindingSource.getByteStream(), "./", classloader);
+                    for (int i = 0; i < resourceConfigSeq.size(); i++) {
+                        ResourceConfig config = resourceConfigSeq.get(i);
+                        SelectorStep selectorStep = ((IndexedSelectorPath) config.getSelectorPath()).getTargetSelectorStep();
 
-                            // And if there isn't a namespace prefix specified on the element (unresolved at this point),
-                            // then assign the binding config namespace...
-                            if (((NamedSelectorStep) selectorStep).getQName().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-                                config.getSelectorPath().getNamespaces().put(namespace.id, namespace.uri);
-                            }
+                        // And if there isn't a namespace prefix specified on the element (unresolved at this point),
+                        // then assign the binding config namespace...
+                        if (((NamedSelectorStep) selectorStep).getQName().getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                            config.getSelectorPath().getNamespaces().put(namespace.id, namespace.uri);
                         }
-                    } catch (URISyntaxException e) {
-                        throw new SmooksConfigException("Unexpected configuration digest exception.", e);
                     }
 
                     smooks.getApplicationContext().getRegistry().registerResourceConfigSeq(resourceConfigSeq);

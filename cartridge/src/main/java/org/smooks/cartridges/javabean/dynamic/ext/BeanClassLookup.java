@@ -48,7 +48,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
 import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
-import org.smooks.engine.resource.extension.ExtensionContext;
+import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.w3c.dom.Element;
 
 /**

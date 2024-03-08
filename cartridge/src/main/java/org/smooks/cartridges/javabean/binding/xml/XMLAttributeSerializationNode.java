@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.binding.xml;
 
 import org.smooks.cartridges.javabean.binding.SerializationContext;
 import org.smooks.cartridges.javabean.binding.model.Bean;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class XMLAttributeSerializationNode extends XMLSerializationNode {
             writeName(outputStream);
             outputStream.write("=\"");
             char[] characters = value.toCharArray();
-            XmlUtil.encodeAttributeValue(characters, 0, characters.length, outputStream);
+            XmlUtils.encodeAttributeValue(characters, 0, characters.length, outputStream);
             outputStream.write('"');
         }
     }

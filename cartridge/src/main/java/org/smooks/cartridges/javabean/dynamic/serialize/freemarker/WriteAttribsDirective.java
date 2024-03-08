@@ -47,7 +47,7 @@ import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
 import org.smooks.support.ClassUtils;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -122,7 +122,7 @@ public class WriteAttribsDirective implements TemplateDirectiveModel {
                     }
                     environment.getOut().write(attributeName);
                     environment.getOut().write("=\"");
-                    XmlUtil.encodeAttributeValue(attribStringVal, 0, attribStringVal.length, environment.getOut());
+                    XmlUtils.encodeAttributeValue(attribStringVal, 0, attribStringVal.length, environment.getOut());
                     environment.getOut().write("\"");
                 }
             } catch (IllegalAccessException e) {

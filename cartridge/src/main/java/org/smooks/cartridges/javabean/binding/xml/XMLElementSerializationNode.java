@@ -49,7 +49,7 @@ import org.smooks.cartridges.javabean.binding.model.get.Getter;
 import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
-import org.smooks.support.XmlUtil;
+import org.smooks.support.XmlUtils;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
@@ -99,7 +99,7 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
                 char[] characters = value.toCharArray();
 
                 outputStream.write(">");
-                XmlUtil.encodeTextValue(characters, 0, characters.length, outputStream);
+                XmlUtils.encodeTextValue(characters, 0, characters.length, outputStream);
                 outputStream.write("</");
                 writeName(outputStream);
                 outputStream.write(">");

@@ -51,27 +51,27 @@
     -->
 
     <resource-config selector="dmb:writer">
-        <resource>org.smooks.engine.resource.extension.NewResourceConfig</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
         <param name="resource">org.smooks.cartridges.javabean.dynamic.ext.BeanWriterFactory</param>
     </resource-config>
 
     <resource-config selector="dmb:writer">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanId</param>
     </resource-config>
 
     <resource-config selector="dmb:writer">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">beanClass</param>
     </resource-config>
 
     <resource-config selector="dmb:writer">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromAttribute</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
         <param name="attribute">class</param>
     </resource-config>
 
     <resource-config selector="dmb:writer/smooks:param">
-        <resource>org.smooks.engine.resource.extension.MapToResourceConfigFromText</resource>
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromText</resource>
         <param name="mapToSpecifier">name</param>
     </resource-config>
 
