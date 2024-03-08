@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_444;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.io.payload.JavaResult;
 import org.xml.sax.SAXException;
@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *

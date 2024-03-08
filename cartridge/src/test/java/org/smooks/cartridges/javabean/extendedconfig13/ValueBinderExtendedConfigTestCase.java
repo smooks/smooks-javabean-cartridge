@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.extendedconfig13;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.io.payload.JavaResult;
@@ -54,8 +54,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ValueBinderExtendedConfigTestCase {
 

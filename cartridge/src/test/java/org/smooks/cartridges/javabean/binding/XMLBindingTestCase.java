@@ -42,9 +42,7 @@
  */
 package org.smooks.cartridges.javabean.binding;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.binding.config5.Person;
 import org.smooks.cartridges.javabean.binding.model.ModelSet;
@@ -52,11 +50,13 @@ import org.smooks.cartridges.javabean.binding.ordermodel.Order;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -94,9 +94,12 @@ public class XMLBindingTestCase {
 
         Person person = xmlBinding.fromXML("<person name='Max' age='50' />", Person.class);
         String xml = xmlBinding.toXML(person);
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLAssert.assertXMLEqual("<person name='Max' age='50' />", xml);
-
+        assertFalse(DiffBuilder.compare("<person name='Max' age='50' />").
+                withTest(xml).
+                ignoreComments().
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 
     @Test
@@ -123,7 +126,7 @@ public class XMLBindingTestCase {
         XMLBinding xmlBinding = new XMLBinding(smooks);
         xmlBinding.initialise();
 
-        assertTrue("Should be a binding only config.", ModelSet.get(smooks.getApplicationContext()).isBindingOnlyConfig());
+        assertTrue(ModelSet.get(smooks.getApplicationContext()).isBindingOnlyConfig(), "Should be a binding only config");
 
         test(inputXML, xmlBinding);
     }
@@ -136,7 +139,7 @@ public class XMLBindingTestCase {
         test(inputXML, xmlBinding);
     }
 
-    private void test(String inputXML, XMLBinding xmlBinding) throws SAXException, IOException {
+    private void test(String inputXML, XMLBinding xmlBinding) {
         // Read...
         Order order = xmlBinding.fromXML(inputXML, Order.class);
 
@@ -145,10 +148,13 @@ public class XMLBindingTestCase {
         // write...
         String outputXML = xmlBinding.toXML(order);
 
-//        System.out.println(outputXML);
-
         // Compare...
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLAssert.assertXMLEqual(inputXML, outputXML);
+        assertFalse(DiffBuilder.compare(inputXML).
+                checkForSimilar().
+                withTest(outputXML).
+                ignoreComments().
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 }

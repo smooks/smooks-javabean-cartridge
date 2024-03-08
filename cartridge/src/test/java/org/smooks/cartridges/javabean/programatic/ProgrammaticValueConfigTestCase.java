@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.programatic;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Value;
 import org.smooks.engine.converter.BooleanConverterFactory;
@@ -51,7 +51,7 @@ import org.smooks.io.payload.JavaResult;
 
 import javax.xml.transform.stream.StreamSource;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Programmatic Binding config test for the Value class.

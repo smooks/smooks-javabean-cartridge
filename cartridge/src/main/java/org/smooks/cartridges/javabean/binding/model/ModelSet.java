@@ -113,9 +113,9 @@ public class ModelSet {
         return isBindingOnlyConfig;
     }
 
-    private void createBaseBeanMap(final ResourceConfigSeq resourceConfigList, final ContentHandlerFactory<?> contentHandlerFactory) {
-        for (int i = 0; i < resourceConfigList.size(); i++) {
-            final ResourceConfig resourceConfig = resourceConfigList.get(i);
+    private void createBaseBeanMap(final ResourceConfigSeq resourceConfigSeq, final ContentHandlerFactory<?> contentHandlerFactory) {
+        for (int i = 0; i < resourceConfigSeq.size(); i++) {
+            final ResourceConfig resourceConfig = resourceConfigSeq.get(i);
             final Object javaResource;
             if (resourceConfig.isJavaResource()) {
                 javaResource = contentHandlerFactory.create(resourceConfig);

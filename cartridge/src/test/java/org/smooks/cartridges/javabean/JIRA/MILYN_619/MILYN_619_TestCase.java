@@ -42,16 +42,18 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_619;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.io.payload.JavaSource;
 import org.smooks.io.payload.StringResult;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
 
 import java.io.IOException;
+import java.io.StringReader;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -71,7 +73,11 @@ public class MILYN_619_TestCase {
         smooks.filterSource(new JavaSource(rootObj), res);
 
         String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("expected.xml"), "UTF-8");
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLAssert.assertXMLEqual(expected, res.getResult());
+        assertFalse(DiffBuilder.compare(expected).
+                withTest(res.getResult()).
+                ignoreComments().
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 }

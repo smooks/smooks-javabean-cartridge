@@ -42,15 +42,15 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.tck.MockExecutionContext;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>

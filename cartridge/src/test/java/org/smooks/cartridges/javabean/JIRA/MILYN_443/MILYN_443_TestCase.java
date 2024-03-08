@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.JIRA.MILYN_443;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Bean;
 import org.smooks.io.payload.JavaResult;
@@ -54,7 +54,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * http://jira.codehaus.org/browse/MILYN-443
@@ -92,6 +93,6 @@ public class MILYN_443_TestCase {
 		
 		Map theBean = (Map) result.getBean("theBean");
 		assertEquals("xxx", theBean.get("attr1"));
-		assertEquals(null, theBean.get("attr2"));
+        assertNull(theBean.get("attr2"));
 	}
 }

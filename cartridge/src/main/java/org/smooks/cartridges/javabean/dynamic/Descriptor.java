@@ -99,14 +99,14 @@ public class Descriptor {
     public Descriptor(List<Properties> descriptors) throws SAXException, IOException {
         AssertArgument.isNotNullAndNotEmpty(descriptors, "descriptors");
 
-        intialize(descriptors, new DefaultSchemaResolver(descriptors), new DefaultBindingConfigResolver(descriptors));
+        initialize(descriptors, new DefaultSchemaResolver(descriptors), new DefaultBindingConfigResolver(descriptors));
     }
 
     public Descriptor(String descriptorPath) throws SAXException, IOException {
         AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
 
         List<Properties> descriptors = loadDescriptors(descriptorPath, getClass().getClassLoader());
-        intialize(descriptors, new DefaultSchemaResolver(descriptors), new DefaultBindingConfigResolver(descriptors));
+        initialize(descriptors, new DefaultSchemaResolver(descriptors), new DefaultBindingConfigResolver(descriptors));
     }
 
     public Descriptor(String descriptorPath, EntityResolver schemaResolver, EntityResolver bindingResolver, ClassLoader classloader) throws SAXException, IOException {
@@ -117,7 +117,7 @@ public class Descriptor {
         this.classloader = classloader;
 
         List<Properties> descriptors = loadDescriptors(descriptorPath, classloader);
-        intialize(descriptors, schemaResolver, bindingResolver);
+        initialize(descriptors, schemaResolver, bindingResolver);
     }
 
     public Descriptor(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver, ClassLoader classloader) throws SAXException, IOException {
@@ -127,7 +127,7 @@ public class Descriptor {
 
         this.classloader = classloader;
 
-        intialize(descriptors, schemaResolver, bindingResolver);
+        initialize(descriptors, schemaResolver, bindingResolver);
     }
 
     public Smooks getSmooks() {
@@ -174,8 +174,7 @@ public class Descriptor {
         }
     }
 
-    private void intialize(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver) throws SAXException, IOException {
-
+    private void initialize(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver) throws SAXException, IOException {
         if (schemaResolver instanceof AbstractResolver) {
             if (((AbstractResolver) schemaResolver).getClassLoader() != classloader) {
                 throw new SmooksException("Schema EntityResolver '" + schemaResolver.getClass().getName() + "' not using the same ClassLoader as this Descriptor instance.");
@@ -216,7 +215,7 @@ public class Descriptor {
 
     private List<Source> getSchemas(List<Properties> descriptors, EntityResolver schemaResolver) throws SAXException, IOException {
         Set<Namespace> namespaces = resolveNamespaces(descriptors);
-        List<Source> xsdSources = new ArrayList<Source>();
+        List<Source> xsdSources = new ArrayList<>();
 
         for (Namespace namespace : namespaces) {
             InputSource schemaSource = schemaResolver.resolveEntity(namespace.uri, namespace.uri);

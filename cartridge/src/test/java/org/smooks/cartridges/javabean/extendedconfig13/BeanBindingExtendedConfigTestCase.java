@@ -42,8 +42,8 @@
  */
 package org.smooks.cartridges.javabean.extendedconfig13;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
@@ -63,8 +63,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -72,7 +77,7 @@ import static org.junit.Assert.*;
 @SuppressWarnings("unchecked")
 public class BeanBindingExtendedConfigTestCase {
 
-    @Ignore
+    @Disabled
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_01.xml"));
@@ -105,18 +110,18 @@ public class BeanBindingExtendedConfigTestCase {
         assertEquals(new Long(123123), order.getHeader().getCustomerNumber());
         assertEquals(1163616328000L, order.getHeader().getDate().getTime());
         assertTrue(order.getHeader().getPrivatePerson());
-        assertTrue(order == order.getHeader().getOrder());
+        assertSame(order, order.getHeader().getOrder());
 
         // OrderItems list...
         assertEquals(2, order.getOrderItems().size());
-        assertTrue(order == order.getOrderItems().get(0).getOrder());
+        assertSame(order, order.getOrderItems().get(0).getOrder());
         assertEquals(8.9d, order.getOrderItems().get(0).getPrice(), 0d);
         assertEquals(111, order.getOrderItems().get(0).getProductId());
-        assertEquals(new Integer(2), order.getOrderItems().get(0).getQuantity());
-        assertTrue(order == order.getOrderItems().get(1).getOrder());
+        assertEquals(Integer.valueOf(2), order.getOrderItems().get(0).getQuantity());
+        assertSame(order, order.getOrderItems().get(1).getOrder());
         assertEquals(5.2d, order.getOrderItems().get(1).getPrice(), 0d);
         assertEquals(222, order.getOrderItems().get(1).getProductId());
-        assertEquals(new Integer(7), order.getOrderItems().get(1).getQuantity());
+        assertEquals(Integer.valueOf(7), order.getOrderItems().get(1).getQuantity());
 
         if (checkArrays) {
             // OrderItems array...
@@ -244,7 +249,7 @@ public class BeanBindingExtendedConfigTestCase {
         @SuppressWarnings("unchecked")
         ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
 
-        assertNotNull("root should not be null", root);
+        assertNotNull(root, "root should not be null");
 
         assertEquals(2, root.size());
         assertEquals(3, root.get(0).size());

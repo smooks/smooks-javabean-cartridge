@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.factory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.smooks.api.ExecutionContext;
 import org.smooks.tck.MockExecutionContext;
 
