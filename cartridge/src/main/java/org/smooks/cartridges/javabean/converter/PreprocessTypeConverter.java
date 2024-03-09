@@ -2,7 +2,7 @@
  * ========================LICENSE_START=================================
  * smooks-javabean-cartridge
  * %%
- * Copyright (C) 2020 Smooks
+ * Copyright (C) 2020 - 2024 Smooks
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
@@ -40,22 +40,55 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cartridges.javabean.binding;
+package org.smooks.cartridges.javabean.converter;
 
-import org.smooks.api.SmooksException;
+import org.smooks.api.ApplicationContext;
+import org.smooks.api.SmooksConfigException;
+import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterException;
+import org.smooks.api.converter.TypeConverterFactory;
+import org.smooks.api.resource.config.Configurable;
+import org.smooks.engine.expression.MVELExpressionEvaluator;
+import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
+import org.smooks.support.ClassUtils;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
- * Bean Serialization exception.
+ * Data Preprocesses Decoder.
+ * <p/>
+ * Wraps the underlying decoder, allowing you to preprocess the data before
+ * passing to the base decoder.
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public class BeanSerializationException extends SmooksException {
+public class PreprocessTypeConverter implements TypeConverter<String, Object> {
 
-    public BeanSerializationException(String message) {
-        super(message);
+    private final MVELExpressionEvaluator expression;
+
+    private final TypeConverter<? super String, ?> delegateTypeConverter;
+
+    public PreprocessTypeConverter(String valuePreProcessExpression, TypeConverter<? super String, ?> delegateTypeConverter) {
+        expression = new MVELExpressionEvaluator(valuePreProcessExpression);
+        expression.setToType(String.class);
+        this.delegateTypeConverter = delegateTypeConverter;
     }
 
-    public BeanSerializationException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public Object convert(String value) {
+        if (value != null) {
+            Map<String, String> contextObj = new HashMap<>();
+
+            // Make it available under the strings "data" or "value"...
+            contextObj.put("data", value);
+            contextObj.put("value", value);
+
+            return delegateTypeConverter.convert((String) expression.exec(contextObj));
+        } else {
+            return null;
+        }
     }
 }

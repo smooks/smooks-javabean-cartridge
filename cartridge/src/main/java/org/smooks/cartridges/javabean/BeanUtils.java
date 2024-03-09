@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -65,7 +65,7 @@ public abstract class BeanUtils {
     /**
      * Create the bean setter method instance for this visitor.
      *
-     * @param setterName The setter method name.
+     * @param setterName      The setter method name.
      * @param setterParamType
      * @return The bean setter method.
      */
@@ -84,28 +84,28 @@ public abstract class BeanUtils {
         }
 
         // Try it as a primitive...
-        if(beanSetterMethod == null && Integer.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Integer.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Integer.TYPE);
         }
-        if(beanSetterMethod == null && Long.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Long.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Long.TYPE);
         }
-        if(beanSetterMethod == null && Float.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Float.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Float.TYPE);
         }
-        if(beanSetterMethod == null && Double.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Double.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Double.TYPE);
         }
-        if(beanSetterMethod == null && Character.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Character.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Character.TYPE);
         }
-        if(beanSetterMethod == null && Short.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Short.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Short.TYPE);
         }
-        if(beanSetterMethod == null && Byte.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Byte.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Byte.TYPE);
         }
-        if(beanSetterMethod == null && Boolean.class.isAssignableFrom(setterParamType)) {
+        if (beanSetterMethod == null && Boolean.class.isAssignableFrom(setterParamType)) {
             beanSetterMethod = ClassUtils.getSetterMethod(setterName, bean, Boolean.TYPE);
         }
 
@@ -125,7 +125,7 @@ public abstract class BeanUtils {
 
 
         // Get the bean instance from the request.  If there is non, it's a bad config!!
-        bean =  execContext.getBeanContext().getBean(beanId);
+        bean = execContext.getBeanContext().getBean(beanId);
 
         if (bean == null) {
             throw new SmooksConfigException("Bean instance [" + beanId + "] not available and bean runtime class not set on configuration.");
@@ -136,7 +136,8 @@ public abstract class BeanUtils {
 
     /**
      * Convert the supplied List into an array of the specified array type.
-     * @param list The List instance to be converted.
+     *
+     * @param list       The List instance to be converted.
      * @param arrayClass The array type.
      * @return The array.
      */
@@ -146,10 +147,10 @@ public abstract class BeanUtils {
 
         int length = list.size();
         Object arrayObj = Array.newInstance(arrayClass, list.size());
-        for(int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             try {
                 Array.set(arrayObj, i, list.get(i));
-            } catch(ClassCastException e) {
+            } catch (ClassCastException e) {
                 LOGGER.error("Failed to cast type '" + list.get(i).getClass().getName() + "' to '" + arrayClass.getName() + "'.", e);
             }
         }

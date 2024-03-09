@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -84,9 +84,9 @@ import java.util.Map;
  * Dynamic Model Builder.
  * <p/>
  * Useful for constructing configuration model etc.  Allows you to build a config model
- * for a dynamic configuration namespace i.e. a config namespace that is evolving and being 
+ * for a dynamic configuration namespace i.e. a config namespace that is evolving and being
  * extended all the time.  New namespaces can be easily added or extended.  All that's required
- * is to define the new config XSD and the Smooks Java Binding config to bind the data in the 
+ * is to define the new config XSD and the Smooks Java Binding config to bind the data in the
  * config namespace into the target Java model.
  * <p/>
  * The namespaces all need to be configured in a "descriptor" .properties file located on the classpath.
@@ -96,46 +96,47 @@ import java.util.Map;
  * mycomp.schemaLocation=/META-INF/xsd/mycomp.xsd
  * mycomp.bindingConfigLocation=/META-INF/xsd/mycomp-binding.xml
  * </pre>
- * 
+ * <p>
  * You should use a unique descriptor path for a given configuration model.  Of course there can be many instances
  * of this file on the classpath i.e. one per module/jar.  This allows you to easily add extensions and updates
  * to your configuration model, without having to define new Java model for the new namespaces (versions) etc.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class ModelBuilder {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModelBuilder.class);
-	private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
-	static {
-		DOCUMENT_BUILDER_FACTORY.setNamespaceAware(true);
-	}
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelBuilder.class);
+    private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
+
+    static {
+        DOCUMENT_BUILDER_FACTORY.setNamespaceAware(true);
+    }
 
     private final Descriptor descriptor;
-	private boolean validate;
+    private boolean validate;
     private String reportPath;
 
     public ModelBuilder(Descriptor descriptor, boolean validate) throws SAXException, IOException {
-		AssertArgument.isNotNull(descriptor, "descriptor");
+        AssertArgument.isNotNull(descriptor, "descriptor");
 
         this.descriptor = descriptor;
         this.validate = validate;
 
         configure();
-	}
+    }
 
     public ModelBuilder(String descriptorPath, boolean validate) throws SAXException, IOException {
-		AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
+        AssertArgument.isNotNullAndNotEmpty(descriptorPath, "descriptorPath");
 
         descriptor = new Descriptor(descriptorPath);
         this.validate = validate;
 
         configure();
-	}
-	
-	public boolean isValidating() {
-		return validate;
-	}
+    }
+
+    public boolean isValidating() {
+        return validate;
+    }
 
     protected Descriptor getDescriptor() {
         return descriptor;
@@ -146,13 +147,13 @@ public class ModelBuilder {
     }
 
     public <T> T readObject(InputStream message, Class<T> returnType) throws SAXException, IOException {
-		return readObject(new InputStreamReader(message), returnType);
-	}
-	
-	public <T> T readObject(Reader message, Class<T> returnType) throws SAXException, IOException {
-		Model<JavaResult> model = readModel(message, JavaResult.class);
-		return model.getModelRoot().getBean(returnType);
-	}
+        return readObject(new InputStreamReader(message), returnType);
+    }
+
+    public <T> T readObject(Reader message, Class<T> returnType) throws SAXException, IOException {
+        Model<JavaResult> model = readModel(message, JavaResult.class);
+        return model.getModelRoot().getBean(returnType);
+    }
 
     public <T> Model<T> readModel(InputStream message, Class<T> modelRoot) throws SAXException, IOException {
         return readModel(new InputStreamReader(message), modelRoot);
@@ -195,31 +196,31 @@ public class ModelBuilder {
         return model;
     }
 
-	private Document toDocument(Reader message) {
-		DocumentBuilder docBuilder;
-		
-		try {
-			docBuilder = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			throw new SmooksException("Unable to parse message and dynamically bind into object model.  DOM Parser confguration exception.", e);
-		}
-		
-		try {
-			return docBuilder.parse(new InputSource(message));
-		} catch (SAXException e) {
-			throw new SmooksException("Unable to parse message and dynamically bind into object model.  Message format exception.", e);
-		} catch (IOException e) {
-			throw new SmooksException("Unable to parse message and dynamically bind into object model.  IO exception.", e);
-		} finally {
-			try {
-				message.close();
-			} catch (IOException e) {
-				LOGGER.debug("Exception closing message reader.", e);
-			}
-		}
-	}
+    private Document toDocument(Reader message) {
+        DocumentBuilder docBuilder;
 
-	private void configure() {
+        try {
+            docBuilder = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new SmooksException("Unable to parse message and dynamically bind into object model.  DOM Parser confguration exception.", e);
+        }
+
+        try {
+            return docBuilder.parse(new InputSource(message));
+        } catch (SAXException e) {
+            throw new SmooksException("Unable to parse message and dynamically bind into object model.  Message format exception.", e);
+        } catch (IOException e) {
+            throw new SmooksException("Unable to parse message and dynamically bind into object model.  IO exception.", e);
+        } finally {
+            try {
+                message.close();
+            } catch (IOException e) {
+                LOGGER.debug("Exception closing message reader.", e);
+            }
+        }
+    }
+
+    private void configure() {
         Smooks smooks = descriptor.getSmooks();
 
         smooks.addVisitor(new NamespaceReaper());
@@ -230,11 +231,11 @@ public class ModelBuilder {
 
         // Create the execution context so as to force resolution of the config...
         smooks.createExecutionContext();
-	}
+    }
 
     private static class BeanTracker implements BeanContextLifecycleObserver {
-		
-		private final List<BeanMetadata> beans = new ArrayList<>();
+
+        private final List<BeanMetadata> beans = new ArrayList<>();
         private final Map<Class<?>, Map<String, BeanWriter>> beanWriterMap;
 
         public BeanTracker(Map<Class<?>, Map<String, BeanWriter>> beanWriterMap) {
@@ -284,8 +285,8 @@ public class ModelBuilder {
         }
 
         private BeanMetadata findMetadata(Object bean) {
-            for(BeanMetadata metaData : beans) {
-                if(metaData.getBean() == bean) {
+            for (BeanMetadata metaData : beans) {
+                if (metaData.getBean() == bean) {
                     return metaData;
                 }
             }
