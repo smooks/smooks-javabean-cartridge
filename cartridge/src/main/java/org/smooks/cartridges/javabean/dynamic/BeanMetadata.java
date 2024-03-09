@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -56,13 +56,13 @@ import java.util.Map;
  * Bean metadata.
  * <p/>
  * This class is used to hold additional data about a model bean instance.
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BeanMetadata {
-	
-	private Object bean;
-	private String namespace;
+
+    private Object bean;
+    private String namespace;
     private String namespacePrefix;
     private Fragment createSource;
     private List<Fragment> populateSources = new ArrayList<>();
@@ -72,20 +72,22 @@ public class BeanMetadata {
 
     /**
      * Public constructor.
+     *
      * @param bean The bean instance.
      */
     public BeanMetadata(Object bean) {
-		AssertArgument.isNotNull(bean, "bean");
-		this.bean = bean;
-	}
+        AssertArgument.isNotNull(bean, "bean");
+        this.bean = bean;
+    }
 
     /**
      * Get the bean instance with which this metadata instance is associated.
+     *
      * @return The bean instance.
      */
-	public Object getBean() {
-		return bean;
-	}
+    public Object getBean() {
+        return bean;
+    }
 
     /**
      * Get the XML namespace with which the associated bean instance is associated.
@@ -114,13 +116,14 @@ public class BeanMetadata {
      * @see #setNamespacePrefix(String)
      * @see #getNamespacePrefix()
      */
-	public BeanMetadata setNamespace(String namespace) {
-		this.namespace = namespace;
-		return this;
-	}
+    public BeanMetadata setNamespace(String namespace) {
+        this.namespace = namespace;
+        return this;
+    }
 
     /**
      * Get the XML namespace prefix.
+     *
      * @return The XML namespace prefix.
      * @see #setNamespace(String)
      * @see #getNamespace()
@@ -205,6 +208,7 @@ public class BeanMetadata {
 
     /**
      * Set the source {@link Fragment} that created the bean instance.
+     *
      * @param createSource The source fragment.
      * @return <code>this</code> BeanMetadata instance.
      */
@@ -215,6 +219,7 @@ public class BeanMetadata {
 
     /**
      * Get the source {@link Fragment} that created the bean instance.
+     *
      * @return The source fragment, or null if the bean was not created from a source fragment
      * (may have been manually constructed and added to the model).
      */
@@ -225,7 +230,7 @@ public class BeanMetadata {
     /**
      * Get the "population" {@link Fragment fragments} that contributed data to the bean instance
      * (set data on it's properties).
-     * 
+     *
      * @return The list of "population" fragments.  An empty List is returned if no "population"
      * fragments were recorded.
      */
@@ -241,7 +246,7 @@ public class BeanMetadata {
      * @return The user properties/metadata associated with the bean.
      */
     public Map<Object, Object> getProperties() {
-        if(properties == null) {
+        if (properties == null) {
             properties = new LinkedHashMap<Object, Object>();
         }
         return properties;

@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -63,7 +63,7 @@ import java.util.Optional;
  * <p/>
  * Models can sometimes be created from XML which contains valid elements that are not being mapped into the model.
  * We don't want to loose this data in the model, so we capture it as "pre
- * 
+ *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class UnknownElementDataReaper {
@@ -75,10 +75,10 @@ public class UnknownElementDataReaper {
 
         // Skip back through the siblings until we get an element that has an associated
         // bean...
-        while(current != null) {
+        while (current != null) {
             current = current.getPreviousSibling();
 
-            if(current == null) {
+            if (current == null) {
                 // This will result in all siblings back to the start
                 // of this sibling set...
                 break;
@@ -95,7 +95,7 @@ public class UnknownElementDataReaper {
             toSerializeNodes.add(0, current);
         }
 
-        for(Node node : toSerializeNodes) {
+        for (Node node : toSerializeNodes) {
             try {
                 serialize(node, serializeWriter);
             } catch (IOException e) {
@@ -112,16 +112,16 @@ public class UnknownElementDataReaper {
             throw new SmooksException("Unexpected pre-text node serialization exception while attempting to remove excess whitespace.", e);
         }
         StringBuilder trimEnd = new StringBuilder(xml);
-        while(trimEnd.length() > 0 && trimEnd.charAt(0) == ' ') {
+        while (trimEnd.length() > 0 && trimEnd.charAt(0) == ' ') {
             trimEnd.deleteCharAt(0);
         }
-        while(trimEnd.length() > 1 && trimEnd.charAt(0) == '\n' && trimEnd.charAt(1) == '\n') {
+        while (trimEnd.length() > 1 && trimEnd.charAt(0) == '\n' && trimEnd.charAt(1) == '\n') {
             trimEnd.deleteCharAt(0);
         }
-        while(trimEnd.length() > 0 && trimEnd.charAt(trimEnd.length() - 1) == ' ') {
+        while (trimEnd.length() > 0 && trimEnd.charAt(trimEnd.length() - 1) == ' ') {
             trimEnd.deleteCharAt(trimEnd.length() - 1);
         }
-        while(trimEnd.length() > 1 && trimEnd.charAt(trimEnd.length() - 1) == '\n' && trimEnd.charAt(trimEnd.length() - 2) == '\n') {
+        while (trimEnd.length() > 1 && trimEnd.charAt(trimEnd.length() - 1) == '\n' && trimEnd.charAt(trimEnd.length() - 2) == '\n') {
             trimEnd.deleteCharAt(trimEnd.length() - 1);
         }
 
@@ -154,14 +154,14 @@ public class UnknownElementDataReaper {
 
         return false;
     }
-    
+
     public static String normalizeLines(String xml) throws IOException {
         StringBuffer stringBuf = new StringBuffer();
         int xmlLength = xml.length();
 
-        for(int i = 0; i < xmlLength; i++) {
+        for (int i = 0; i < xmlLength; i++) {
             char character = xml.charAt(i);
-            if(character != '\r') {
+            if (character != '\r') {
                 stringBuf.append(character);
             }
         }
@@ -170,13 +170,14 @@ public class UnknownElementDataReaper {
     }
 
     private static final DefaultDOMSerializerVisitor SERIALIZER_VISITOR;
+
     static {
         SERIALIZER_VISITOR = new DefaultDOMSerializerVisitor();
         SERIALIZER_VISITOR.setCloseEmptyElements(Optional.of(true));
-        SERIALIZER_VISITOR.setRewriteEntities(Optional.of(true)); 
+        SERIALIZER_VISITOR.setRewriteEntities(Optional.of(true));
         SERIALIZER_VISITOR.postConstruct();
     }
-    
+
     private static void serialize(Node node, Writer writer) throws IOException {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element) node;
@@ -186,7 +187,7 @@ public class UnknownElementDataReaper {
             SERIALIZER_VISITOR.writeStartElement(element, writer, null);
 
             // Write the child nodes...
-            for(int i = 0; i < childCount; i++) {
+            for (int i = 0; i < childCount; i++) {
                 serialize(children.item(i), writer);
             }
 

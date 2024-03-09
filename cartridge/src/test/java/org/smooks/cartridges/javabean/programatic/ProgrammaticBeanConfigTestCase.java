@@ -196,7 +196,7 @@ public class ProgrammaticBeanConfigTestCase {
         Bean orderBean = new Bean(HashMap.class, "order", "/order", smooks.getApplicationContext().getRegistry());
         orderBean.bindTo("header",
                 orderBean.newBean(HashMap.class, "/order")
-                        .bindTo("customerNumber", "header/customer/@number", new StringToIntegerConverterFactory().createTypeConverter())
+                        .bindTo("customerNumber", "header/customer/@number", new StringToIntegerConverterFactory())
                         .bindTo("customerName", "header/customer")
                         .bindTo("privatePerson", "header/privatePerson")
         ).bindTo("orderItems",
@@ -204,7 +204,7 @@ public class ProgrammaticBeanConfigTestCase {
                         .bindTo(orderBean.newBean(HashMap.class, "order-item")
                                 .bindTo("productId", "order-item/product")
                                 .bindTo("quantity", "order-item/quantity")
-                                .bindTo("price", "order-item/price", new StringToDoubleConverterFactory().createTypeConverter()))
+                                .bindTo("price", "order-item/price", new StringToDoubleConverterFactory()))
         );
 
         smooks.addVisitors(orderBean);

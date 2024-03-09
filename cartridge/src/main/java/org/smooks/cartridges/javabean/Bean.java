@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -160,18 +160,18 @@ public class Bean extends BindingAppender {
     private final List<Bean> wirings = new ArrayList<>();
 
     private boolean processed = false;
-    
+
     /**
      * Create a Bean binding configuration.
      * <p/>
      * The bean instance is created on the root/document fragment.
      *
-     * @param beanClass        The bean runtime class.
-     * @param beanId           The bean ID.
+     * @param beanClass The bean runtime class.
+     * @param beanId    The bean ID.
      */
     @SuppressWarnings("unchecked")
-	public Bean(Class<?> beanClass, String beanId, Registry registry) {
-		this(beanClass, beanId, (Factory) null, registry);
+    public Bean(Class<?> beanClass, String beanId, Registry registry) {
+        this(beanClass, beanId, (Factory) null, registry);
     }
 
     /**
@@ -179,20 +179,20 @@ public class Bean extends BindingAppender {
      * <p/>
      * The bean instance is created on the root/document fragment.
      *
-     * @param beanClass        The bean runtime class.
-     * @param beanId           The bean ID.
-     * @param factory		   The factory that will create the runtime object
+     * @param beanClass The bean runtime class.
+     * @param beanId    The bean ID.
+     * @param factory   The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, Factory<? extends T> factory, Registry registry) {
-    	this(beanClass, beanId, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, factory, registry);
+        this(beanClass, beanId, ResourceConfig.DOCUMENT_FRAGMENT_SELECTOR, factory, registry);
     }
 
     /**
      * Create a Bean binding configuration.
      *
-     * @param beanClass         The bean runtime class.
-     * @param beanId            The bean ID.
-     * @param createOnElement   The element selector used to create the bean instance.
+     * @param beanClass       The bean runtime class.
+     * @param beanId          The bean ID.
+     * @param createOnElement The element selector used to create the bean instance.
      */
     public Bean(Class<?> beanClass, String beanId, String createOnElement, Registry registry) {
         this(beanClass, beanId, createOnElement, null, registry);
@@ -201,13 +201,13 @@ public class Bean extends BindingAppender {
     /**
      * Create a Bean binding configuration.
      *
-     * @param beanClass         The bean runtime class.
-     * @param beanId            The bean ID.
-     * @param createOnElement   The element selector used to create the bean instance.
-     * @param factory		   	The factory that will create the runtime object
+     * @param beanClass       The bean runtime class.
+     * @param beanId          The bean ID.
+     * @param createOnElement The element selector used to create the bean instance.
+     * @param factory         The factory that will create the runtime object
      */
     public <T> Bean(Class<T> beanClass, String beanId, String createOnElement, Factory<? extends T> factory, Registry registry) {
-    	super(beanId);
+        super(beanId);
         AssertArgument.isNotNull(beanClass, "beanClass");
         AssertArgument.isNotNull(createOnElement, "createOnElement");
 
@@ -228,9 +228,9 @@ public class Bean extends BindingAppender {
     /**
      * Create a Bean binding configuration.
      *
-     * @param beanClass         The bean runtime class.
-     * @param beanId            The bean ID.
-     * @param createOnElement   The element selector used to create the bean instance.
+     * @param beanClass       The bean runtime class.
+     * @param beanId          The bean ID.
+     * @param createOnElement The element selector used to create the bean instance.
      */
     public static Bean newBean(Class<?> beanClass, String beanId, String createOnElement, Registry registry) {
         return new Bean(beanClass, beanId, createOnElement, registry);
@@ -240,12 +240,12 @@ public class Bean extends BindingAppender {
     /**
      * Create a Bean binding configuration.
      *
-     * @param beanClass         The bean runtime class.
-     * @param beanId            The bean ID.
-     * @param createOnElement   The element selector used to create the bean instance.
-     * @param factory		    The factory that will create the runtime object
+     * @param beanClass       The bean runtime class.
+     * @param beanId          The bean ID.
+     * @param createOnElement The element selector used to create the bean instance.
+     * @param factory         The factory that will create the runtime object
      */
-    public static <T> Bean  newBean(Class<T> beanClass, String beanId, String createOnElement, Factory<T> factory, Registry registry) {
+    public static <T> Bean newBean(Class<T> beanClass, String beanId, String createOnElement, Factory<T> factory, Registry registry) {
         return new Bean(beanClass, beanId, createOnElement, factory, registry);
     }
 
@@ -272,8 +272,8 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param createOnElement The element selector used to create the bean instance.
+     * @param factory         The factory that will create the runtime object
      * @return <code>this</code> Bean configuration instance.
-     * @param factory		    The factory that will create the runtime object
      */
     public <T> Bean newBean(Class<T> beanClass, String createOnElement, Factory<T> factory) {
         return new Bean(beanClass, UUID.randomUUID().toString(), createOnElement, factory, registry);
@@ -303,7 +303,7 @@ public class Bean extends BindingAppender {
      * @param beanClass       The bean runtime class.
      * @param beanId          The beanId.
      * @param createOnElement The element selector used to create the bean instance.
-     * @param factory		  The factory that will create the runtime object
+     * @param factory         The factory that will create the runtime object
      * @return <code>this</code> Bean configuration instance.
      */
     public <T> Bean newBean(Class<T> beanClass, String beanId, String createOnElement, Factory<T> factory) {
@@ -338,7 +338,7 @@ public class Bean extends BindingAppender {
      *                      the data value.
      * @return <code>this</code> Bean configuration instance.
      */
-    public Bean bindTo(String bindingMember, String dataSelector, TypeConverter<? super String, ?> typeConverter) {
+    public Bean bindTo(String bindingMember, String dataSelector, TypeConverterFactory<?, ?> typeConverterFactory) {
         assertNotProcessed();
         AssertArgument.isNotNull(bindingMember, "bindingMember");
         AssertArgument.isNotNull(dataSelector, "dataSelector");
@@ -356,13 +356,13 @@ public class Bean extends BindingAppender {
 
         Method bindingMethod = getBindingMethod(bindingMember, beanClass);
         if (bindingMethod != null) {
-            if (typeConverter == null) {
+            if (typeConverterFactory == null) {
                 final Class<?> dataType = bindingMethod.getParameterTypes()[0];
-                final TypeConverterFactory<String, ?> typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<>(String.class, dataType).lookup(TYPE_CONVERTER_FACTORIES);
-                if (typeConverterFactory != null) {
-                    typeConverter = typeConverterFactory.createTypeConverter();
+                final TypeConverterFactory<String, ?> stringTypeConverterFactory = new SourceTargetTypeConverterFactoryLookup<>(String.class, dataType).lookup(TYPE_CONVERTER_FACTORIES);
+                if (stringTypeConverterFactory != null) {
+                    typeConverterFactory = stringTypeConverterFactory;
                 } else {
-                    typeConverter = new SourceTargetTypeConverterFactoryLookup<>(Object.class, Object.class).lookup(TYPE_CONVERTER_FACTORIES).createTypeConverter();
+                    typeConverterFactory = new SourceTargetTypeConverterFactoryLookup<>(Object.class, Object.class).lookup(TYPE_CONVERTER_FACTORIES);
                 }
             }
 
@@ -374,7 +374,7 @@ public class Bean extends BindingAppender {
         } else {
             beanInstancePopulator.setProperty(bindingMember);
         }
-        beanInstancePopulator.setTypeConverter(typeConverter);
+        beanInstancePopulator.setTypeConverterFactory(typeConverterFactory);
 
         bindings.add(new Binding(populatorResourceConfig.getSelectorPath().getSelector(), beanInstancePopulator, false));
 
@@ -458,7 +458,7 @@ public class Bean extends BindingAppender {
      * @return <code>this</code> Bean configuration instance.
      */
     public Bean bindTo(String dataSelector) {
-        return bindTo(dataSelector, (TypeConverter<String, ?>) null);
+        return bindTo(dataSelector, (TypeConverterFactory<String, ?>) null);
     }
 
 
@@ -466,12 +466,12 @@ public class Bean extends BindingAppender {
      * Create a binding configuration to bind the data, selected from the message by the
      * dataSelector, to the target Collection/array Bean beanclass instance.
      *
-     * @param dataSelector The data selector for the data value to be bound.
-     * @param typeConverter  The {@link org.smooks.javabean.DataDecoder} to be used for decoding
-     *                     the data value.
+     * @param dataSelector  The data selector for the data value to be bound.
+     * @param typeConverter The {@link org.smooks.javabean.DataDecoder} to be used for decoding
+     *                      the data value.
      * @return <code>this</code> Bean configuration instance.
      */
-    public Bean bindTo(String dataSelector, TypeConverter<String, ?> typeConverter) {
+    public Bean bindTo(String dataSelector, TypeConverterFactory<String, ?> typeConverterFactory) {
         assertNotProcessed();
         AssertArgument.isNotNull(dataSelector, "dataSelector");
         // dataDecoder can be null
@@ -485,7 +485,7 @@ public class Bean extends BindingAppender {
         beanInstancePopulator.setBeanId(getBeanId());
         beanInstancePopulator.setValueAttributeName(populatorResourceConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
         beanInstancePopulator.setValueAttributePrefix(populatorResourceConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, String.class));
-        beanInstancePopulator.setTypeConverter(typeConverter);
+        beanInstancePopulator.setTypeConverterFactory(typeConverterFactory);
 
         bindings.add(new Binding(populatorResourceConfig.getSelectorPath().getSelector(), beanInstancePopulator, true));
 
@@ -494,6 +494,7 @@ public class Bean extends BindingAppender {
 
     /**
      * Add the visitors, associated with this Bean instance, to the visitor map.
+     *
      * @param visitorMap The visitor Map.
      */
     @Override
@@ -501,7 +502,7 @@ public class Bean extends BindingAppender {
         // Need to protect against multiple calls.  This can happen where e.g. beans are
         // wired together in 2-way relationships, or the creating code doesn't use the
         // fluent interface and calls Smooks.addVisitor to each bean instance.
-        if(processed) {
+        if (processed) {
             return Collections.EMPTY_LIST;
         }
         processed = true;
@@ -514,22 +515,22 @@ public class Bean extends BindingAppender {
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());
 
         visitorBindings.add(beanInstanceCreateBinding);
-        
+
         // Recurse down the wired beans...
-        for(Bean bean : wirings) {
+        for (Bean bean : wirings) {
             visitorBindings.addAll(bean.addVisitors());
         }
 
         // Add the populate bean visitors...
-        for(Binding binding : bindings) {
+        for (Binding binding : bindings) {
             ContentHandlerBinding<Visitor> beanInstancePopulatorBinding = new DefaultContentHandlerBinding<>(binding.beanInstancePopulator, binding.selector, registry);
             beanInstancePopulatorBinding.getResourceConfig().setParameter("beanId", getBeanId());
             visitorBindings.add(beanInstancePopulatorBinding);
-            if(binding.assertTargetIsCollection) {
+            if (binding.assertTargetIsCollection) {
                 assertBeanClassIsCollection();
             }
         }
-        
+
         return visitorBindings;
     }
 
@@ -574,7 +575,7 @@ public class Bean extends BindingAppender {
     }
 
     private void assertNotProcessed() {
-        if(processed) {
+        if (processed) {
             throw new IllegalStateException("Unexpected attempt to bindTo Bean instance after the Bean instance has been added to a Smooks instance.");
         }
     }

@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -54,6 +54,7 @@ import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.bean.repository.BeanId;
 import org.smooks.api.converter.TypeConverter;
+import org.smooks.api.converter.TypeConverterDescriptor;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.delivery.ContentDeliveryConfig;
@@ -66,10 +67,10 @@ import org.smooks.api.resource.visitor.VisitBeforeReport;
 import org.smooks.api.resource.visitor.sax.ng.AfterVisitor;
 import org.smooks.api.resource.visitor.sax.ng.BeforeVisitor;
 import org.smooks.api.resource.visitor.sax.ng.ChildrenVisitor;
+import org.smooks.cartridges.javabean.converter.PreprocessTypeConverterFactory;
 import org.smooks.cartridges.javabean.observers.BeanWiringObserver;
 import org.smooks.cartridges.javabean.observers.ListToArrayChangeObserver;
 import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
-import org.smooks.engine.converter.PreprocessTypeConverter;
 import org.smooks.engine.converter.StringConverterFactory;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
@@ -84,6 +85,7 @@ import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
 import jakarta.annotation.PostConstruct;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.annotation.Annotation;
@@ -102,7 +104,7 @@ import java.util.stream.Stream;
  */
 @VisitBeforeReport(condition = "parameters.containsKey('wireBeanId') || parameters.containsKey('valueAttributeName')",
         summary = "<#if resource.parameters.wireBeanId??>Create bean lifecycle observer for bean <b>${resource.parameters.wireBeanId}</b>." +
-        		  "<#else>Populating <b>${resource.parameters.beanId}</b> with the value from the attribute <b>${resource.parameters.valueAttributeName}</b>.</#if>",
+                "<#else>Populating <b>${resource.parameters.beanId}</b> with the value from the attribute <b>${resource.parameters.valueAttributeName}</b>.</#if>",
         detailTemplate = "reporting/BeanInstancePopulatorReport_Before.html")
 @VisitAfterReport(condition = "!parameters.containsKey('wireBeanId') && !parameters.containsKey('valueAttributeName')",
         summary = "Populating <b>${resource.parameters.beanId}</b> with a value from this element.",
@@ -182,7 +184,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     private Method propertySetterMethod;
     private boolean checkedForSetterMethod;
     private boolean isAttribute = true;
-    private TypeConverter<? super String, ?> typeConverter;
+    private TypeConverterFactory<?, ?> typeConverterFactory;
 
     private String mapKeyAttribute;
 
@@ -238,12 +240,12 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         this.typeAlias = Optional.ofNullable(typeAlias);
     }
 
-    public void setTypeConverter(TypeConverter<? super String, ?> typeConverter) {
-        this.typeConverter = typeConverter;
+    public void setTypeConverterFactory(TypeConverterFactory<?, ?> typeConverterFactory) {
+        this.typeConverterFactory = typeConverterFactory;
     }
 
-    public TypeConverter<? super String, ?> getTypeConverter() {
-        return typeConverter;
+    public TypeConverterFactory<?, ?> getTypeConverterFactory() {
+        return typeConverterFactory;
     }
 
     public void setDefaultVal(String defaultVal) {
@@ -358,7 +360,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
 
         id = idBuilder.toString();
     }
-    
+
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         if (!beanExists(executionContext)) {
@@ -389,7 +391,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     private boolean beanExists(ExecutionContext executionContext) {
         return (executionContext.getBeanContext().getBean(beanId) != null);
     }
-    
+
     private void bindSaxDataValue(Element element, ExecutionContext executionContext) {
         String propertyName;
 
@@ -581,10 +583,11 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
             dataString = defaultVal.get();
         }
 
-        if (typeConverter == null) {
-            typeConverter = getTypeConverter(executionContext);
+        if (typeConverterFactory == null) {
+            typeConverterFactory = getTypeConverterFactory(executionContext);
         }
 
+        TypeConverter typeConverter = typeConverterFactory.createTypeConverter();
         try {
             return typeConverter.convert(dataString);
         } catch (TypeConverterException e) {
@@ -592,52 +595,61 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
-        return getTypeConverter(executionContext.getContentDeliveryRuntime().getContentDeliveryConfig());
+    private TypeConverterFactory<?, ?> getTypeConverterFactory(ExecutionContext executionContext) throws TypeConverterException {
+        return getTypeConverterFactory(executionContext.getContentDeliveryRuntime().getContentDeliveryConfig());
     }
 
-    public TypeConverter<? super String, ?> getTypeConverter(ContentDeliveryConfig deliveryConfig) {
-        @SuppressWarnings("unchecked")
-        List<?> typeConverters = deliveryConfig.getObjects("decoder:" + typeAlias.orElse(null));
+    public TypeConverterFactory<?, ?> getTypeConverterFactory(ContentDeliveryConfig contentDeliveryConfig) {
+        List<?> typeConverterFactories = contentDeliveryConfig.getObjects("decoder:" + typeAlias.orElse(null));
 
-        if (typeConverters == null || typeConverters.isEmpty()) {
+        if (typeConverterFactories == null || typeConverterFactories.isEmpty()) {
             if (typeAlias.isPresent()) {
-                typeConverter = appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias.get())).createTypeConverter();
+                typeConverterFactory = appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias.get()));
             } else {
-                typeConverter = resolveDecoderReflectively();
+                typeConverterFactory = resolveDecoderReflectively();
             }
-        } else if (!(typeConverters.get(0) instanceof TypeConverter)) {
-            throw new TypeConverterException("Configured type converter '" + typeAlias.orElse(null) + ":" + typeConverters.get(0).getClass().getName() + "' is not an instance of " + TypeConverter.class.getName());
+        } else if (!(typeConverterFactories.get(0) instanceof TypeConverterFactory)) {
+            throw new TypeConverterException("Configured type converter factory '" + typeAlias.orElse(null) + ":" + typeConverterFactories.get(0).getClass().getName() + "' is not an instance of " + TypeConverterFactory.class.getName());
         } else {
-            typeConverter = (TypeConverter<String, ?>) typeConverters.get(0);
+            typeConverterFactory = (TypeConverterFactory<String, ?>) typeConverterFactories.get(0);
         }
 
-        if (typeConverter instanceof PreprocessTypeConverter) {
-            PreprocessTypeConverter preprocessTypeConverter = (PreprocessTypeConverter) typeConverter;
-            if (preprocessTypeConverter.getDelegateTypeConverter() == null) {
-                preprocessTypeConverter.setDelegateTypeConverter(resolveDecoderReflectively());
+        if (typeConverterFactory instanceof PreprocessTypeConverterFactory) {
+            PreprocessTypeConverterFactory preprocessTypeConverterFactory = (PreprocessTypeConverterFactory) typeConverterFactory;
+            if (preprocessTypeConverterFactory.getDelegateTypeConverterFactory() == null) {
+                preprocessTypeConverterFactory.setDelegateTypeConverterFactory(resolveDecoderReflectively());
             }
         }
 
-        return typeConverter;
+        return typeConverterFactory;
     }
 
-    private TypeConverter<? super String, ?> resolveDecoderReflectively() throws TypeConverterException {
+    private TypeConverterFactory<? super String, ?> resolveDecoderReflectively() throws TypeConverterException {
         Class<?> bindType = resolveBindTypeReflectively();
 
         if (bindType != null) {
             if (bindType.isEnum()) {
-                return value -> Enum.valueOf((Class) bindType, value);
+                return new TypeConverterFactory<String, Object>() {
+                    @Override
+                    public TypeConverter<? super String, ?> createTypeConverter() {
+                        return (TypeConverter<String, Object>) value -> Enum.valueOf((Class) bindType, value);
+                    }
+
+                    @Override
+                    public TypeConverterDescriptor<Class<String>, Class<Object>> getTypeConverterDescriptor() {
+                        return null;
+                    }
+                };
             } else {
-                final TypeConverterFactory<? super String, ?> typeConverterFactory = appContext.getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(String.class, bindType));
+                TypeConverterFactory<? super String, ?> typeConverterFactory = appContext.getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(String.class, bindType));
 
                 if (typeConverterFactory != null) {
-                    return typeConverterFactory.createTypeConverter();
+                    return typeConverterFactory;
                 }
             }
         }
 
-        return new StringConverterFactory().createTypeConverter();
+        return new StringConverterFactory();
     }
 
     private Class<?> resolveBindTypeReflectively() throws TypeConverterException {
@@ -692,6 +704,6 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
 
     @Override
     public void visitChildElement(Element childElement, ExecutionContext executionContext) throws SmooksException {
-    
+
     }
 }

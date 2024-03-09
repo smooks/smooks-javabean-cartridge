@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -103,18 +103,18 @@ public class BeanRuntimeInfo {
     }
 
     public BeanRuntimeInfo(Class<?> clazz) {
-    	resolveBeanRuntimeInfo(clazz);
+        resolveBeanRuntimeInfo(clazz);
     }
 
     public BeanRuntimeInfo(String classname) {
-    	resolveBeanRuntimeInfo(classname);
+        resolveBeanRuntimeInfo(classname);
     }
 
     public static void recordBeanRuntimeInfo(String beanId, BeanRuntimeInfo beanRuntimeInfo, ApplicationContext appContext) {
         Map<String, BeanRuntimeInfo> runtimeInfoMap = getRuntimeInfoMap(appContext);
         BeanRuntimeInfo existingBeanConfig = runtimeInfoMap.get(beanId);
 
-        if(existingBeanConfig != null && !beanRuntimeInfo.equals(existingBeanConfig)) {
+        if (existingBeanConfig != null && !beanRuntimeInfo.equals(existingBeanConfig)) {
             throw new SmooksConfigException("Multiple configurations present with beanId='" + beanId + "', but the bean runtime infos are not equal i.e bean classes etc are different.  Use a different beanId and the 'setOnMethod' config if needed.");
         }
 
@@ -131,9 +131,9 @@ public class BeanRuntimeInfo {
         // We maintain a targetType enum because it helps us avoid performing
         // instanceof checks, which are cheap when the instance being checked is
         // an instanceof, but is expensive if it's not....
-        if(Map.class.isAssignableFrom(clazz)) {
+        if (Map.class.isAssignableFrom(clazz)) {
             this.setClassification(Classification.MAP_COLLECTION);
-        } else if(Collection.class.isAssignableFrom(clazz)) {
+        } else if (Collection.class.isAssignableFrom(clazz)) {
             this.setClassification(Classification.COLLECTION_COLLECTION);
         } else {
             this.setClassification(Classification.NON_COLLECTION);
@@ -145,9 +145,9 @@ public class BeanRuntimeInfo {
 
         BeanRuntimeInfo beanRuntimeInfo = runtimeInfoMap.get(beanId);
 
-        if(beanRuntimeInfo == null) {
-        	beanRuntimeInfo = new BeanRuntimeInfo(beanClassName);
-        	recordBeanRuntimeInfo(beanId, beanRuntimeInfo, appContext);
+        if (beanRuntimeInfo == null) {
+            beanRuntimeInfo = new BeanRuntimeInfo(beanClassName);
+            recordBeanRuntimeInfo(beanId, beanRuntimeInfo, appContext);
         }
         return beanRuntimeInfo;
     }
@@ -165,11 +165,11 @@ public class BeanRuntimeInfo {
 
         // If it's an array, we use a List and extract an array from it on the
         // visitAfter event....
-        if(beanClass.endsWith("[]")) {
+        if (beanClass.endsWith("[]")) {
             this.setClassification(BeanRuntimeInfo.Classification.ARRAY_COLLECTION);
             String arrayTypeName = beanClass.substring(0, beanClass.length() - 2);
             try {
-            	this.setArrayType(ClassUtils.forName(arrayTypeName, getClass()));
+                this.setArrayType(ClassUtils.forName(arrayTypeName, getClass()));
             } catch (ClassNotFoundException e) {
                 throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + arrayTypeName + " not on classpath.");
             }
@@ -177,13 +177,13 @@ public class BeanRuntimeInfo {
 
         } else {
 
-	        try {
-	            clazz = ClassUtils.forName(beanClass, getClass());
-	        } catch (ClassNotFoundException e) {
-	            throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
-	        }
+            try {
+                clazz = ClassUtils.forName(beanClass, getClass());
+            } catch (ClassNotFoundException e) {
+                throw new SmooksConfigException("Invalid Smooks bean configuration.  Bean class " + beanClass + " not on classpath.");
+            }
 
-	        this.setPopulateType(clazz);
+            this.setPopulateType(clazz);
             this.setClassification(clazz);
         }
     }
@@ -191,13 +191,13 @@ public class BeanRuntimeInfo {
     private void resolveBeanRuntimeInfo(Class<?> clazz) {
         // If it's an array, we use a List and extract an array from it on the
         // visitAfter event....
-        if(clazz.isArray()) {
+        if (clazz.isArray()) {
             this.setClassification(BeanRuntimeInfo.Classification.ARRAY_COLLECTION);
             this.setArrayType(clazz.getComponentType());
             this.setPopulateType(ArrayList.class);
         } else {
 
-	        this.setPopulateType(clazz);
+            this.setPopulateType(clazz);
             this.setClassification(clazz);
 
             // check for a default constructor.
@@ -211,10 +211,10 @@ public class BeanRuntimeInfo {
     }
 
     @SuppressWarnings("unchecked")
-	private static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
+    private static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
         Map<String, BeanRuntimeInfo> runtimeInfoMap = (Map<String, BeanRuntimeInfo>) appContext.getRegistry().lookup(CONTEXT_KEY);
 
-        if(runtimeInfoMap == null) {
+        if (runtimeInfoMap == null) {
             runtimeInfoMap = new HashMap<>();
             appContext.getRegistry().registerObject(CONTEXT_KEY, runtimeInfoMap);
         }
@@ -260,25 +260,25 @@ public class BeanRuntimeInfo {
     }
 
     @Override
-	public boolean equals(Object obj) {
-        if(obj == null) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(!(obj instanceof BeanRuntimeInfo)) {
+        if (!(obj instanceof BeanRuntimeInfo)) {
             return false;
         }
 
         BeanRuntimeInfo beanInfo = (BeanRuntimeInfo) obj;
-        if(beanInfo.getArrayType() != getArrayType()) {
+        if (beanInfo.getArrayType() != getArrayType()) {
             return false;
         }
-        if(beanInfo.getClassification() != getClassification()) {
+        if (beanInfo.getClassification() != getClassification()) {
             return false;
         }
-        if(beanInfo.getPopulateType() != getPopulateType()) {
+        if (beanInfo.getPopulateType() != getPopulateType()) {
             return false;
         }
 
@@ -290,7 +290,7 @@ public class BeanRuntimeInfo {
 
         stringBuilder.append("Classification: " + classification);
         stringBuilder.append(", Populate Type: : " + populateType.getName());
-        if(arrayType != null) {
+        if (arrayType != null) {
             stringBuilder.append(", Array Type: " + arrayType.getName());
         }
 

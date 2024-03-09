@@ -6,35 +6,35 @@
  * %%
  * Licensed under the terms of the Apache License Version 2.0, or
  * the GNU Lesser General Public License version 3.0 or later.
- * 
+ *
  * SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-or-later
- * 
+ *
  * ======================================================================
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ======================================================================
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -92,10 +92,10 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
         // Write the attributes...
         writeAttributes(outputStream, context);
 
-        if(elements.isEmpty()) {
+        if (elements.isEmpty()) {
             String value = getValue(context);
 
-            if(value != null) {
+            if (value != null) {
                 char[] characters = value.toCharArray();
 
                 outputStream.write(">");
@@ -122,15 +122,15 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     }
 
     private void writeAttributes(Writer outputStream, SerializationContext context) throws IOException {
-        for(XMLAttributeSerializationNode attribute : attributes) {
+        for (XMLAttributeSerializationNode attribute : attributes) {
             attribute.serialize(outputStream, context);
         }
     }
 
     private void writeElements(Writer outputStream, SerializationContext context) throws IOException {
         context.incDepth();
-        for(XMLElementSerializationNode element : elements) {
-            if(element.isCollection) {
+        for (XMLElementSerializationNode element : elements) {
+            if (element.isCollection) {
                 NodeGetter collectionNodeGetter = element.getCollectionGetter();
                 Getter collectionGetter = collectionNodeGetter.getter;
                 Object collectionObject;
@@ -142,13 +142,13 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
                     collectionObject = context.getValue(collectionGetter);
                 }
 
-                if(collectionObject instanceof List) {
+                if (collectionObject instanceof List) {
                     collection = (List<?>) collectionObject;
-                } else if(collectionObject instanceof Object[]) {
+                } else if (collectionObject instanceof Object[]) {
                     collection = Arrays.asList((Object[]) collectionObject);
                 }
 
-                if(collection != null && !collection.isEmpty()) {
+                if (collection != null && !collection.isEmpty()) {
                     try {
                         for (Object collectionItem : collection) {
                             context.addObject(collectionNodeGetter.contextObjectName, collectionItem);
@@ -161,7 +161,7 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
                     }
                 }
             } else {
-                if(element.hasData(context)) {
+                if (element.hasData(context)) {
                     outputStream.write("\n");
                     element.serialize(outputStream, context);
                 }
@@ -173,11 +173,11 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     @Override
     protected boolean hasData(SerializationContext context) {
         // If any part of the element has data...
-        if(super.hasData(context)) {
+        if (super.hasData(context)) {
             return true;
         }
-        for(XMLAttributeSerializationNode attribute : attributes) {
-            if(attribute.hasData(context)) {
+        for (XMLAttributeSerializationNode attribute : attributes) {
+            if (attribute.hasData(context)) {
                 return true;
             }
         }
@@ -186,6 +186,7 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     }
 
     private static final char[] INDENT_BUF = new char[512];
+
     static {
         Arrays.fill(INDENT_BUF, ' ');
     }
@@ -193,7 +194,7 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
     private void indent(Writer outputStream, SerializationContext context) throws IOException {
         int indent = context.getCurrentDepth() * 4; // Indent 4 spaces per level in the hierarchy...
 
-        if(indent > 0) {
+        if (indent > 0) {
             indent = Math.min(indent, INDENT_BUF.length); // Making sure we don't OOB on the indent buffer
             outputStream.write(INDENT_BUF, 0, indent);
         }
