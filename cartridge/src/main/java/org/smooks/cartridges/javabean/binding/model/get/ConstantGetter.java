@@ -51,7 +51,7 @@ import org.smooks.assertion.AssertArgument;
  */
 public class ConstantGetter implements Getter {
 
-    private String value;
+    protected String value;
 
     public ConstantGetter(String value) {
         AssertArgument.isNotNullAndNotEmpty(value, "value");

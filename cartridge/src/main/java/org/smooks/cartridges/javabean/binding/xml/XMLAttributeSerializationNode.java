@@ -57,7 +57,7 @@ import java.io.Writer;
  */
 public class XMLAttributeSerializationNode extends XMLSerializationNode {
 
-    private Bean model;
+    protected Bean model;
 
     public XMLAttributeSerializationNode(QName qName) {
         super(qName);

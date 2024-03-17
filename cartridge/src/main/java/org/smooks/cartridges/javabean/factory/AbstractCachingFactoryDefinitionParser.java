@@ -56,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractCachingFactoryDefinitionParser implements FactoryDefinitionParser {
 
-    private final ConcurrentHashMap<String, Factory<?>> factoryCache = new ConcurrentHashMap<String, Factory<?>>();
+    protected final ConcurrentHashMap<String, Factory<?>> factoryCache = new ConcurrentHashMap<>();
 
     public Factory<?> parse(String factoryDefinition) {
         Factory<?> factory = factoryCache.get(factoryDefinition);

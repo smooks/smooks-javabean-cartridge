@@ -49,8 +49,8 @@ import org.smooks.cartridges.javabean.BeanInstancePopulator;
  */
 public class WiredBinding extends Binding {
 
-    private String wiredBeanId;
-    private Bean wiredBean;
+    protected String wiredBeanId;
+    protected Bean wiredBean;
 
     public WiredBinding(BeanInstancePopulator populator) {
         super(populator);

@@ -39,36 +39,41 @@
             <xs:documentation/>
         </xs:annotation>
     </xs:element>
+
+    <xs:group name="beanVisitorChoice">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="value" type="jb:ValueBinding">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Basic "value" based binding configuration.
+                            <p/>
+                            This binding type is used to bind data from the source message event stream.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="wiring" type="jb:WireBinding">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Basic "value" based binding configuration.
+                            <p/>
+                            This binding type is used to bind data from the source message event stream.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="expression" type="jb:ExpressionBinding">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">Expression based Configuration</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
     <xs:complexType name="BeanVisitor">
         <xs:complexContent>
             <xs:extension base="smooks:element-visitor">
-                <xs:sequence>
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                        <xs:element name="value" type="jb:ValueBinding">
-                            <xs:annotation>
-                                <xs:documentation xml:lang="en">
-                                    Basic "value" based binding configuration.
-                                    <p/>
-                                    This binding type is used to bind data from the source message event stream.
-                                </xs:documentation>
-                            </xs:annotation>
-                        </xs:element>
-                        <xs:element name="wiring" type="jb:WireBinding">
-                            <xs:annotation>
-                                <xs:documentation xml:lang="en">
-                                    Basic "value" based binding configuration.
-                                    <p/>
-                                    This binding type is used to bind data from the source message event stream.
-                                </xs:documentation>
-                            </xs:annotation>
-                        </xs:element>
-                        <xs:element name="expression" type="jb:ExpressionBinding">
-                            <xs:annotation>
-                                <xs:documentation xml:lang="en">Expression based Configuration</xs:documentation>
-                            </xs:annotation>
-                        </xs:element>
-                    </xs:choice>
-                </xs:sequence>
+                <xs:group ref="jb:beanVisitorChoice"/>
                 <xs:attribute name="beanId" type="xs:string" use="required">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">

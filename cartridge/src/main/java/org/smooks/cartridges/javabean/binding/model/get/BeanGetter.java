@@ -55,7 +55,7 @@ import java.lang.reflect.Method;
  */
 public class BeanGetter<T extends Object> implements Getter<T> {
 
-    private final Method getterMethod;
+    protected final Method getterMethod;
 
     public BeanGetter(Class<?> beanClass, String property) {
         getterMethod = ClassUtils.getGetterMethodByProperty(property, beanClass, null);

@@ -59,8 +59,8 @@ import java.util.Properties;
  */
 public abstract class AbstractResolver implements EntityResolver {
 
-    private List<Properties> descriptors;
-    private ClassLoader classLoader = AbstractResolver.class.getClassLoader();
+    protected List<Properties> descriptors;
+    protected ClassLoader classLoader = AbstractResolver.class.getClassLoader();
 
     protected AbstractResolver(List<Properties> descriptors) {
         this.descriptors = descriptors;

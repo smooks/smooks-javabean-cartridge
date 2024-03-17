@@ -60,9 +60,9 @@ import org.smooks.cartridges.javabean.BeanInstancePopulator;
  */
 public class ListToArrayChangeObserver implements BeanContextLifecycleObserver {
 
-    private String property;
-    private BeanInstancePopulator populator;
-    private BeanId watchedBean;
+    protected String property;
+    protected BeanInstancePopulator populator;
+    protected BeanId watchedBean;
 
     public ListToArrayChangeObserver(BeanId watchedBean, String property, BeanInstancePopulator populator) {
         this.watchedBean = watchedBean;

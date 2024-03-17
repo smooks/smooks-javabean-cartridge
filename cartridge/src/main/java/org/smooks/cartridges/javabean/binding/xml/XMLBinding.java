@@ -105,11 +105,11 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class XMLBinding extends AbstractBinding {
 
-    private ModelSet beanModelSet;
-    private List<XMLElementSerializationNode> graphs;
-    private final Set<QName> rootElementNames = new HashSet<>();
-    private final Map<Class, RootNodeSerializer> serializers = new LinkedHashMap<>();
-    private boolean omitXMLDeclaration = false;
+    protected ModelSet beanModelSet;
+    protected List<XMLElementSerializationNode> graphs;
+    protected final Set<QName> rootElementNames = new HashSet<>();
+    protected final Map<Class, RootNodeSerializer> serializers = new LinkedHashMap<>();
+    protected boolean omitXMLDeclaration = false;
 
     /**
      * Public constructor.
@@ -255,7 +255,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private void mergeBeanModelsIntoXMLGraphs() {
+    protected void mergeBeanModelsIntoXMLGraphs() {
         Set<Map.Entry<Class, RootNodeSerializer>> serializerSet = serializers.entrySet();
 
         for (Map.Entry<Class, RootNodeSerializer> rootNodeSerializer : serializerSet) {
@@ -267,7 +267,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private void merge(XMLElementSerializationNode serializer, Bean bean) {
+    protected void merge(XMLElementSerializationNode serializer, Bean bean) {
         boolean isCollection = bean.isCollection();
 
         for (Binding binding : bean.getBindings()) {
@@ -311,7 +311,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private void createRootSerializers(List<XMLElementSerializationNode> graphs) {
+    protected void createRootSerializers(List<XMLElementSerializationNode> graphs) {
         Collection<Bean> beanModels = beanModelSet.getModels().values();
 
         for (Bean model : beanModels) {
@@ -334,7 +334,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private void addNamespaceAttributes(XMLElementSerializationNode serializer) {
+    protected void addNamespaceAttributes(XMLElementSerializationNode serializer) {
         Properties namespaces = getSmooks().getApplicationContext().getRegistry().lookup(new NamespaceManagerLookup()).orElse(null);
         if (namespaces != null) {
             Enumeration<String> namespacePrefixes = (Enumeration<String>) namespaces.propertyNames();
@@ -350,7 +350,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigSeq resourceConfigSeq) {
+    protected List<XMLElementSerializationNode> createExpandedXMLOutputGraphs(final ResourceConfigSeq resourceConfigSeq) {
         final List<XMLElementSerializationNode> graphRoots = new ArrayList<>();
 
         for (int i = 0; i < resourceConfigSeq.size(); i++) {
@@ -374,7 +374,7 @@ public class XMLBinding extends AbstractBinding {
         return graphRoots;
     }
 
-    private XMLSerializationNode constructNodePath(SelectorPath selectorPath, List<XMLElementSerializationNode> graphRoots) {
+    protected XMLSerializationNode constructNodePath(SelectorPath selectorPath, List<XMLElementSerializationNode> graphRoots) {
         if (selectorPath == null || selectorPath.size() == 0) {
             throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
         }
@@ -392,7 +392,7 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private XMLSerializationNode findNode(List<XMLElementSerializationNode> graphs, SelectorPath selectorPath) {
+    protected XMLSerializationNode findNode(List<XMLElementSerializationNode> graphs, SelectorPath selectorPath) {
         XMLElementSerializationNode root = XMLElementSerializationNode.getElement(selectorPath.get(1), graphs, false);
         XMLSerializationNode node = root;
 
@@ -407,7 +407,7 @@ public class XMLBinding extends AbstractBinding {
         return node;
     }
 
-    private void assertSelectorOK(ResourceConfig resourceConfig) {
+    protected void assertSelectorOK(ResourceConfig resourceConfig) {
         String selector = resourceConfig.getSelectorPath().getSelector();
 
         if (selector != null) {
@@ -421,11 +421,11 @@ public class XMLBinding extends AbstractBinding {
         }
     }
 
-    private static class RootNodeSerializer {
-        private final String beanId;
-        private final XMLElementSerializationNode serializer;
+    protected static class RootNodeSerializer {
+        protected final String beanId;
+        protected final XMLElementSerializationNode serializer;
 
-        private RootNodeSerializer(String beanId, XMLElementSerializationNode serializer) {
+        protected RootNodeSerializer(String beanId, XMLElementSerializationNode serializer) {
             this.beanId = beanId;
             this.serializer = serializer;
         }

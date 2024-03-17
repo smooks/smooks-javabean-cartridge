@@ -114,12 +114,12 @@ import java.util.Set;
  */
 public class Value extends BindingAppender {
 
-    private static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES;
+    protected static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES;
 
-    private final Registry registry;
-    private final String dataSelector;
-    private String defaultValue;
-    private TypeConverter<? super String, ?> typeConverter;
+    protected final Registry registry;
+    protected final String dataSelector;
+    protected String defaultValue;
+    protected TypeConverter<? super String, ?> typeConverter;
 
     /**
      * Create a Value binding configuration.

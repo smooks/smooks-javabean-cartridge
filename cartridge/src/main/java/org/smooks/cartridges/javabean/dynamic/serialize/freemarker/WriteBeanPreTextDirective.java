@@ -75,7 +75,7 @@ public class WriteBeanPreTextDirective extends AbstractBeanDirective {
         }
     }
 
-    private String trimPretext(String string) {
+    protected String trimPretext(String string) {
         StringBuffer stringBuf = new StringBuffer(string);
 
         while (stringBuf.length() > 0) {

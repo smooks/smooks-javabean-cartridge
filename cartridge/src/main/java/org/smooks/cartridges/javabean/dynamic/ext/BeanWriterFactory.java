@@ -69,17 +69,17 @@ import java.util.Map;
 public class BeanWriterFactory implements ContentHandler {
 
     @Inject
-    private String beanId;
+    protected String beanId;
     @Inject
     @Named("class")
-    private Class<? extends BeanWriter> beanWriterClass;
+    protected Class<? extends BeanWriter> beanWriterClass;
     @Inject
     @Named(BeanConfigUtil.BEAN_CLASS_CONFIG)
-    private Class<?> beanClass;
+    protected Class<?> beanClass;
     @Inject
-    private ResourceConfig resourceConfig;
+    protected ResourceConfig resourceConfig;
     @Inject
-    private ApplicationContext appContext;
+    protected ApplicationContext appContext;
 
     @PostConstruct
     public void createBeanWriter() {

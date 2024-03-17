@@ -66,8 +66,8 @@ import java.util.stream.Stream;
 public class BeanResultCleanup implements PostExecutionLifecycle, BeforeVisitor {
 
     @Inject
-    private String[] beanIDs;
-    private Set<String> beanIDSet;
+    protected String[] beanIDs;
+    protected Set<String> beanIDSet;
 
     @PostConstruct
     public void postConstruct() {

@@ -55,9 +55,9 @@ import java.util.Set;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BindingConfig {
-    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories;
-    private final Field property;
-    private final String wireBeanId;
+    protected final Set<TypeConverterFactory<?, ?>> typeConverterFactories;
+    protected final Field property;
+    protected final String wireBeanId;
 
     public BindingConfig(Field property, Set<TypeConverterFactory<?, ?>> typeConverterFactories) {
         this(property, null, typeConverterFactories);

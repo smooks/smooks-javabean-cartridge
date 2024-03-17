@@ -150,16 +150,16 @@ import java.util.*;
  */
 public class Bean extends BindingAppender {
 
-    private static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = null;
+    protected static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = null;
 
-    private final Registry registry;
-    private final BeanInstanceCreator beanInstanceCreator;
-    private final Class<?> beanClass;
-    private final String createOnElement;
-    private final List<Binding> bindings = new ArrayList<>();
-    private final List<Bean> wirings = new ArrayList<>();
+    protected final Registry registry;
+    protected final BeanInstanceCreator beanInstanceCreator;
+    protected final Class<?> beanClass;
+    protected final String createOnElement;
+    protected final List<Binding> bindings = new ArrayList<>();
+    protected final List<Bean> wirings = new ArrayList<>();
 
-    private boolean processed = false;
+    protected boolean processed = false;
 
     /**
      * Create a Bean binding configuration.
@@ -566,7 +566,7 @@ public class Bean extends BindingAppender {
     /**
      * Assert that the beanClass associated with this configuration is an array or Collection.
      */
-    private void assertBeanClassIsCollection() {
+    protected void assertBeanClassIsCollection() {
         BeanRuntimeInfo beanRuntimeInfo = beanInstanceCreator.getBeanRuntimeInfo();
 
         if (beanRuntimeInfo.getClassification() != BeanRuntimeInfo.Classification.COLLECTION_COLLECTION && beanRuntimeInfo.getClassification() != BeanRuntimeInfo.Classification.ARRAY_COLLECTION) {
@@ -574,18 +574,18 @@ public class Bean extends BindingAppender {
         }
     }
 
-    private void assertNotProcessed() {
+    protected void assertNotProcessed() {
         if (processed) {
             throw new IllegalStateException("Unexpected attempt to bindTo Bean instance after the Bean instance has been added to a Smooks instance.");
         }
     }
 
-    private static class Binding {
-        private final String selector;
-        private final BeanInstancePopulator beanInstancePopulator;
-        private final boolean assertTargetIsCollection;
+    protected static class Binding {
+        protected final String selector;
+        protected final BeanInstancePopulator beanInstancePopulator;
+        protected final boolean assertTargetIsCollection;
 
-        private Binding(String selector, BeanInstancePopulator beanInstancePopulator, boolean assertTargetIsCollection) {
+        protected Binding(String selector, BeanInstancePopulator beanInstancePopulator, boolean assertTargetIsCollection) {
             this.selector = selector;
             this.beanInstancePopulator = beanInstancePopulator;
             this.assertTargetIsCollection = assertTargetIsCollection;

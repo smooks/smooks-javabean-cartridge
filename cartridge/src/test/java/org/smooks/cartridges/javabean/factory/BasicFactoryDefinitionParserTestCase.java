@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean.factory;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.jupiter.api.Test;
-import org.smooks.tck.MockExecutionContext;
+import org.smooks.testkit.MockExecutionContext;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

@@ -128,7 +128,7 @@ public class UnknownElementDataReaper {
         return trimEnd.toString();
     }
 
-    private static boolean isOnModelSourcePath(Node node, List<BeanMetadata> beanMetadataSet) {
+    protected static boolean isOnModelSourcePath(Node node, List<BeanMetadata> beanMetadataSet) {
         for (BeanMetadata beanMetadata : beanMetadataSet) {
             if (node.equals(beanMetadata.getCreateSource().unwrap())) {
                 return true;
@@ -169,7 +169,7 @@ public class UnknownElementDataReaper {
         return stringBuf.toString();
     }
 
-    private static final DefaultDOMSerializerVisitor SERIALIZER_VISITOR;
+    protected static final DefaultDOMSerializerVisitor SERIALIZER_VISITOR;
 
     static {
         SERIALIZER_VISITOR = new DefaultDOMSerializerVisitor();

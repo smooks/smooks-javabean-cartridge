@@ -69,12 +69,7 @@ import java.util.Map;
  */
 public class BeanMapExpressionEvaluator extends MVELExpressionEvaluator implements ExecutionContextExpressionEvaluator {
 
-    /**
-     *
-     */
-    public static final String MVEL_EXECUTION_CONTEXT_KEY = "EC";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BeanMapExpressionEvaluator.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BeanMapExpressionEvaluator.class);
 
     public BeanMapExpressionEvaluator() {
     }

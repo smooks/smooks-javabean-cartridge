@@ -68,12 +68,12 @@ public class WireOnElementChecker implements DOMVisitBefore {
 
     }
 
-    private boolean isCreateOnElementSet(Element element) {
+    protected boolean isCreateOnElementSet(Element element) {
         String createOnElement = ((Element) element.getParentNode()).getAttribute("createOnElement");
         return !createOnElement.isEmpty();
     }
 
-    private boolean isWireOnElementSet(Element element) {
+    protected boolean isWireOnElementSet(Element element) {
         String wireOnElement = element.getAttribute("wireOnElement");
         return !wireOnElement.isEmpty();
     }

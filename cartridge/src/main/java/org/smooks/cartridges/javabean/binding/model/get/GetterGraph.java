@@ -61,8 +61,8 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class GetterGraph<T> implements Getter<T> {
 
-    private String contextObjectName = SerializationContext.ROOT_OBJ;
-    private List<Getter> graph = new ArrayList<Getter>();
+    protected String contextObjectName = SerializationContext.ROOT_OBJ;
+    protected List<Getter> graph = new ArrayList<>();
 
     public Object get(final T contextObject) throws BeanSerializationException {
         AssertArgument.isNotNull(contextObject, "contextObject");
@@ -79,7 +79,7 @@ public class GetterGraph<T> implements Getter<T> {
         return value;
     }
 
-    private GetterGraph add(Getter getter) {
+    protected GetterGraph add(Getter getter) {
         // Insert the getter at the start of the graph list...
         graph.add(0, getter);
         return this;
@@ -109,7 +109,7 @@ public class GetterGraph<T> implements Getter<T> {
         return this;
     }
 
-    private Getter toGetter(Bean bean, Binding binding) {
+    protected Getter toGetter(Bean bean, Binding binding) {
         if (Map.class.isAssignableFrom(bean.getBeanClass())) {
             return new MapGetter(binding.getProperty());
         } else {

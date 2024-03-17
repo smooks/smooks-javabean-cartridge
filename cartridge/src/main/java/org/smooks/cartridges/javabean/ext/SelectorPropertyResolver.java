@@ -85,7 +85,7 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
                 String valueAttributePrefix = valueAttributeQName.getPrefix();
 
                 resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
-                if (valueAttributePrefix != null && !valueAttributePrefix.trim().equals("")) {
+                if (valueAttributePrefix != null && !valueAttributePrefix.trim().isEmpty()) {
                     resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
                 }
             }

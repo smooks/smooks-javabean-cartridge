@@ -84,14 +84,14 @@ public class ConfigGenerator {
     public static final String PACKAGES_INCLUDED = "packages.included";
     public static final String PACKAGES_EXCLUDED = "packages.excluded";
 
-    private final Set<TypeConverterFactory<?, ?>> typeConverterFactories;
-    private final Writer outputWriter;
-    private final Stack<Class<?>> classStack = new Stack<>();
-    private Class<?> rootBeanClass;
-    private List<String> packagesIncluded;
-    private List<String> packagesExcluded;
+    protected final Set<TypeConverterFactory<?, ?>> typeConverterFactories;
+    protected final Writer outputWriter;
+    protected final Stack<Class<?>> classStack = new Stack<>();
+    protected Class<?> rootBeanClass;
+    protected List<String> packagesIncluded;
+    protected List<String> packagesExcluded;
 
-    public static void main(String args[]) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         String rootBeanClassName = getArgument("-c", "Root Bean Class Name", true, args);
         String outputFileName = getArgument("-o", "Output File Path", true, args);
         String propertiesFile = getArgument("-p", "Binding Generation Config File Path", false, args);
@@ -141,7 +141,7 @@ public class ConfigGenerator {
         outputWriter.write(template.apply(templatingContextObject));
     }
 
-    private ClassConfig addClassConfig(List<ClassConfig> classConfigs, Class<?> beanClass, String beanId) {
+    protected ClassConfig addClassConfig(List<ClassConfig> classConfigs, Class<?> beanClass, String beanId) {
         if (classStack.contains(beanClass)) {
             // Don't go into an endless loop... stack overflow etc...
             return null;
@@ -192,7 +192,7 @@ public class ConfigGenerator {
         }
     }
 
-    private void addArrayConfig(List<ClassConfig> classConfigs, List<BindingConfig> bindings, String rootPackage, Field field) {
+    protected void addArrayConfig(List<ClassConfig> classConfigs, List<BindingConfig> bindings, String rootPackage, Field field) {
         Class<?> type = field.getType();
         Class<?> arrayType = type.getComponentType();
         String wireBeanId = field.getName() + "_entry";
@@ -212,7 +212,7 @@ public class ConfigGenerator {
         }
     }
 
-    private void addCollectionConfig(List<ClassConfig> classConfigs, List<BindingConfig> bindings, String rootPackage, Field field) {
+    protected void addCollectionConfig(List<ClassConfig> classConfigs, List<BindingConfig> bindings, String rootPackage, Field field) {
         ParameterizedType paramType = (ParameterizedType) field.getGenericType();
         Type[] types = paramType.getActualTypeArguments();
 
@@ -237,21 +237,21 @@ public class ConfigGenerator {
         }
     }
 
-    private boolean isIncluded(String packageName) {
+    protected boolean isIncluded(String packageName) {
         if (packagesIncluded != null) {
             return isInPackageList(packagesIncluded, packageName);
         }
         return false;
     }
 
-    private boolean isExcluded(String packageName) {
+    protected boolean isExcluded(String packageName) {
         if (packagesExcluded != null) {
             return isInPackageList(packagesExcluded, packageName);
         }
         return false;
     }
 
-    private boolean isInPackageList(List<String> packages, String typePackage) {
+    protected boolean isInPackageList(List<String> packages, String typePackage) {
         for (String packageName : packages) {
             if (typePackage.startsWith(packageName)) {
                 return true;
@@ -261,7 +261,7 @@ public class ConfigGenerator {
         return false;
     }
 
-    private void configure(Properties bindingProperties) throws ClassNotFoundException {
+    protected void configure(Properties bindingProperties) throws ClassNotFoundException {
         String rootBeanClassConfig = bindingProperties.getProperty(ConfigGenerator.ROOT_BEAN_CLASS);
         String packagesIncludedConfig = bindingProperties.getProperty(ConfigGenerator.PACKAGES_INCLUDED);
         String packagesExcludedConfig = bindingProperties.getProperty(ConfigGenerator.PACKAGES_EXCLUDED);
@@ -279,7 +279,7 @@ public class ConfigGenerator {
         }
     }
 
-    private List<String> parsePackages(String packagesString) {
+    protected List<String> parsePackages(String packagesString) {
         String[] packages = packagesString.split(";");
         List<String> packagesSet = new ArrayList<String>();
 
@@ -290,7 +290,7 @@ public class ConfigGenerator {
         return packagesSet;
     }
 
-    private static Properties loadProperties(String fileName) throws IOException {
+    protected static Properties loadProperties(String fileName) throws IOException {
         Properties properties = new Properties();
 
         if (fileName != null) {
@@ -312,7 +312,7 @@ public class ConfigGenerator {
         return properties;
     }
 
-    private static String getArgument(String argAlias, String argName, boolean mandatory, String[] args) {
+    protected static String getArgument(String argAlias, String argName, boolean mandatory, String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase(argAlias) && i + 1 < args.length) {
                 return args[i + 1].trim();
