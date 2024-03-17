@@ -52,7 +52,7 @@ import org.smooks.cartridges.javabean.BeanMapExpressionEvaluator;
  */
 public class MVELFactory<T> implements Factory<T> {
 
-    private BeanMapExpressionEvaluator expressionEvaluator;
+    protected BeanMapExpressionEvaluator expressionEvaluator;
 
     /**
      *

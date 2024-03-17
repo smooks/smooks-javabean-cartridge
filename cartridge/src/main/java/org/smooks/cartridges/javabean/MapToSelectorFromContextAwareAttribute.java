@@ -60,14 +60,14 @@ import java.util.*;
 
 public class MapToSelectorFromContextAwareAttribute implements DOMVisitBefore {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapToSelectorFromContextAwareAttribute.class);
-    private static final Map<String, String> BASE_BEANS = new HashMap<>();
+    protected static final Logger LOGGER = LoggerFactory.getLogger(MapToSelectorFromContextAwareAttribute.class);
+    protected static final Map<String, String> BASE_BEANS = new HashMap<>();
 
     @Inject
-    private String attribute;
+    protected String attribute;
 
     @Inject
-    private ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
     @Override
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {

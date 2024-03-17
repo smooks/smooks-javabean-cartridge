@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.junit.jupiter.api.Test;
-import org.smooks.tck.MockApplicationContext;
+import org.smooks.testkit.MockApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -118,7 +118,7 @@ public class BasicFactoryDefinitionParser extends
      * @throws SecurityException
      * @throws NoSuchMethodException
      */
-    private Factory<?> createStaticMethodFactory(String factoryDefinition, String className, String methodDef) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    protected Factory<?> createStaticMethodFactory(String factoryDefinition, String className, String methodDef) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
         Class<?> factoryClass = ClassUtils.forName(className, this.getClass());
         Method factoryMethod = factoryClass.getMethod(methodDef);
 
@@ -141,7 +141,7 @@ public class BasicFactoryDefinitionParser extends
      * @throws SecurityException
      * @throws NoSuchMethodException
      */
-    private Factory<?> createFactoryInstanceFactory(String factoryDefinition, String className, String staticGetInstanceMethodDef, String factoryMethodDef) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    protected Factory<?> createFactoryInstanceFactory(String factoryDefinition, String className, String staticGetInstanceMethodDef, String factoryMethodDef) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
         Class<?> factoryClass = ClassUtils.forName(className, this.getClass());
         Method getInstanceMethod = factoryClass.getMethod(staticGetInstanceMethodDef);
         Class<?> factoryType = getInstanceMethod.getReturnType();
@@ -155,24 +155,24 @@ public class BasicFactoryDefinitionParser extends
     }
 
 
-    private InvalidFactoryDefinitionException createInvalidDefinitionException(String factoryDefinition) {
+    protected InvalidFactoryDefinitionException createInvalidDefinitionException(String factoryDefinition) {
         return new InvalidFactoryDefinitionException("The factory definition '" + factoryDefinition + "' " +
                 "isn't valid. The definition is 'some.package.SomeFactory#createObject' or " +
                 "'some.package.SomeFactorySingleton#getFactoryMethod.createObject'");
     }
 
-    private static String toClassDefinition(Method method) {
+    protected static String toClassDefinition(Method method) {
         return method.getDeclaringClass().getName() + "#" + method.getName() + "()";
     }
 
     /**
      * The StaticMethodFactory uses a static factory method create the target objects.
      */
-    private static class StaticMethodFactory implements Factory<Object> {
+    protected static class StaticMethodFactory implements Factory<Object> {
 
-        private final String factoryDefinition;
+        protected final String factoryDefinition;
 
-        private final Method factoryMethod;
+        protected final Method factoryMethod;
 
         public StaticMethodFactory(String factoryDefinition, Method factoryMethod) {
             this.factoryDefinition = factoryDefinition;
@@ -197,13 +197,13 @@ public class BasicFactoryDefinitionParser extends
      * The FactoryInstanceFactory uses a static method to retrieve the factory object and
      * then calls the factory method on the factory object to create the target objects.
      */
-    private static class FactoryInstanceFactory implements Factory<Object> {
+    protected static class FactoryInstanceFactory implements Factory<Object> {
 
-        private final String factoryDefinition;
+        protected final String factoryDefinition;
 
-        private final Method getInstanceMethod;
+        protected final Method getInstanceMethod;
 
-        private final Method factoryMethod;
+        protected final Method factoryMethod;
 
         public FactoryInstanceFactory(String factoryDefinition, Method getInstanceMethod, Method factoryMethod) {
             this.factoryDefinition = factoryDefinition;

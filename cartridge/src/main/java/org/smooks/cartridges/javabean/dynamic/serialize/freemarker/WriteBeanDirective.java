@@ -67,7 +67,7 @@ import java.util.Map;
  */
 public class WriteBeanDirective extends AbstractBeanDirective {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WriteBeanDirective.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(WriteBeanDirective.class);
 
     public void execute(Environment environment, Map params, TemplateModel[] templateModels, TemplateDirectiveBody templateDirectiveBody) throws TemplateException, IOException {
         Object bean = getBeanObject(environment, params, "writeBean");

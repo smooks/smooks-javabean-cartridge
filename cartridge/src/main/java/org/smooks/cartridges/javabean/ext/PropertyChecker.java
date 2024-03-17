@@ -63,7 +63,7 @@ import java.util.Map;
  */
 public class PropertyChecker implements DOMVisitBefore {
 
-    private enum BeanType {
+    protected enum BeanType {
         ARRAY,
         COLLECTION,
         MAP,
@@ -96,7 +96,7 @@ public class PropertyChecker implements DOMVisitBefore {
         }
     }
 
-    private BeanType getBeanType(Element bindingElement) {
+    protected BeanType getBeanType(Element bindingElement) {
         String beanClassName = getBeanTypeName(bindingElement);
 
         if (beanClassName.endsWith("[]")) {
@@ -114,7 +114,7 @@ public class PropertyChecker implements DOMVisitBefore {
         }
     }
 
-    private Class<?> getBeanClass(Element bindingElement) {
+    protected Class<?> getBeanClass(Element bindingElement) {
         String beanClassName = getBeanTypeName(bindingElement);
 
         Class<?> beanClass;
@@ -126,7 +126,7 @@ public class PropertyChecker implements DOMVisitBefore {
         return beanClass;
     }
 
-    private String getBeanTypeName(Element bindingElement) {
+    protected String getBeanTypeName(Element bindingElement) {
         return ((Element) bindingElement.getParentNode()).getAttribute("class");
     }
 }

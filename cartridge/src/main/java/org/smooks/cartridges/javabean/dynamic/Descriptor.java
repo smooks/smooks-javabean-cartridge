@@ -92,9 +92,9 @@ public class Descriptor {
     public static final String DESCRIPTOR_BINDING_CONFIG_LOCATION_POSTFIX = ".bindingConfigLocation";
     public static final String DESCRIPTOR_ORDER_POSTFIX = ".order";
 
-    private Smooks smooks;
-    private Schema schema;
-    private ClassLoader classloader = Descriptor.class.getClassLoader();
+    protected Smooks smooks;
+    protected Schema schema;
+    protected ClassLoader classloader = Descriptor.class.getClassLoader();
 
     public Descriptor(List<Properties> descriptors) throws SAXException, IOException {
         AssertArgument.isNotNullAndNotEmpty(descriptors, "descriptors");
@@ -174,7 +174,7 @@ public class Descriptor {
         }
     }
 
-    private void initialize(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver) throws SAXException, IOException {
+    protected void initialize(List<Properties> descriptors, EntityResolver schemaResolver, EntityResolver bindingResolver) throws SAXException, IOException {
         if (schemaResolver instanceof AbstractResolver) {
             if (((AbstractResolver) schemaResolver).getClassLoader() != classloader) {
                 throw new SmooksException("Schema EntityResolver '" + schemaResolver.getClass().getName() + "' not using the same ClassLoader as this Descriptor instance.");
@@ -192,7 +192,7 @@ public class Descriptor {
         this.smooks = newSmooksInstance(descriptors, bindingResolver);
     }
 
-    private Schema newSchemaInstance(List<Properties> descriptors, EntityResolver schemaResolver) throws SAXException, IOException {
+    protected Schema newSchemaInstance(List<Properties> descriptors, EntityResolver schemaResolver) throws SAXException, IOException {
         List<Source> schemas = getSchemas(descriptors, schemaResolver);
 
         try {
@@ -213,7 +213,7 @@ public class Descriptor {
         }
     }
 
-    private List<Source> getSchemas(List<Properties> descriptors, EntityResolver schemaResolver) throws SAXException, IOException {
+    protected List<Source> getSchemas(List<Properties> descriptors, EntityResolver schemaResolver) throws SAXException, IOException {
         Set<Namespace> namespaces = resolveNamespaces(descriptors);
         List<Source> xsdSources = new ArrayList<>();
 
@@ -234,7 +234,7 @@ public class Descriptor {
         return xsdSources;
     }
 
-    private Smooks newSmooksInstance(List<Properties> descriptors, EntityResolver bindingResolver) throws SAXException, IOException {
+    protected Smooks newSmooksInstance(List<Properties> descriptors, EntityResolver bindingResolver) throws SAXException, IOException {
         AssertArgument.isNotNullAndNotEmpty(descriptors, "descriptors");
         AssertArgument.isNotNull(bindingResolver, "bindingResolver");
 
@@ -273,7 +273,7 @@ public class Descriptor {
         return smooks;
     }
 
-    private static Set<Namespace> resolveNamespaces(List<Properties> descriptors) {
+    protected static Set<Namespace> resolveNamespaces(List<Properties> descriptors) {
         List<Namespace> namespaces = new ArrayList<>();
 
         for (Properties descriptor : descriptors) {
@@ -292,7 +292,7 @@ public class Descriptor {
         return orderedNamespaceSet;
     }
 
-    private static List<Namespace> extractNamespaceDecls(Properties descriptor, List<Namespace> namespaces) {
+    protected static List<Namespace> extractNamespaceDecls(Properties descriptor, List<Namespace> namespaces) {
         Set<Map.Entry<Object, Object>> properties = descriptor.entrySet();
         for (Map.Entry<Object, Object> property : properties) {
             String key = ((String) property.getKey()).trim();
@@ -332,7 +332,7 @@ public class Descriptor {
         return null;
     }
 
-    private static String getNamespaceId(String namespaceURI, Properties descriptor) {
+    protected static String getNamespaceId(String namespaceURI, Properties descriptor) {
         Set<Map.Entry<Object, Object>> properties = descriptor.entrySet();
         for (Map.Entry<Object, Object> property : properties) {
             String key = ((String) property.getKey()).trim();
@@ -352,7 +352,7 @@ public class Descriptor {
         return getDescriptorValue(namespaceId + DESCRIPTOR_BINDING_CONFIG_LOCATION_POSTFIX, descriptors);
     }
 
-    private static String getDescriptorValue(String name, List<Properties> descriptors) {
+    protected static String getDescriptorValue(String name, List<Properties> descriptors) {
         for (Properties descriptor : descriptors) {
             String value = descriptor.getProperty(name);
             if (value != null) {
@@ -363,9 +363,9 @@ public class Descriptor {
         return null;
     }
 
-    private static class Namespace {
-        private String uri;
-        private String id;
-        private int order;
+    protected static class Namespace {
+        protected String uri;
+        protected String id;
+        protected int order;
     }
 }

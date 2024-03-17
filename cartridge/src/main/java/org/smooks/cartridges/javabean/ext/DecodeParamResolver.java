@@ -68,7 +68,7 @@ import java.util.UUID;
 public class DecodeParamResolver implements DOMVisitBefore {
 
     @Inject
-    private ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         NodeList decodeParams = element.getElementsByTagNameNS(element.getNamespaceURI(), "decodeParam");

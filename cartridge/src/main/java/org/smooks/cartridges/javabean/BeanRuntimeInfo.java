@@ -59,12 +59,12 @@ import java.util.Map;
  */
 public class BeanRuntimeInfo {
 
-    private static final String CONTEXT_KEY = BeanRuntimeInfo.class.getName() + "#CONTEXT_KEY";
+    protected static final String CONTEXT_KEY = BeanRuntimeInfo.class.getName() + "#CONTEXT_KEY";
 
     /**
      * The basic type that's created and populated for the associated bean.
      */
-    private Class<?> populateType;
+    protected Class<?> populateType;
 
     /**
      * The bean classification.
@@ -73,17 +73,17 @@ public class BeanRuntimeInfo {
      * instanceof checks, which are cheap when the instance being checked is
      * an instanceof, but is expensive if it's not.
      */
-    private Classification classification;
+    protected Classification classification;
 
     /**
      * If the bean classification is an ARRAY_COLLECTION, this member specifies the
      * actual array type.
      */
-    private Class<?> arrayType;
+    protected Class<?> arrayType;
     /**
      * Is the type a JAXB Type.
      */
-    private boolean isJAXBType = false;
+    protected boolean isJAXBType = false;
 
     /**
      * Bean type classification.
@@ -92,7 +92,7 @@ public class BeanRuntimeInfo {
      * instanceof checks, which are cheap when the instance being checked is
      * an instanceof, but expensive if it's not.
      */
-    public static enum Classification {
+    public enum Classification {
         NON_COLLECTION,
         ARRAY_COLLECTION,
         COLLECTION_COLLECTION,
@@ -160,7 +160,7 @@ public class BeanRuntimeInfo {
      * @param beanClass The beanClass name.
      * @return The bean runtime class instance.
      */
-    private void resolveBeanRuntimeInfo(String beanClass) {
+    protected void resolveBeanRuntimeInfo(String beanClass) {
         Class<?> clazz;
 
         // If it's an array, we use a List and extract an array from it on the
@@ -188,7 +188,7 @@ public class BeanRuntimeInfo {
         }
     }
 
-    private void resolveBeanRuntimeInfo(Class<?> clazz) {
+    protected void resolveBeanRuntimeInfo(Class<?> clazz) {
         // If it's an array, we use a List and extract an array from it on the
         // visitAfter event....
         if (clazz.isArray()) {
@@ -199,19 +199,11 @@ public class BeanRuntimeInfo {
 
             this.setPopulateType(clazz);
             this.setClassification(clazz);
-
-            // check for a default constructor.
-//	        try {
-//	            clazz.getConstructor();
-//	        } catch (NoSuchMethodException e) {
-//	            throw new SmooksConfigurationException("Invalid Smooks bean configuration.  Bean class " + clazz.getName() + " doesn't have a public default constructor.");
-//	        }
-
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
+    protected static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
         Map<String, BeanRuntimeInfo> runtimeInfoMap = (Map<String, BeanRuntimeInfo>) appContext.getRegistry().lookup(CONTEXT_KEY);
 
         if (runtimeInfoMap == null) {

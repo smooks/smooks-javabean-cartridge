@@ -56,9 +56,9 @@ public class SerializationContext {
 
     public static final String ROOT_OBJ = SerializationContext.class.getName() + "#ROOT_OBJ";
 
-    private Object rootObject;
-    private Map<String, Object> contextObjects = new LinkedHashMap<String, Object>();
-    private int currentDepth;
+    protected Object rootObject;
+    protected Map<String, Object> contextObjects = new LinkedHashMap<>();
+    protected int currentDepth;
 
     public SerializationContext(Object rootObject, String rootObjectBeanId) {
         AssertArgument.isNotNull(rootObject, "rootObject");

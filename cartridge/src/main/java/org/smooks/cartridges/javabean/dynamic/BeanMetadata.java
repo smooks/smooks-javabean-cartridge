@@ -61,14 +61,14 @@ import java.util.Map;
  */
 public class BeanMetadata {
 
-    private Object bean;
-    private String namespace;
-    private String namespacePrefix;
-    private Fragment createSource;
-    private List<Fragment> populateSources = new ArrayList<>();
-    private String preText;
-    private Map<Object, Object> properties;
-    private BeanWriter writer;
+    protected Object bean;
+    protected String namespace;
+    protected String namespacePrefix;
+    protected Fragment createSource;
+    protected List<Fragment> populateSources = new ArrayList<>();
+    protected String preText;
+    protected Map<Object, Object> properties;
+    protected BeanWriter writer;
 
     /**
      * Public constructor.

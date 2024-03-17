@@ -67,9 +67,9 @@ import java.util.Properties;
  */
 public class PreprocessTypeConverter implements TypeConverter<String, Object> {
 
-    private final MVELExpressionEvaluator expression;
+    protected final MVELExpressionEvaluator expression;
 
-    private final TypeConverter<? super String, ?> delegateTypeConverter;
+    protected final TypeConverter<? super String, ?> delegateTypeConverter;
 
     public PreprocessTypeConverter(String valuePreProcessExpression, TypeConverter<? super String, ?> delegateTypeConverter) {
         expression = new MVELExpressionEvaluator(valuePreProcessExpression);

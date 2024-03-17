@@ -76,16 +76,16 @@ import java.util.Map;
  */
 public class StaticVariableBinder implements ElementVisitor {
 
-    private static final String STATVAR = "statvar";
+    protected static final String STATVAR = "statvar";
 
-    private BeanId beanId;
-
-    @Inject
-    private ResourceConfig resourceConfig;
-
+    protected BeanId beanId;
 
     @Inject
-    private ApplicationContext appContext;
+    protected ResourceConfig resourceConfig;
+
+
+    @Inject
+    protected ApplicationContext appContext;
 
     @PostConstruct
     public void postConstruct() throws SmooksConfigException {
@@ -107,7 +107,7 @@ public class StaticVariableBinder implements ElementVisitor {
     public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
     }
 
-    private void bindParamaters(ExecutionContext executionContext, Fragment<?> source) {
+    protected void bindParamaters(ExecutionContext executionContext, Fragment<?> source) {
         List<?> params = resourceConfig.getParameterValues();
 
         for (Object parameter : params) {
@@ -122,7 +122,7 @@ public class StaticVariableBinder implements ElementVisitor {
     }
 
 
-    private void bindParameter(Parameter<?> parameter, ExecutionContext executionContext, Fragment<?> source) {
+    protected void bindParameter(Parameter<?> parameter, ExecutionContext executionContext, Fragment<?> source) {
         Map<String, Object> params = null;
 
         BeanContext beanContext = executionContext.getBeanContext();

@@ -70,19 +70,19 @@ public class AbstractBinding {
     /**
      * Smooks instance.
      */
-    private Smooks smooks;
+    protected Smooks smooks;
     /**
      * Execution report path.
      */
-    private String reportPath;
+    protected String reportPath;
     /**
      * All configurations added flag.
      */
-    private boolean allConfigsAdded = false;
+    protected boolean allConfigsAdded = false;
     /**
      * Initialized flag.
      */
-    private boolean initialized = false;
+    protected boolean initialized = false;
 
     /**
      * Constructor.
@@ -207,7 +207,7 @@ public class AbstractBinding {
         return addToContextualGetter(new GetterGraph(), bean);
     }
 
-    private GetterGraph addToContextualGetter(GetterGraph contextualGetter, Bean bean) {
+    protected GetterGraph addToContextualGetter(GetterGraph contextualGetter, Bean bean) {
         Bean theBean = bean;
 
         while (theBean != null) {

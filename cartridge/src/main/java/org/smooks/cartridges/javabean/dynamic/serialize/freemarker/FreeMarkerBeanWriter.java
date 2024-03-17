@@ -69,22 +69,22 @@ import java.util.Map;
  */
 public class FreeMarkerBeanWriter implements BeanWriter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FreeMarkerBeanWriter.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(FreeMarkerBeanWriter.class);
 
     public static final String MODEL_CTX_KEY = "dyna_model_inst";
 
     @Inject
-    private ApplicationContext appContext;
+    protected ApplicationContext appContext;
     @Inject
     @Named("template")
-    private String templateConfig;
+    protected String templateConfig;
 
-    private FreeMarkerTemplate template;
+    protected FreeMarkerTemplate template;
 
-    private static final WriteNamespacesDirective writeNamespacesDirective = new WriteNamespacesDirective();
-    private static final WriteBeanDirective writeBeanDirective = new WriteBeanDirective();
-    private static final WriteBeanPreTextDirective writePreTextDirective = new WriteBeanPreTextDirective();
-    private static final WriteAttribsDirective writeAttribsDirective = new WriteAttribsDirective();
+    protected static final WriteNamespacesDirective writeNamespacesDirective = new WriteNamespacesDirective();
+    protected static final WriteBeanDirective writeBeanDirective = new WriteBeanDirective();
+    protected static final WriteBeanPreTextDirective writePreTextDirective = new WriteBeanPreTextDirective();
+    protected static final WriteAttribsDirective writeAttribsDirective = new WriteAttribsDirective();
 
     @PostConstruct
     public void postConstruct() {

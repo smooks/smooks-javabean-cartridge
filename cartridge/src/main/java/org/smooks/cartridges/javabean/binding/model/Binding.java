@@ -50,9 +50,9 @@ import org.smooks.cartridges.javabean.BeanInstancePopulator;
  */
 public abstract class Binding {
 
-    private BeanInstancePopulator populator;
-    private Bean parentBean;
-    private String property;
+    protected BeanInstancePopulator populator;
+    protected Bean parentBean;
+    protected String property;
 
     public Binding(BeanInstancePopulator populator) {
         this.populator = populator;

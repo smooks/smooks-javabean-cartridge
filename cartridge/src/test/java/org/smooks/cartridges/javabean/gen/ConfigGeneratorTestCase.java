@@ -47,7 +47,7 @@ import org.smooks.cartridges.javabean.Order;
 import org.smooks.support.StreamUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.smooks.tck.Assertions.compareCharStreams;
+import static org.smooks.testkit.Assertions.compareCharStreams;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>

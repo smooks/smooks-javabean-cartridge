@@ -72,7 +72,7 @@ public class ModelSet {
      * in all sorts of ways to create models.  This is a Map of these baseBeans.  These
      * baseBeans are used (cloned) to create all possible models (with baseBeans all wired together).
      */
-    private Map<String, Bean> baseBeans = new LinkedHashMap<String, Bean>();
+    protected Map<String, Bean> baseBeans = new LinkedHashMap<>();
     /**
      * Models.
      * <p/>
@@ -80,11 +80,11 @@ public class ModelSet {
      * with their full graphs expanded i.e. all the bean wirings resolved and wired into
      * parent baseBeans etc.
      */
-    private Map<String, Bean> models = new LinkedHashMap<String, Bean>();
+    protected Map<String, Bean> models = new LinkedHashMap<>();
     /**
      * Is the associated Smooks instance a binding only configuration.
      */
-    private Boolean isBindingOnlyConfig;
+    protected Boolean isBindingOnlyConfig;
 
     public ModelSet(ResourceConfigSeq userConfigList, ContentHandlerFactory<?> javaContentHandlerFactory) throws SmooksConfigException {
         createBaseBeanMap(userConfigList, javaContentHandlerFactory);
@@ -113,7 +113,7 @@ public class ModelSet {
         return isBindingOnlyConfig;
     }
 
-    private void createBaseBeanMap(final ResourceConfigSeq resourceConfigSeq, final ContentHandlerFactory<?> contentHandlerFactory) {
+    protected void createBaseBeanMap(final ResourceConfigSeq resourceConfigSeq, final ContentHandlerFactory<?> contentHandlerFactory) {
         for (int i = 0; i < resourceConfigSeq.size(); i++) {
             final ResourceConfig resourceConfig = resourceConfigSeq.get(i);
             final Object javaResource;
@@ -152,7 +152,7 @@ public class ModelSet {
         }
     }
 
-    private boolean isNonBindingResource(Object javaResource) {
+    protected boolean isNonBindingResource(Object javaResource) {
         if (javaResource instanceof TypeConverterFactory) {
             return false;
         }
@@ -161,24 +161,24 @@ public class ModelSet {
         return !(javaResource instanceof NamespaceManager);
     }
 
-    private boolean isGlobalParamsConfig(ResourceConfig config) {
+    protected boolean isGlobalParamsConfig(ResourceConfig config) {
         return ParameterAccessor.GLOBAL_PARAMETERS.equals(config.getSelectorPath().getSelector());
     }
 
-    private void createExpandedModels() {
+    protected void createExpandedModels() {
         for (Bean bean : baseBeans.values()) {
             models.put(bean.getBeanId(), bean.clone(baseBeans, null));
         }
     }
 
-    private void resolveModelSelectors(ResourceConfigSeq userConfigList) {
+    protected void resolveModelSelectors(ResourceConfigSeq userConfigList) {
         // Do the beans first...
         for (Bean model : models.values()) {
             resolveModelSelectors(model);
         }
     }
 
-    private void resolveModelSelectors(Bean model) {
+    protected void resolveModelSelectors(Bean model) {
         for (Binding binding : model.getBindings()) {
             if (binding instanceof WiredBinding) {
                 resolveModelSelectors(((WiredBinding) binding).getWiredBean());

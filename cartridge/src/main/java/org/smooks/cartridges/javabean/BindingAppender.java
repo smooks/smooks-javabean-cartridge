@@ -52,7 +52,7 @@ import org.smooks.assertion.AssertArgument;
  */
 public abstract class BindingAppender implements VisitorAppender {
 
-    private String beanId;
+    protected String beanId;
 
     /**
      * Public constructor.

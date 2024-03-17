@@ -66,8 +66,8 @@ import java.util.List;
  */
 public class XMLElementSerializationNode extends XMLSerializationNode {
 
-    private final List<XMLAttributeSerializationNode> attributes = new ArrayList<>();
-    private final List<XMLElementSerializationNode> elements = new ArrayList<>();
+    protected final List<XMLAttributeSerializationNode> attributes = new ArrayList<>();
+    protected final List<XMLElementSerializationNode> elements = new ArrayList<>();
 
     public XMLElementSerializationNode(QName qName) {
         super(qName);
@@ -121,13 +121,13 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
         }
     }
 
-    private void writeAttributes(Writer outputStream, SerializationContext context) throws IOException {
+    protected void writeAttributes(Writer outputStream, SerializationContext context) throws IOException {
         for (XMLAttributeSerializationNode attribute : attributes) {
             attribute.serialize(outputStream, context);
         }
     }
 
-    private void writeElements(Writer outputStream, SerializationContext context) throws IOException {
+    protected void writeElements(Writer outputStream, SerializationContext context) throws IOException {
         context.incDepth();
         for (XMLElementSerializationNode element : elements) {
             if (element.isCollection) {
@@ -185,13 +185,13 @@ public class XMLElementSerializationNode extends XMLSerializationNode {
         return false;
     }
 
-    private static final char[] INDENT_BUF = new char[512];
+    protected static final char[] INDENT_BUF = new char[512];
 
     static {
         Arrays.fill(INDENT_BUF, ' ');
     }
 
-    private void indent(Writer outputStream, SerializationContext context) throws IOException {
+    protected void indent(Writer outputStream, SerializationContext context) throws IOException {
         int indent = context.getCurrentDepth() * 4; // Indent 4 spaces per level in the hierarchy...
 
         if (indent > 0) {

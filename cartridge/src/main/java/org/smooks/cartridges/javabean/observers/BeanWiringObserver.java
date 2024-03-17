@@ -59,11 +59,11 @@ import java.lang.annotation.Annotation;
  */
 public class BeanWiringObserver implements BeanContextLifecycleObserver {
 
-    private BeanId watchedBeanId;
-    private Class<?> watchedBeanType;
-    private Class<? extends Annotation> watchedBeanAnnotation;
-    private BeanId watchingBeanId;
-    private BeanInstancePopulator populator;
+    protected BeanId watchedBeanId;
+    protected Class<?> watchedBeanType;
+    protected Class<? extends Annotation> watchedBeanAnnotation;
+    protected BeanId watchingBeanId;
+    protected BeanInstancePopulator populator;
 
     public BeanWiringObserver(BeanId watchingBean, BeanInstancePopulator populator) {
         this.watchingBeanId = watchingBean;

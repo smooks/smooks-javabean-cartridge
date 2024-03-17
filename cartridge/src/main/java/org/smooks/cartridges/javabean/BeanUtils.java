@@ -58,9 +58,13 @@ import java.util.List;
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public abstract class BeanUtils {
+public final class BeanUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
+
+    private BeanUtils() {
+
+    }
 
     /**
      * Create the bean setter method instance for this visitor.

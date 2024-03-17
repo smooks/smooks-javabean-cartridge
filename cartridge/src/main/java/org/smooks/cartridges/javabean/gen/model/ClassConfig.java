@@ -50,10 +50,10 @@ import java.util.List;
  */
 public class ClassConfig {
 
-    private Class beanClass;
-    private String beanId;
-    private List<BindingConfig> bindings = new ArrayList<BindingConfig>();
-    private boolean isArray;
+    protected Class beanClass;
+    protected String beanId;
+    protected List<BindingConfig> bindings = new ArrayList<BindingConfig>();
+    protected boolean isArray;
 
     public ClassConfig(Class beanClass) {
         this.beanClass = beanClass;

@@ -141,31 +141,31 @@ import java.util.stream.Stream;
         detailTemplate = "reporting/ValueBinderReport_After.html")
 public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor, Producer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ValueBinder.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ValueBinder.class);
 
     @Inject
     @Named("beanId")
-    private String beanIdName;
+    protected String beanIdName;
 
     @Inject
-    private Optional<String> valueAttributeName;
+    protected Optional<String> valueAttributeName;
 
     @Inject
     @Named("default")
-    private Optional<String> defaultValue;
+    protected Optional<String> defaultValue;
 
     @Inject
     @Named("type")
-    private String typeAlias = "String";
+    protected String typeAlias = "String";
 
-    private BeanId beanId;
+    protected BeanId beanId;
 
     @Inject
-    private ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
-    private boolean isAttribute;
+    protected boolean isAttribute;
 
-    private TypeConverter<? super String, ?> typeConverter;
+    protected TypeConverter<? super String, ?> typeConverter;
 
     /**
      *
@@ -257,7 +257,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
      */
     @PostConstruct
     public void postConstruct() throws SmooksConfigException {
-        isAttribute = (valueAttributeName.isPresent());
+        isAttribute = valueAttributeName.isPresent();
 
         beanId = applicationContext.getBeanIdStore().register(beanIdName);
 
@@ -283,7 +283,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
         }
     }
 
-    private void bindValue(String dataString, ExecutionContext executionContext, Fragment<?> source) {
+    protected void bindValue(String dataString, ExecutionContext executionContext, Fragment<?> source) {
         Object valueObj = decodeDataString(dataString, executionContext);
 
         BeanContext beanContext = executionContext.getBeanContext();
@@ -299,8 +299,8 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
         return Stream.of(beanIdName).collect(Collectors.toSet());
     }
 
-    private Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {
-        if ((dataString == null || dataString.isEmpty()) && defaultValue.isPresent()) {
+    protected Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {
+        if (dataString == null || (dataString.isEmpty()) && defaultValue.isPresent()) {
             if (defaultValue.get().equals("null")) {
                 return null;
             }
@@ -314,7 +314,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
         }
     }
 
-    private TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
+    protected TypeConverter<? super String, ?> getTypeConverter(ExecutionContext executionContext) throws TypeConverterException {
         if (typeConverter == null) {
             @SuppressWarnings("unchecked")
             List<?> decoders = executionContext.getContentDeliveryRuntime().getContentDeliveryConfig().getObjects("decoder:" + typeAlias);

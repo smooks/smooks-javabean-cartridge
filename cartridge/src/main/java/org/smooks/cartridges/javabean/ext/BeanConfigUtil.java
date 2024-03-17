@@ -56,9 +56,13 @@ import java.util.List;
  *
  * <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
-public abstract class BeanConfigUtil {
+public final class BeanConfigUtil {
 
     public static final String BEAN_CLASS_CONFIG = "beanClass";
+
+    private BeanConfigUtil() {
+
+    }
 
     public static ResourceConfig findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);

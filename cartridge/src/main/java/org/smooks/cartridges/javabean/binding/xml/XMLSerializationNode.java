@@ -184,7 +184,7 @@ public abstract class XMLSerializationNode {
             this.getter = getter;
         }
 
-        private NodeGetter(String contextObjectName, Getter getter) {
+        protected NodeGetter(String contextObjectName, Getter getter) {
             this.contextObjectName = contextObjectName;
             this.getter = getter;
         }

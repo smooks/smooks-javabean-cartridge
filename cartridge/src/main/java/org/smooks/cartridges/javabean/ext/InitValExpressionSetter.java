@@ -61,7 +61,7 @@ import javax.inject.Inject;
 public class InitValExpressionSetter implements DOMVisitBefore {
 
     @Inject
-    private String initValAttrib;
+    protected String initValAttrib;
 
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         String initValExpression = DomUtils.getAttributeValue(element, initValAttrib);

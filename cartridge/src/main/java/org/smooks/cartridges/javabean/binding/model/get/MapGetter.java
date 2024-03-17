@@ -56,7 +56,7 @@ import java.util.Map;
  */
 public class MapGetter<T extends Map> implements Getter<T> {
 
-    private String property;
+    protected String property;
 
     public MapGetter(String property) {
         AssertArgument.isNotNullAndNotEmpty(property, "property");

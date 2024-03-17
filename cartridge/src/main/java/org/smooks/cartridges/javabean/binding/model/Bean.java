@@ -57,11 +57,11 @@ import java.util.Map;
  */
 public class Bean {
 
-    private BeanInstanceCreator creator;
-    private String beanId;
-    private boolean cloneable = false;
-    private Bean wiredInto;
-    private List<Binding> bindings = new ArrayList<Binding>();
+    protected BeanInstanceCreator creator;
+    protected String beanId;
+    protected boolean cloneable = false;
+    protected Bean wiredInto;
+    protected List<Binding> bindings = new ArrayList<>();
 
     public Bean(BeanInstanceCreator creator) {
         this.creator = creator;

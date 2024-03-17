@@ -96,40 +96,40 @@ import java.util.stream.Stream;
         detailTemplate = "reporting/BeanInstanceCreatorReport_After.html")
 public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Producer, PostFragmentLifecycle, ContentDeliveryConfigLifecycle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstanceCreator.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BeanInstanceCreator.class);
 
     public static final String INIT_VAL_EXPRESSION = "initValExpression";
 
-    private String id;
+    protected String id;
 
     @Inject
     @Named("beanId")
-    private String beanIdName;
+    protected String beanIdName;
 
     @Inject
     @Named(BeanConfigUtil.BEAN_CLASS_CONFIG)
-    private Optional<String> beanClassName;
+    protected Optional<String> beanClassName;
 
     @Inject
     @Named("beanFactory")
-    private Optional<String> beanFactoryDefinition;
+    protected Optional<String> beanFactoryDefinition;
 
     @Inject
-    private Boolean retain = true;
+    protected Boolean retain = true;
 
     @Inject
-    private ResourceConfig config;
+    protected ResourceConfig config;
 
     @Inject
-    private ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
-    private BeanRuntimeInfo beanRuntimeInfo;
+    protected BeanRuntimeInfo beanRuntimeInfo;
 
-    private BeanId beanId;
+    protected BeanId beanId;
 
-    private MVELExpressionEvaluator initValsExpression;
+    protected MVELExpressionEvaluator initValsExpression;
 
-    private Factory<?> factory;
+    protected Factory<?> factory;
 
     /**
      * Public default constructor.
@@ -247,7 +247,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Produce
         return beanRuntimeInfo;
     }
 
-    private void buildId() {
+    protected void buildId() {
         StringBuilder idBuilder = new StringBuilder();
         idBuilder.append(BeanInstanceCreator.class.getName());
         idBuilder.append("#");
@@ -287,16 +287,13 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Produce
     }
 
 
-    private Object convert(ExecutionContext executionContext, Object bean, Fragment source) {
-
+    protected Object convert(ExecutionContext executionContext, Object bean, Fragment source) {
         bean = BeanUtils.convertListToArray((List<?>) bean, beanRuntimeInfo.getArrayType());
-
         executionContext.getBeanContext().changeBean(beanId, bean, source);
-
         return bean;
     }
 
-    private void createAndSetBean(ExecutionContext executionContext, Fragment source) {
+    protected void createAndSetBean(ExecutionContext executionContext, Fragment source) {
         Object bean;
         BeanContext beanContext = executionContext.getBeanContext();
 
@@ -322,7 +319,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Produce
      *
      * @return A new bean instance.
      */
-    private Object createBeanInstance(ExecutionContext executionContext) {
+    protected Object createBeanInstance(ExecutionContext executionContext) {
         Object bean;
 
         if (factory == null) {
@@ -346,7 +343,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Produce
         return Stream.of(beanIdName).collect(Collectors.toSet());
     }
 
-    private String getId() {
+    protected String getId() {
         return id;
     }
 
@@ -355,7 +352,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Produce
         return getId();
     }
 
-    private static String toClassName(Class<?> beanClass) {
+    protected String toClassName(Class<?> beanClass) {
         if (!beanClass.isArray()) {
             return beanClass.getName();
         } else {
@@ -366,7 +363,7 @@ public class BeanInstanceCreator implements BeforeVisitor, AfterVisitor, Produce
     /**
      * Checks if the class has a default constructor
      */
-    private void checkForDefaultConstructor() {
+    protected void checkForDefaultConstructor() {
         try {
             beanRuntimeInfo.getPopulateType().getConstructor();
         } catch (NoSuchMethodException e) {

@@ -66,13 +66,13 @@ import java.util.*;
  */
 public class Model<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
 
-    private final T modelRoot;
-    private final List<BeanMetadata> modelMetadata;
-    private final Map<Class<?>, Map<String, BeanWriter>> beanWriters;
-    private final Map<String, String> namespacePrefixMappings;
-    private Set<String> knownNamespaces;
+    protected final T modelRoot;
+    protected final List<BeanMetadata> modelMetadata;
+    protected final Map<Class<?>, Map<String, BeanWriter>> beanWriters;
+    protected final Map<String, String> namespacePrefixMappings;
+    protected Set<String> knownNamespaces;
 
     /**
      * Public constructor.
@@ -129,7 +129,7 @@ public class Model<T> {
     /**
      * Resolve the set of known namespaces.
      */
-    private void resolveKnownNamespaces() {
+    protected void resolveKnownNamespaces() {
         // Extract the set of known namespaces based on the set of bean writers we have...
         knownNamespaces = new HashSet<String>();
         Collection<Map<String, BeanWriter>> namespacedBeanWritersI = beanWriters.values();
@@ -277,7 +277,7 @@ public class Model<T> {
     /**
      * Resolve all the namespaces in the model.
      */
-    private void resolveModelNamespaces() {
+    protected void resolveModelNamespaces() {
         removeKnownNamespaceMappings();
         updateMetadataPrefixes();
         addMissingNamespaceMappings();
@@ -287,7 +287,7 @@ public class Model<T> {
      * Iterate through all the bean metadata and make sure the
      * namespace prefixes match those declared in the prefix mappings.
      */
-    private void updateMetadataPrefixes() {
+    protected void updateMetadataPrefixes() {
         for (BeanMetadata metaData : modelMetadata) {
             String declaredPrefix = namespacePrefixMappings.get(metaData.getNamespace());
             if (declaredPrefix != null) {
@@ -300,7 +300,7 @@ public class Model<T> {
      * Filter out all "known" namespace-to-prefix mappings for which there are no
      * registered beans in the model.
      */
-    private void removeKnownNamespaceMappings() {
+    protected void removeKnownNamespaceMappings() {
         // Need to create a clone so as to avoid concurrent mod exceptions...
         Set<String> namespaceUris = new HashSet<>(namespacePrefixMappings.keySet());
 
@@ -315,7 +315,7 @@ public class Model<T> {
      * Iterate through all the bean metadata and add any missing
      * namespace-to-prefix mappings.
      */
-    private void addMissingNamespaceMappings() {
+    protected void addMissingNamespaceMappings() {
         for (BeanMetadata metaData : modelMetadata) {
             String uri = metaData.getNamespace();
             if (!namespacePrefixMappings.containsKey(uri)) {
@@ -324,7 +324,7 @@ public class Model<T> {
         }
     }
 
-    private boolean isNamespaceInModel(String namespaceUri) {
+    protected boolean isNamespaceInModel(String namespaceUri) {
         for (BeanMetadata metaData : modelMetadata) {
             if (namespaceUri.equals(metaData.getNamespace())) {
                 return true;
@@ -334,7 +334,7 @@ public class Model<T> {
         return false;
     }
 
-    private void resolveUnmappedBeanWriters() throws IOException {
+    protected void resolveUnmappedBeanWriters() throws IOException {
         for (BeanMetadata metaData : modelMetadata) {
             if (metaData.getWriter() == null) {
                 // Install the writer for the configured namespace...

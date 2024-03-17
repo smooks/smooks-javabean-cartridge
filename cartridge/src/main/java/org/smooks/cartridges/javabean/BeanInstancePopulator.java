@@ -111,86 +111,86 @@ import java.util.stream.Stream;
         detailTemplate = "reporting/BeanInstancePopulatorReport_After.html")
 public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, ChildrenVisitor, Producer, Consumer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BeanInstancePopulator.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BeanInstancePopulator.class);
 
-    private static final String EXPRESSION_VALUE_VARIABLE_NAME = "_VALUE";
+    protected static final String EXPRESSION_VALUE_VARIABLE_NAME = "_VALUE";
 
     public static final String VALUE_ATTRIBUTE_NAME = "valueAttributeName";
     public static final String VALUE_ATTRIBUTE_PREFIX = "valueAttributePrefix";
 
     public static final String NOTIFY_POPULATE = "org.smooks.cartridges.javabean.notify.populate";
 
-    private String id;
+    protected String id;
 
     @Inject
     @Named("beanId")
-    private String beanIdName;
+    protected String beanIdName;
 
     @Inject
     @Named("wireBeanId")
-    private Optional<String> wireBeanIdName;
+    protected Optional<String> wireBeanIdName;
 
     @Inject
-    private Optional<Class<?>> wireBeanType;
+    protected Optional<Class<?>> wireBeanType;
 
     @Inject
-    private Optional<Class<? extends Annotation>> wireBeanAnnotation;
+    protected Optional<Class<? extends Annotation>> wireBeanAnnotation;
 
     @Inject
-    private Optional<String> expression;
-    private MVELExpressionEvaluator expressionEvaluator;
-    private boolean expressionHasDataVariable = false;
+    protected Optional<String> expression;
+    protected MVELExpressionEvaluator expressionEvaluator;
+    protected boolean expressionHasDataVariable = false;
 
     @Inject
-    private Optional<String> property;
+    protected Optional<String> property;
 
     @Inject
-    private Optional<String> setterMethod;
+    protected Optional<String> setterMethod;
 
     @Inject
-    private Optional<String> valueAttributeName;
+    protected Optional<String> valueAttributeName;
 
     @Inject
-    private Optional<String> valueAttributePrefix;
-    private String valueAttributeNS;
+    protected Optional<String> valueAttributePrefix;
+    protected String valueAttributeNS;
 
     @Inject
     @Named("type")
-    private Optional<String> typeAlias;
+    protected Optional<String> typeAlias;
 
     @Inject
     @Named("default")
-    private Optional<String> defaultVal;
+    protected Optional<String> defaultVal;
 
     @Inject
     @Named(NOTIFY_POPULATE)
-    private Boolean notifyPopulate = false;
+    protected Boolean notifyPopulate = false;
 
     @Inject
-    private ResourceConfig config;
+    protected ResourceConfig config;
 
     @Inject
-    private ApplicationContext appContext;
+    protected ApplicationContext applicationContext;
 
-    private BeanIdStore beanIdStore;
+    protected BeanIdStore beanIdStore;
 
-    private BeanId beanId;
+    protected BeanId beanId;
 
-    private BeanId wireBeanId;
+    protected BeanId wireBeanId;
 
-    private BeanRuntimeInfo beanRuntimeInfo;
+    protected BeanRuntimeInfo beanRuntimeInfo;
 
-    private BeanRuntimeInfo wiredBeanRuntimeInfo;
-    private Method propertySetterMethod;
-    private boolean checkedForSetterMethod;
-    private boolean isAttribute = true;
-    private TypeConverterFactory<?, ?> typeConverterFactory;
+    protected BeanRuntimeInfo wiredBeanRuntimeInfo;
+    protected Method propertySetterMethod;
+    protected boolean checkedForSetterMethod;
+    protected boolean isAttribute = true;
+    protected TypeConverterFactory<?, ?> typeConverterFactory;
 
-    private String mapKeyAttribute;
+    protected String mapKeyAttribute;
 
-    private boolean isBeanWiring;
-    private BeanWiringObserver wireByBeanIdObserver;
-    private ListToArrayChangeObserver listToArrayChangeObserver;
+    protected boolean isBeanWiring;
+    protected BeanWiringObserver wireByBeanIdObserver;
+    protected ListToArrayChangeObserver listToArrayChangeObserver;
 
     public ResourceConfig getConfig() {
         return config;
@@ -265,16 +265,16 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     public void postConstruct() throws SmooksConfigException {
         buildId();
 
-        beanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(beanIdName, appContext);
+        beanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(beanIdName, applicationContext);
         isBeanWiring = wireBeanIdName.isPresent() || wireBeanType.isPresent() || wireBeanAnnotation.isPresent();
         isAttribute = valueAttributeName.isPresent();
 
         if (valueAttributePrefix.isPresent()) {
-            Optional<Properties> namespaces = appContext.getRegistry().lookup(new NamespaceManagerLookup());
+            Optional<Properties> namespaces = applicationContext.getRegistry().lookup(new NamespaceManagerLookup());
             valueAttributeNS = namespaces.orElse(new Properties()).getProperty(valueAttributePrefix.get());
         }
 
-        beanIdStore = appContext.getBeanIdStore();
+        beanIdStore = applicationContext.getBeanIdStore();
         beanId = beanIdStore.getBeanId(beanIdName);
 
         if (!setterMethod.isPresent() && !property.isPresent()) {
@@ -344,7 +344,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private void buildId() {
+    protected void buildId() {
         StringBuilder idBuilder = new StringBuilder();
         idBuilder.append(BeanInstancePopulator.class.getName());
         idBuilder.append("#");
@@ -388,11 +388,11 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private boolean beanExists(ExecutionContext executionContext) {
+    protected boolean beanExists(ExecutionContext executionContext) {
         return (executionContext.getBeanContext().getBean(beanId) != null);
     }
 
-    private void bindSaxDataValue(Element element, ExecutionContext executionContext) {
+    protected void bindSaxDataValue(Element element, ExecutionContext executionContext) {
         String propertyName;
 
         if (mapKeyAttribute != null) {
@@ -422,7 +422,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private void bindBeanValue(final ExecutionContext executionContext, Fragment source) {
+    protected void bindBeanValue(final ExecutionContext executionContext, Fragment source) {
         final BeanContext beanContext = executionContext.getBeanContext();
         Object bean = null;
 
@@ -468,7 +468,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private void bindExpressionValue(String mapPropertyName, String dataString, ExecutionContext executionContext, Fragment source) {
+    protected void bindExpressionValue(String mapPropertyName, String dataString, ExecutionContext executionContext, Fragment source) {
         Map<String, Object> beanMap = executionContext.getBeanContext().getBeanMap();
 
         Map<String, Object> variables = new HashMap<String, Object>();
@@ -480,7 +480,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         decodeAndSetPropertyValue(mapPropertyName, dataObject, executionContext, source);
     }
 
-    private void decodeAndSetPropertyValue(String mapPropertyName, Object dataObject, ExecutionContext executionContext, Fragment source) {
+    protected void decodeAndSetPropertyValue(String mapPropertyName, Object dataObject, ExecutionContext executionContext, Fragment source) {
         if (dataObject instanceof String) {
             setPropertyValue(mapPropertyName, decodeDataString((String) dataObject, executionContext), executionContext, source);
         } else {
@@ -543,7 +543,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private void createPropertySetterMethod(Object bean, Class<?> parameter) {
+    protected void createPropertySetterMethod(Object bean, Class<?> parameter) {
 
         if (!checkedForSetterMethod && propertySetterMethod == null) {
             String methodName = null;
@@ -567,7 +567,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
      * @param setterName The setter method name.
      * @return The bean setter method.
      */
-    private synchronized Method createPropertySetterMethod(Object bean, String setterName, Class<?> setterParamType) {
+    protected synchronized Method createPropertySetterMethod(Object bean, String setterName, Class<?> setterParamType) {
         if (propertySetterMethod == null) {
             propertySetterMethod = BeanUtils.createSetterMethod(setterName, bean, setterParamType);
         }
@@ -575,8 +575,8 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         return propertySetterMethod;
     }
 
-    private Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {
-        if ((dataString == null || dataString.length() == 0) && defaultVal.isPresent()) {
+    protected Object decodeDataString(String dataString, ExecutionContext executionContext) throws TypeConverterException {
+        if ((dataString == null || dataString.isEmpty()) && defaultVal.isPresent()) {
             if (defaultVal.get().equals("null")) {
                 return null;
             }
@@ -595,7 +595,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         }
     }
 
-    private TypeConverterFactory<?, ?> getTypeConverterFactory(ExecutionContext executionContext) throws TypeConverterException {
+    protected TypeConverterFactory<?, ?> getTypeConverterFactory(ExecutionContext executionContext) throws TypeConverterException {
         return getTypeConverterFactory(executionContext.getContentDeliveryRuntime().getContentDeliveryConfig());
     }
 
@@ -604,7 +604,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
 
         if (typeConverterFactories == null || typeConverterFactories.isEmpty()) {
             if (typeAlias.isPresent()) {
-                typeConverterFactory = appContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias.get()));
+                typeConverterFactory = applicationContext.getRegistry().lookup(new NameTypeConverterFactoryLookup<>(typeAlias.get()));
             } else {
                 typeConverterFactory = resolveDecoderReflectively();
             }
@@ -624,7 +624,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         return typeConverterFactory;
     }
 
-    private TypeConverterFactory<? super String, ?> resolveDecoderReflectively() throws TypeConverterException {
+    protected TypeConverterFactory<? super String, ?> resolveDecoderReflectively() throws TypeConverterException {
         Class<?> bindType = resolveBindTypeReflectively();
 
         if (bindType != null) {
@@ -641,7 +641,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
                     }
                 };
             } else {
-                TypeConverterFactory<? super String, ?> typeConverterFactory = appContext.getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(String.class, bindType));
+                TypeConverterFactory<? super String, ?> typeConverterFactory = applicationContext.getRegistry().lookup(new SourceTargetTypeConverterFactoryLookup<>(String.class, bindType));
 
                 if (typeConverterFactory != null) {
                     return typeConverterFactory;
@@ -652,7 +652,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         return new StringConverterFactory();
     }
 
-    private Class<?> resolveBindTypeReflectively() throws TypeConverterException {
+    protected Class<?> resolveBindTypeReflectively() throws TypeConverterException {
         String bindingMember = (setterMethod.orElseGet(() -> property.orElse(null)));
 
         if (bindingMember != null && beanRuntimeInfo.getClassification() == BeanRuntimeInfo.Classification.NON_COLLECTION) {
@@ -665,16 +665,16 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         return null;
     }
 
-    private BeanRuntimeInfo getWiredBeanRuntimeInfo() {
+    protected BeanRuntimeInfo getWiredBeanRuntimeInfo() {
         if (wiredBeanRuntimeInfo == null) {
             // Don't need to synchronize this.  Worse thing that can happen is we initialize it
             // more than once... no biggie...
-            wiredBeanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(wireBeanIdName.orElse(null), appContext);
+            wiredBeanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(wireBeanIdName.orElse(null), applicationContext);
         }
         return wiredBeanRuntimeInfo;
     }
 
-    private String getId() {
+    protected String getId() {
         return id;
     }
 
