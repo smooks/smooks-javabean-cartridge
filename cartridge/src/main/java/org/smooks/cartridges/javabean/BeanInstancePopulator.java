@@ -396,7 +396,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         String propertyName;
 
         if (mapKeyAttribute != null) {
-            propertyName = DomUtils.getAttributeValue(element, mapKeyAttribute);
+            propertyName = getAttributeValue(element, mapKeyAttribute, null);
             if (propertyName == null) {
                 propertyName = element.getLocalName();
             }
@@ -407,7 +407,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         String dataString = null;
         if (expressionEvaluator == null || expressionHasDataVariable) {
             if (isAttribute) {
-                dataString = DomUtils.getAttributeValue(element, valueAttributeName.orElse(null), valueAttributeNS);
+                dataString = getAttributeValue(element, valueAttributeName.orElse(null), valueAttributeNS);
             } else {
                 TextAccumulatorMemento textAccumulatorMemento = new TextAccumulatorVisitorMemento(new NodeFragment(element), this);
                 executionContext.getMementoCaretaker().restore(textAccumulatorMemento);
@@ -420,6 +420,10 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
         } else {
             decodeAndSetPropertyValue(propertyName, dataString, executionContext, new NodeFragment(element));
         }
+    }
+
+    protected String getAttributeValue(Element element, String attributeName, String namespaceURI) {
+        return DomUtils.getAttributeValue(element, attributeName, namespaceURI);
     }
 
     protected void bindBeanValue(final ExecutionContext executionContext, Fragment source) {
@@ -471,7 +475,7 @@ public class BeanInstancePopulator implements BeforeVisitor, AfterVisitor, Child
     protected void bindExpressionValue(String mapPropertyName, String dataString, ExecutionContext executionContext, Fragment source) {
         Map<String, Object> beanMap = executionContext.getBeanContext().getBeanMap();
 
-        Map<String, Object> variables = new HashMap<String, Object>();
+        Map<String, Object> variables = new HashMap<>();
         if (expressionHasDataVariable) {
             variables.put(EXPRESSION_VALUE_VARIABLE_NAME, dataString);
         }
