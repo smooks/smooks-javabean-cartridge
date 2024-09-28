@@ -45,7 +45,7 @@ package org.smooks.cartridges.javabean.jaxb;
 import org.junit.jupiter.api.Test;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.cartridges.javabean.jaxb.model.POType;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.source.StringSource;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;

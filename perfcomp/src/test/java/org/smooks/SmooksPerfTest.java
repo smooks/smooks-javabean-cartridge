@@ -51,10 +51,10 @@ import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.bean.repository.BeanId;
 import org.smooks.engine.bean.repository.DefaultBeanId;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.ReaderSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 /**
@@ -67,12 +67,12 @@ public class SmooksPerfTest {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
 
         for (int i = 0; i < TestConstants.NUM_WARMUPS; i++) {
-            JavaResult javaResult = new JavaResult();
-            smooks.filterSource(new StreamSource(TestConstants.getMessageReader()), javaResult);
+            JavaSink javaSink = new JavaSink();
+            smooks.filterSource(new ReaderSource<>(TestConstants.getMessageReader()), javaSink);
         }
 
         long start = System.currentTimeMillis();
-        JavaResult javaResult = null;
+        JavaSink javaSink = null;
         NoddyObserver nobserver = new NoddyObserver();
         for (int i = 0; i < TestConstants.NUM_ITERATIONS; i++) {
             ExecutionContext executionContext = smooks.createExecutionContext();
@@ -82,12 +82,12 @@ public class SmooksPerfTest {
                 beanContext.addObserver(nobserver);
             }
 
-            javaResult = new JavaResult();
-            smooks.filterSource(executionContext, new StreamSource(TestConstants.getMessageReader()), javaResult);
+            javaSink = new JavaSink();
+            smooks.filterSource(executionContext, new ReaderSource<>(TestConstants.getMessageReader()), javaSink);
         }
 
         System.out.println("Smooks took: " + (System.currentTimeMillis() - start));
-        Order order = (Order) javaResult.getBean("order");
+        Order order = (Order) javaSink.getBean("order");
         if (order != null) {
             System.out.println("Num order items: " + order.getOrderItems().size());
         }

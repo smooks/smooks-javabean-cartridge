@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.lifecycle;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.io.payload.JavaResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -61,11 +61,11 @@ public class BeanResultCleanupTestCase {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
-        smooks.filterSource(new StringSource("<root><a><b>1</b></a></root>"), result);
-        assertNotNull(result.getBean("root"));
-        assertNull(result.getBean("a"));
-        assertNull(result.getBean("b"));
+        smooks.filterSource(new StringSource("<root><a><b>1</b></a></root>"), sink);
+        assertNotNull(sink.getBean("root"));
+        assertNull(sink.getBean("a"));
+        assertNull(sink.getBean("b"));
     }
 }

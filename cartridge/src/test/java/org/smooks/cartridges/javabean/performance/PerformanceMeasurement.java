@@ -46,11 +46,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.ReaderSource;
 import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class PerformanceMeasurement {
 
 		ExecutionContext executionContext = smooks.createExecutionContext();
 
-		JavaResult result = new JavaResult();
+		JavaSink sink = new JavaSink();
 
 		File warmupFile = new File(warmupFilename);
 		File inFile  = new File(inFilename);
@@ -115,7 +115,7 @@ public class PerformanceMeasurement {
 
 		beginTime = System.currentTimeMillis();
 
-		smooks.filterSource(executionContext, new StreamSource(new InputStreamReader(new FileInputStream(warmupFile))), result);
+		smooks.filterSource(executionContext, new ReaderSource<>(new InputStreamReader(new FileInputStream(warmupFile))), sink);
 
 		endTime = System.currentTimeMillis();
 
@@ -123,7 +123,7 @@ public class PerformanceMeasurement {
 
 		beginTime = System.currentTimeMillis();
 
-		smooks.filterSource(executionContext, new StreamSource(new InputStreamReader(new FileInputStream(inFile))), result);
+		smooks.filterSource(executionContext, new ReaderSource<>(new InputStreamReader(new FileInputStream(inFile))), sink);
 
 		endTime = System.currentTimeMillis();
 

@@ -51,11 +51,11 @@ import org.smooks.cartridges.javabean.B;
 import org.smooks.cartridges.javabean.Header;
 import org.smooks.cartridges.javabean.OrderItem;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -66,6 +66,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -81,16 +82,16 @@ public class BeanBindingExtendedConfigTestCase {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_01.xml"));
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("/zap/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
         assertOrderOK(order, true);
 
-        Map<String, String> headerHash = (Map) result.getBean("headerBeanHash");
+        Map<String, String> headerHash = (Map) sink.getBean("headerBeanHash");
         assertThat(headerHash, hasEntry("date", "Wed Nov 15 13:45:28 EST 2006"));
         assertThat(headerHash, hasEntry("privatePerson", ""));
         assertThat(headerHash, hasEntry("customer", "Joe"));
@@ -185,17 +186,17 @@ public class BeanBindingExtendedConfigTestCase {
         List<OrderItem> inOrderItems = new ArrayList<OrderItem>();
         Header inHeader = new Header();
 
-        JavaResult result = new JavaResult();
-        result.getResultMap().put("order", inExtendedOrder);
-        result.getResultMap().put("orderItemList", inOrderItems);
-        result.getResultMap().put("headerBean", inHeader);
+        JavaSink sink = new JavaSink();
+        sink.getResultMap().put("order", inExtendedOrder);
+        sink.getResultMap().put("orderItemList", inOrderItems);
+        sink.getResultMap().put("headerBean", inHeader);
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("/target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
 
         assertSame(inExtendedOrder, order);
         assertSame(inOrderItems, order.getOrderItems());
@@ -221,33 +222,33 @@ public class BeanBindingExtendedConfigTestCase {
     public void test_flat_xml_set_in_binding() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_07.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), sink);
 
-        assertFlatResult(result);
+        assertFlatResult(sink);
     }
 
     @Test
     public void test_flat_xml_set_global() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_08.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource(getInput("flat-01.xml")), sink);
 
-        assertFlatResult(result);
+        assertFlatResult(sink);
     }
 
-    private void assertFlatResult(JavaResult result) {
+    private void assertFlatResult(JavaSink sink) {
         @SuppressWarnings("unchecked")
-        ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) result.getBean("root");
+        ArrayList<ArrayList<B>> root = (ArrayList<ArrayList<B>>) sink.getBean("root");
 
         assertNotNull(root, "root should not be null");
 
@@ -260,22 +261,22 @@ public class BeanBindingExtendedConfigTestCase {
     public void test_profile() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_09.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext("A");
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
         assertEquals(2d, order.getTotal(), 0d);
 
         execContext = smooks.createExecutionContext("B");
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        order = (ExtendedOrder) result.getBean("order");
+        order = (ExtendedOrder) sink.getBean("order");
         assertEquals(4d, order.getTotal(), 0d);
     }
 
@@ -283,14 +284,14 @@ public class BeanBindingExtendedConfigTestCase {
     public void test_condition() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_11.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
         assertEquals(2d, order.getTotal(), 0d);
     }
 
@@ -298,14 +299,14 @@ public class BeanBindingExtendedConfigTestCase {
     public void test_expression_initVal() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_12.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        Map order = (Map) result.getBean("orderItem");
+        Map order = (Map) sink.getBean("orderItem");
         assertEquals(154.2d, (Double) order.get("total"), 0d);
     }
 
@@ -313,53 +314,53 @@ public class BeanBindingExtendedConfigTestCase {
     public void test_factory() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_13.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        Map<?, ?> order = (Map<?, ?>) result.getBean("order");
+        Map<?, ?> order = (Map<?, ?>) sink.getBean("order");
 
-        assertTrue(order instanceof HashMap);
+        assertInstanceOf(HashMap.class, order);
     }
 
     @Test
     public void test_factory_alias() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_14.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        Map<?, ?> order1 = (Map<?, ?>) result.getBean("default_order");
-        Map<?, ?> order2 = (Map<?, ?>) result.getBean("mvel_order");
-        Map<?, ?> order3 = (Map<?, ?>) result.getBean("mvel_class_order");
-        Map<?, ?> order4 = (Map<?, ?>) result.getBean("basic_order");
+        Map<?, ?> order1 = (Map<?, ?>) sink.getBean("default_order");
+        Map<?, ?> order2 = (Map<?, ?>) sink.getBean("mvel_order");
+        Map<?, ?> order3 = (Map<?, ?>) sink.getBean("mvel_class_order");
+        Map<?, ?> order4 = (Map<?, ?>) sink.getBean("basic_order");
 
-        assertTrue(order1 instanceof HashMap);
-        assertTrue(order2 instanceof HashMap);
-        assertTrue(order3 instanceof HashMap);
-        assertTrue(order4 instanceof HashMap);
+        assertInstanceOf(HashMap.class, order1);
+        assertInstanceOf(HashMap.class, order2);
+        assertInstanceOf(HashMap.class, order3);
+        assertInstanceOf(HashMap.class, order4);
     }
 
     @Test
     public void test_factory_global_mvel() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_15.xml"));
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        Map<?, ?> order = (Map<?, ?>) result.getBean("order");
+        Map<?, ?> order = (Map<?, ?>) sink.getBean("order");
 
-        assertTrue(order instanceof HashMap);
+        assertInstanceOf(HashMap.class, order);
     }
 }

@@ -45,10 +45,10 @@ package org.smooks.cartridges.javabean.JIRA.MILYN_443;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Bean;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,10 +88,10 @@ public class MILYN_443_TestCase {
     }
 
 	private void test(Smooks smooks) {
-		JavaResult result = new JavaResult();
-		smooks.filterSource(new StreamSource(getClass().getResourceAsStream("message.xml")), result);
+		JavaSink sink = new JavaSink();
+		smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("message.xml")), sink);
 		
-		Map theBean = (Map) result.getBean("theBean");
+		Map theBean = (Map) sink.getBean("theBean");
 		assertEquals("xxx", theBean.get("attr1"));
         assertNull(theBean.get("attr2"));
 	}

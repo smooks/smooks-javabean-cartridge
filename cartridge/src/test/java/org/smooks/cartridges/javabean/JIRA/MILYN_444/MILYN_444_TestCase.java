@@ -44,10 +44,10 @@ package org.smooks.cartridges.javabean.JIRA.MILYN_444;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,11 +61,11 @@ public class MILYN_444_TestCase {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
-        JavaResult jResult = new JavaResult();
+        JavaSink javaSink = new JavaSink();
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("message.xml")), jResult);
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("message.xml")), javaSink);
 
-        X x = jResult.getBean(X.class);
+        X x = javaSink.getBean(X.class);
         assertEquals("456", x.getVal1()); // default will be overridden by value in the message
         assertEquals(987, x.getVal2()); // default will be applied
         assertEquals(99.65d, (double) x.getVal3(), 0d); // default will be applied

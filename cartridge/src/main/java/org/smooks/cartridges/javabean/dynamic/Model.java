@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -227,9 +227,9 @@ public class Model<T> {
 
         Object rootBean;
 
-        if (modelRoot instanceof JavaResult) {
-            JavaResult javaResult = (JavaResult) modelRoot;
-            Map<String, Object> beanMap = javaResult.getResultMap();
+        if (modelRoot instanceof JavaSink) {
+            JavaSink javaSink = (JavaSink) modelRoot;
+            Map<String, Object> beanMap = javaSink.getResultMap();
 
             if (beanMap.isEmpty()) {
                 throw new IOException("Unable to serialize empty JavaResult Model.");

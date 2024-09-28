@@ -48,11 +48,11 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
 import org.smooks.cartridges.javabean.extendedconfig13.BeanBindingExtendedConfigTestCase;
 import org.smooks.cartridges.javabean.v14.retain_bean.RetainBeanTestCase;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -67,12 +67,12 @@ public class GetBeanByTypeTestCase {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(RetainBeanTestCase.class.getResourceAsStream("test_bean_01.xml"));
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         ExecutionContext execContext = smooks.createExecutionContext();
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = result.getBean(ExtendedOrder.class);
+        ExtendedOrder order = sink.getBean(ExtendedOrder.class);
         assertNotNull(order);
         BeanBindingExtendedConfigTestCase.assertOrderOK(order, true);
         

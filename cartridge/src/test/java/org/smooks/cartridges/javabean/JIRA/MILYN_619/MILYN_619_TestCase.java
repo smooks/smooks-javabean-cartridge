@@ -44,14 +44,13 @@ package org.smooks.cartridges.javabean.JIRA.MILYN_619;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.io.payload.JavaSource;
-import org.smooks.io.payload.StringResult;
+import org.smooks.io.sink.StringSink;
+import org.smooks.io.source.JavaSource;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 
 import java.io.IOException;
-import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -68,7 +67,7 @@ public class MILYN_619_TestCase {
         rootObj.getEnums().add(new TheEnumContainer());
 
         Smooks smooks = new Smooks();
-        StringResult res = new StringResult();
+        StringSink res = new StringSink();
 
         smooks.filterSource(new JavaSource(rootObj), res);
 

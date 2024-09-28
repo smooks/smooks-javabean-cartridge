@@ -44,8 +44,8 @@ package org.smooks.cartridges.javabean.JIRA.MILYN_347;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.io.payload.JavaResult;
-import org.smooks.io.payload.JavaSource;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.JavaSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -61,10 +61,10 @@ public class MILYN_347_TestCase {
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks.xml"));
         JavaSource source = new JavaSource("x", "XValObject");
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
-        smooks.filterSource(source, result);
+        smooks.filterSource(source, sink);
 
-        assertEquals("{xxxx=XValObject}", result.getBean("bean").toString());
+        assertEquals("{xxxx=XValObject}", sink.getBean("bean").toString());
     }
 }

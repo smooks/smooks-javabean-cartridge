@@ -47,9 +47,8 @@ import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.Value;
 import org.smooks.engine.converter.BooleanConverterFactory;
 import org.smooks.engine.converter.StringToIntegerConverterFactory;
-import org.smooks.io.payload.JavaResult;
-
-import javax.xml.transform.stream.StreamSource;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -74,12 +73,12 @@ public class ProgrammaticValueConfigTestCase {
 		privatePersonValue.setTypeConverter(new BooleanConverterFactory().createTypeConverter()).setDefaultValue("true");
 		smooks.addVisitors(privatePersonValue);
 
-		JavaResult result = new JavaResult();
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("/order-01.xml")), result);
+		JavaSink sink = new JavaSink();
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("/order-01.xml")), sink);
 
-        assertEquals("Joe", result.getBean("customerName"));
-		assertEquals(123123, result.getBean("customerNumber"));
-		assertEquals(Boolean.TRUE, result.getBean("privatePerson"));
+        assertEquals("Joe", sink.getBean("customerName"));
+		assertEquals(123123, sink.getBean("customerNumber"));
+		assertEquals(Boolean.TRUE, sink.getBean("privatePerson"));
 	}
 
 	@Test
@@ -90,11 +89,11 @@ public class ProgrammaticValueConfigTestCase {
 		smooks.addVisitors(new Value("customerNumber1", "customer/@number", Integer.class, smooks.getApplicationContext().getRegistry()));
 		smooks.addVisitors(new Value("customerNumber2", "customer/@number", smooks.getApplicationContext().getRegistry()).setType(Integer.class));
 
-		JavaResult result = new JavaResult();
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("/order-01.xml")), result);
+		JavaSink sink = new JavaSink();
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("/order-01.xml")), sink);
 
-		assertEquals(123123, result.getBean("customerNumber1"));
-		assertEquals(123123, result.getBean("customerNumber2"));
+		assertEquals(123123, sink.getBean("customerNumber1"));
+		assertEquals(123123, sink.getBean("customerNumber2"));
 	}
 
 }

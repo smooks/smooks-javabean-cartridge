@@ -47,11 +47,11 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
 import org.smooks.cartridges.javabean.extendedconfig13.BeanBindingExtendedConfigTestCase;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -66,39 +66,39 @@ public class RetainBeanTestCase {
     @Test
     public void test_01() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_01.xml"));
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
         
         ExecutionContext execContext = smooks.createExecutionContext();
         //execContext.setEventListener(new HtmlReportGenerator("/zap/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
         BeanBindingExtendedConfigTestCase.assertOrderOK(order, true);
         
-        assertNull(result.getBean("headerBean"));
-        assertNull(result.getBean("headerBeanHash"));
-        assertNull(result.getBean("orderItemList"));
-        assertNull(result.getBean("orderItemArray"));
-        assertNull(result.getBean("orderItem"));
+        assertNull(sink.getBean("headerBean"));
+        assertNull(sink.getBean("headerBeanHash"));
+        assertNull(sink.getBean("orderItemList"));
+        assertNull(sink.getBean("orderItemArray"));
+        assertNull(sink.getBean("orderItem"));
     }
     
     @Test
     public void test_02() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("test_bean_02.xml"));
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
         
         ExecutionContext execContext = smooks.createExecutionContext();
         //execContext.setEventListener(new HtmlReportGenerator("/zap/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
         BeanBindingExtendedConfigTestCase.assertOrderOK(order, true);
         
-        assertNotNull(result.getBean("headerBean"));
-        assertNull(result.getBean("headerBeanHash"));
-        assertNull(result.getBean("orderItemList"));
-        assertNull(result.getBean("orderItemArray"));
-        assertNull(result.getBean("orderItem"));
+        assertNotNull(sink.getBean("headerBean"));
+        assertNull(sink.getBean("headerBeanHash"));
+        assertNull(sink.getBean("orderItemList"));
+        assertNull(sink.getBean("orderItemArray"));
+        assertNull(sink.getBean("orderItem"));
     }
 
 	private InputStream getInput(String file) {

@@ -47,9 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 
-import javax.xml.transform.stream.StreamSource;
 import java.util.Date;
 import java.util.Map;
 
@@ -66,22 +66,22 @@ public class ExpressionBindingTestCase {
     public void test_data_variable() throws Exception {
     	Smooks smooks = new Smooks(getClass().getResourceAsStream("02_binding.xml"));
 
-    	JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
     	ExecutionContext context = smooks.createExecutionContext();
     	//context.setEventListener(new HtmlReportGenerator("target/expression_data_variable.html"));
 
-    	smooks.filterSource(context, new StreamSource(getClass().getResourceAsStream("02_number.xml")), result);
+    	smooks.filterSource(context, new StreamSource<>(getClass().getResourceAsStream("02_number.xml")), sink);
 
-    	Total total = (Total) result.getBean("total");
+    	Total total = (Total) sink.getBean("total");
 
     	assertEquals(20, (int) total.getTotal());
     	assertEquals("10,20,30,40", total.getCsv());
 
     }
 
-    private void assertDateValue(JavaResult result, String beanId) {
-        Map<?, ?> message = (Map<?, ?>) result.getBean(beanId);
+    private void assertDateValue(JavaSink sink, String beanId) {
+        Map<?, ?> message = (Map<?, ?>) sink.getBean(beanId);
         Date messageDate = (Date) message.get("date");
         LOGGER.debug("Date: " + messageDate);
         assertEquals(946143900000L, messageDate.getTime());

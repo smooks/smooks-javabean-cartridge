@@ -45,8 +45,8 @@ package org.smooks.cartridges.javabean.JIRA.MILYN_356;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.OrderItem;
-import org.smooks.io.payload.JavaResult;
-import org.smooks.io.payload.StringSource;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StringSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -62,25 +62,25 @@ public class MILYN_356_TestCase {
     @Test
     public void test_decoder_defined() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_01.xml"));
-        JavaResult javaResult = new JavaResult();
+        JavaSink javaSink = new JavaSink();
 
-        smooks.filterSource(new StringSource("<price>123'456,00</price>"), javaResult);
+        smooks.filterSource(new StringSource("<price>123'456,00</price>"), javaSink);
 
-        OrderItem orderItem = (OrderItem) javaResult.getBean("orderItem");
+        OrderItem orderItem = (OrderItem) javaSink.getBean("orderItem");
         assertEquals(123456.00D, orderItem.getPrice(), 0D);
 
-        BigDecimal baseBigD = (BigDecimal) javaResult.getBean("price");
+        BigDecimal baseBigD = (BigDecimal) javaSink.getBean("price");
         assertEquals(new BigDecimal("123456.00"), baseBigD);
     }
 
     @Test
     public void test_decoder_undefined() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("config_02.xml"));
-        JavaResult javaResult = new JavaResult();
+        JavaSink javaSink = new JavaSink();
 
-        smooks.filterSource(new StringSource("<price>123'456,00</price>"), javaResult);
+        smooks.filterSource(new StringSource("<price>123'456,00</price>"), javaSink);
 
-        OrderItem orderItem = (OrderItem) javaResult.getBean("orderItem");
+        OrderItem orderItem = (OrderItem) javaSink.getBean("orderItem");
         assertEquals(123456.00D, orderItem.getPrice(), 0D);
     }
 

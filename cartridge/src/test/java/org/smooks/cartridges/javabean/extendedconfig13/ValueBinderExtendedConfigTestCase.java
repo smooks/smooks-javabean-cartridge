@@ -45,11 +45,11 @@ package org.smooks.cartridges.javabean.extendedconfig13;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.smooks.support.ClassUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -62,31 +62,31 @@ public class ValueBinderExtendedConfigTestCase {
 	@Test
 	public void test_01() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_value_01.xml"));
-		JavaResult result = new JavaResult();
+		JavaSink sink = new JavaSink();
 		ExecutionContext execContext = smooks.createExecutionContext();
 
 		//execContext.setEventListener(new HtmlReportGenerator("target/report/ValueBinderExtendedConfigTest-report.html"));
 
-		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+		smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-		assertEquals("Joe", result.getBean("customerName"));
-		assertEquals(123123, result.getBean("customerNumber"));
-		assertEquals(Boolean.TRUE, result.getBean("privatePerson"));
-		assertEquals(1163616328000L, ((Date) result.getBean("date")).getTime());
+		assertEquals("Joe", sink.getBean("customerName"));
+		assertEquals(123123, sink.getBean("customerNumber"));
+		assertEquals(Boolean.TRUE, sink.getBean("privatePerson"));
+		assertEquals(1163616328000L, ((Date) sink.getBean("date")).getTime());
 
-		assertNull(result.getBean("product"));
+		assertNull(sink.getBean("product"));
 	}
 
 	@Test
 	public void test_01_other() throws IOException, SAXException {
 		Smooks smooks = new Smooks(getClass().getResourceAsStream("test_value_01.xml"));
 
-		JavaResult result = new JavaResult();
+		JavaSink sink = new JavaSink();
 		ExecutionContext execContext = smooks.createExecutionContext("other");
 
-		smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), result);
+		smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
-		assertEquals(222, result.getBean("product"));
+		assertEquals(222, sink.getBean("product"));
 	}
 
 

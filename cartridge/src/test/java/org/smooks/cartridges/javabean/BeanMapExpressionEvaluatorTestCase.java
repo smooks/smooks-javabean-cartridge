@@ -46,9 +46,9 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.expression.ExpressionEvaluationException;
+import org.smooks.io.source.ReaderSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -76,7 +76,7 @@ public class BeanMapExpressionEvaluatorTestCase {
         execContext.getBeanContext().addBean("aBean", bean, null);
         bean.put("a", "hello");
         
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(execContext, new ReaderSource<>(new StringReader("<a/>")), null);
         assertTrue(DOMVisitor.visited);
 
         DOMVisitor.visited = false;
@@ -86,7 +86,7 @@ public class BeanMapExpressionEvaluatorTestCase {
         execContext.getBeanContext().addBean("aBean", bean, null);
         bean.put("a", "goodbye");        
         
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<a/>")), null);
+        smooks.filterSource(execContext, new ReaderSource<>(new StringReader("<a/>")), null);
         assertFalse(DOMVisitor.visited);
     }
 

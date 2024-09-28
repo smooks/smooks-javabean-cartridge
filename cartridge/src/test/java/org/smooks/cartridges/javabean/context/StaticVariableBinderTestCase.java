@@ -46,9 +46,9 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.cartridges.javabean.BeanMapExpressionEvaluator;
+import org.smooks.io.source.ReaderSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
@@ -65,7 +65,7 @@ public class StaticVariableBinderTestCase {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("staticvar-config.xml"));
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        smooks.filterSource(execContext, new StreamSource(new StringReader("<x/>")), null);
+        smooks.filterSource(execContext, new ReaderSource<>(new StringReader("<x/>")), null);
 
         Map<String, Object> beanMap = execContext.getBeanContext().getBeanMap();
 

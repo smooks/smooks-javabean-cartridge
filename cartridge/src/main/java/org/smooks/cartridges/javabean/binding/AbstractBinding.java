@@ -44,6 +44,7 @@ package org.smooks.cartridges.javabean.binding;
 
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.io.Source;
 import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.binding.model.Bean;
@@ -53,10 +54,9 @@ import org.smooks.cartridges.javabean.binding.model.get.GetterGraph;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
 import org.smooks.engine.lookup.CustomResourceConfigSeqLookup;
 import org.smooks.engine.report.HtmlReportGenerator;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.Source;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -178,16 +178,16 @@ public class AbstractBinding {
 
         assertInitialized();
 
-        JavaResult javaResult = new JavaResult();
+        JavaSink javaSink = new JavaSink();
         ExecutionContext executionContext = smooks.createExecutionContext();
 
         if (reportPath != null) {
             executionContext.getContentDeliveryRuntime().getExecutionEventListeners().add(new HtmlReportGenerator(reportPath, smooks.getApplicationContext()));
         }
 
-        smooks.filterSource(executionContext, inputSource, javaResult);
+        smooks.filterSource(executionContext, inputSource, javaSink);
 
-        return javaResult.getBean(toType);
+        return javaSink.getBean(toType);
     }
 
     protected ResourceConfigSeq getUserDefinedResourceList() {

@@ -45,10 +45,10 @@ package org.smooks.cartridges.javabean.autodecode;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.cartridges.javabean.OrderItem;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,15 +61,15 @@ public class AutoDecodeTestCase {
     @Test
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("/org/smooks/cartridges/javabean/autodecode/config-01.xml"));
-        JavaResult jres = new JavaResult();
+        JavaSink sink = new JavaSink();
 
         try {
-            smooks.filterSource(new StreamSource(getClass().getResourceAsStream("/order-01.xml")), jres);
+            smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("/order-01.xml")), sink);
         } finally {
             smooks.close();
         }
 
-        OrderItem orderItem = (OrderItem) jres.getBean("orderItem");
+        OrderItem orderItem = (OrderItem) sink.getBean("orderItem");
 
         assertEquals(222, orderItem.getProductId());
         assertEquals(7, (int)orderItem.getQuantity());

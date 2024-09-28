@@ -60,7 +60,9 @@ import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.report.HtmlReportGenerator;
 import org.smooks.engine.resource.config.ParameterAccessor;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.DOMSource;
+import org.smooks.io.source.ReaderSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,8 +72,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -151,7 +151,7 @@ public class ModelBuilder {
     }
 
     public <T> T readObject(Reader message, Class<T> returnType) throws SAXException, IOException {
-        Model<JavaResult> model = readModel(message, JavaResult.class);
+        Model<JavaSink> model = readModel(message, JavaSink.class);
         return model.getModelRoot().getBean(returnType);
     }
 
@@ -163,7 +163,7 @@ public class ModelBuilder {
         AssertArgument.isNotNull(message, "message");
         AssertArgument.isNotNull(modelRoot, "modelRoot");
 
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
         ExecutionContext executionContext = descriptor.getSmooks().createExecutionContext();
         Map<Class<?>, Map<String, BeanWriter>> beanWriters = descriptor.getBeanWriters();
         BeanTracker beanTracker = new BeanTracker(beanWriters);
@@ -179,18 +179,18 @@ public class ModelBuilder {
             Document messageDoc = toDocument(message);
 
             // Validate the document and then filter it through smooks...
-            descriptor.getSchema().newValidator().validate(new DOMSource(messageDoc));
-            descriptor.getSmooks().filterSource(executionContext, new DOMSource(messageDoc), result);
+            descriptor.getSchema().newValidator().validate(new javax.xml.transform.dom.DOMSource(messageDoc));
+            descriptor.getSmooks().filterSource(executionContext, new DOMSource(messageDoc), sink);
         } else {
-            descriptor.getSmooks().filterSource(executionContext, new StreamSource(message), result);
+            descriptor.getSmooks().filterSource(executionContext, new ReaderSource<>(message), sink);
         }
 
         Model<T> model;
 
-        if (modelRoot == JavaResult.class) {
-            model = new Model<>(modelRoot.cast(result), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
+        if (modelRoot == JavaSink.class) {
+            model = new Model<>(modelRoot.cast(sink), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
         } else {
-            model = new Model<>(modelRoot.cast(result.getBean(modelRoot)), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
+            model = new Model<>(modelRoot.cast(sink.getBean(modelRoot)), beanTracker.beans, beanWriters, NamespaceReaper.getNamespacePrefixMappings(executionContext));
         }
 
         return model;

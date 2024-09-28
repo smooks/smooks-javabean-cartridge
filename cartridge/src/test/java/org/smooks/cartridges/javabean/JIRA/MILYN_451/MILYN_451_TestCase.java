@@ -46,10 +46,10 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.bean.context.BeanContext;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,10 +63,9 @@ public class MILYN_451_TestCase {
     public void test() throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream("smooks-config.xml"));
         ExecutionContext execCtx = smooks.createExecutionContext();
-        BeanContext beanContext = execCtx.getBeanContext();
-        JavaResult jResult = new JavaResult();
+        JavaSink javaSink = new JavaSink();
 
-        smooks.filterSource(execCtx, new StreamSource(getClass().getResourceAsStream("message.xml")), jResult);
-        assertEquals(3, jResult.getResultMap().size());
+        smooks.filterSource(execCtx, new StreamSource<>(getClass().getResourceAsStream("message.xml")), javaSink);
+        assertEquals(3, javaSink.getResultMap().size());
     }
 }

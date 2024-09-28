@@ -52,10 +52,10 @@ import org.smooks.cartridges.javabean.OrderItem;
 import org.smooks.cartridges.javabean.factory.MVELFactory;
 import org.smooks.engine.converter.StringToDoubleConverterFactory;
 import org.smooks.engine.converter.StringToIntegerConverterFactory;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -178,10 +178,10 @@ public class ProgrammaticBeanConfigTestCase {
     }
 
     private void execute_01_test(Smooks smooks) {
-        JavaResult result = new JavaResult();
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("/order-01.xml")), result);
+        JavaSink sink = new JavaSink();
+        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("/order-01.xml")), sink);
 
-        Order order = (Order) result.getBean("order");
+        Order order = (Order) sink.getBean("order");
         int identity = System.identityHashCode(order);
 
         assertEquals("Order:" + identity + "[header[null, 123123, Joe, false, Order:" + identity + "]\n" +
@@ -209,10 +209,10 @@ public class ProgrammaticBeanConfigTestCase {
 
         smooks.addVisitors(orderBean);
 
-        JavaResult result = new JavaResult();
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("/order-01.xml")), result);
+        JavaSink sink = new JavaSink();
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("/order-01.xml")), sink);
 
-        Map order = (Map) result.getBean("order");
+        Map order = (Map) sink.getBean("order");
 
         HashMap headerMap = (HashMap) order.get("header");
         assertEquals("Joe", headerMap.get("customerName"));
@@ -256,12 +256,12 @@ public class ProgrammaticBeanConfigTestCase {
     }
 
     private void execSmooksArrays(Smooks smooks) {
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
         ExecutionContext execContext = smooks.createExecutionContext();
 
-        smooks.filterSource(execContext, new StreamSource(getClass().getResourceAsStream("order-01.xml")), result);
+        smooks.filterSource(execContext, new StreamSource<>(getClass().getResourceAsStream("order-01.xml")), sink);
 
-        Order order = (Order) result.getBean("order");
+        Order order = (Order) sink.getBean("order");
         int identity = System.identityHashCode(order);
 
         assertEquals("Order:" + identity + "[header[null]\n" +

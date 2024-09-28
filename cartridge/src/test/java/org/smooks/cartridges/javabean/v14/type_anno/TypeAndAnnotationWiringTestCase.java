@@ -46,10 +46,10 @@ import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.SmooksException;
 import org.smooks.cartridges.javabean.extendedconfig.ExtendedOrder;
-import org.smooks.io.payload.JavaResult;
+import org.smooks.io.sink.JavaSink;
+import org.smooks.io.source.StreamSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -80,11 +80,11 @@ public class TypeAndAnnotationWiringTestCase {
 
     public void test(String config) throws IOException, SAXException {
         Smooks smooks = new Smooks(getClass().getResourceAsStream(config));
-        JavaResult result = new JavaResult();
+        JavaSink sink = new JavaSink();
 
-        smooks.filterSource(new StreamSource(getClass().getResourceAsStream("order-01.xml")), result);
+        smooks.filterSource(new StreamSource<>(getClass().getResourceAsStream("order-01.xml")), sink);
 
-        ExtendedOrder order = (ExtendedOrder) result.getBean("order");
+        ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
 
         assertEquals("[{productId: 111, quantity: 2, price: 8.9}, {productId: 222, quantity: 7, price: 5.2}]", order.getOrderItems().toString());
     }
