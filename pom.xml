@@ -6,7 +6,7 @@
 
     <groupId>org.smooks.cartridges</groupId>
     <artifactId>smooks-javabean-pom</artifactId>
-    <version>2.0.0-RC5-SNAPSHOT</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
 
     <name>Smooks JavaBean Cartridge</name>
@@ -41,7 +41,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
-        <smooks.version>2.0.0-RC5-SNAPSHOT</smooks.version>
+        <smooks.version>2.0.0</smooks.version>
+        <maven.javadoc.plugin.version>3.10.1</maven.javadoc.plugin.version>
     </properties>
 
     <modules>
@@ -139,7 +140,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>${maven.javadoc.plugin.version}</version>
                 <configuration>
                     <failOnError>false</failOnError>
                     <failOnWarnings>false</failOnWarnings>
@@ -235,6 +236,31 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>default</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <repositories>
         <repository>

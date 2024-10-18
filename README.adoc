@@ -60,7 +60,7 @@ Mapping the source object is a matter of targeting the Smooks Javabean resources
 
 == Java to Java
 
-The source object is provided to Smooks via a `+org.smooks.io.payload.JavaSource+` instance. This object is created by passing the constructor the root object of the source model. The resulting `+JavaSource+` object is used in the `+Smooks#filter+` method. The resulting code could look like as follows:
+The source object is provided to Smooks via a `+org.smooks.io.source.JavaSource+` instance. This object is created by passing the constructor the root object of the source model. The resulting `+JavaSource+` object is used in the `+Smooks#filter+` method. The resulting code could look like as follows:
 
 [source,java]
 ----
@@ -69,16 +69,16 @@ protected LineOrder runSmooksTransform(Order srcOrder) throws Exception {
     ExecutionContext executionContext = smooks.createExecutionContext();  
 
     // Transform the source Order to the target LineOrder via a  
-    // JavaSource and JavaResult instance...  
+    // JavaSource and JavaSink instance...
     JavaSource source = new JavaSource(srcOrder);  
-    JavaResult result = new JavaResult();  
+    JavaSink sink = new JavaSink();
 
     // Configure the execution context to generate a report...  
     executionContext.setEventListener(new HtmlReportGenerator("target/report/report.html"));  
 
-    smooks.filterSource(executionContext, source, result);  
+    smooks.filterSource(executionContext, source, sink);
 
-    return (LineOrder) result.getBean("lineOrder");  
+    return (LineOrder) sink.getBean("lineOrder");
 }
 ----
 
@@ -97,7 +97,7 @@ JavaSource javaSource = new JavaSource(orderBean);
 // Turn streaming off via the JavaSource...  
 javaSource.setEventStreamRequired(false);  
 
-smooks.filterSource(javaSource, result);
+smooks.filterSource(javaSource, sink);
 ----
 
 Or, by turning off the "http://www.smooks.org/sax/features/generate-java-event-stream" `+<reader>+` feature in the Smooks configuration:
@@ -129,9 +129,9 @@ The JavaBean Cartridge allows you to create and populate Java POJOs from your me
 
 === Java Binding Overview
 
-This feature of Smooks can be used in its own right purely as a Java binding framework for XML, EDI, CSV, etc... However, it is very important to remember that the Java Binding capabilities in Smooks are the cornerstone of many other capabilities provided by Smooks. This is because Smooks makes the Java objects it creates (and binds data into) available through the link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/bean/contedxt/BeanContext.html[BeanContext] class. This is essentially a Java Bean context that is made available to any Smooks visitor via the Smooks link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/ExecutionContext.html[ExecutionContext].
+This feature of Smooks can be used in its own right purely as a Java binding framework for XML, EDI, CSV, etc... However, it is very important to remember that the Java Binding capabilities in Smooks are the cornerstone of many other capabilities provided by Smooks. This is because Smooks makes the Java objects it creates (and binds data into) available through the link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/bean/contedxt/BeanContext.html[BeanContext] class. This is essentially a Java Bean context that is made available to any Smooks visitor via the Smooks link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/ExecutionContext.html[ExecutionContext].
 
-Some of the existing features that build on the functionality provided in the Javabean Cartridge include:
+Some of the existing features that build on the functionality provided in the JavaBean Cartridge include:
 
 * link:#templating[Templating]: Templating typically involves applying a template (FreeMarker or other) to the objects in the BeanContext.
 * link:#rule-based-validation[Validation]: Business Rules Validation (e.g. via MVEL) typically involves applying a rule (expression, etc...) to the objects in the BeanContext.
@@ -209,7 +209,7 @@ This configuration simply creates an instance of the `+example.model.Order+` cla
 * `+class+`: The fully qualified class name of the bean.
 * `+createOnElement+`: attribute controls when the bean instance is created. Population of the bean properties is controlled through the binding configurations (child elements of the element).
 
-The Javabean cartridge has the following conditions for javabeans:
+The JavaBean cartridge has the following conditions for javabeans:
 
 . A public no-argument constructor
 . Public property setter methods. The don't need to follow any specific name formats, but it would be better if they do follow the standard property setter method names.
@@ -219,7 +219,7 @@ The Javabean cartridge has the following conditions for javabeans:
 
 The configuration shown above simply created the _example.model.Order_ bean instance and bound it into the bean context. This section will describe how to bind data into that bean instance.
 
-The Javabean Cartridge provides support for 3 types of data bindings, which are added as child elements of the `+<jb:bean>+` element:
+The JavaBean Cartridge provides support for 3 types of data bindings, which are added as child elements of the `+<jb:bean>+` element:
 
 * `+<jb:value>+`: This is used to bind data values from the Source message event stream into the target bean.
 * `+<jb:wiring>+`: This is used to "wire" another bean instance from the bean context into a bean property on the target bean. This is the configuration that allows you to construct an object graph (Vs just a loose bag of Java object instances). Beans can be wired in based on their "beanId", their Java class type, or by Annotation (by being annotated with a specific Annotation).
@@ -338,7 +338,7 @@ The Smooks config required to bind the data from the order XML and into this obj
 . Set it to the root element (or `+#document+`): For bean instances where only a single instance will exist in the model.
 . Set it to the recurring element: For Collection bean instances. If you don't specify the correct element in this case, you could loose data.
 * `+<jb:value decoder>+`
-. In most cases, Smooks will automatically detect the datatype decoder to be used for a `+<jb:value>+` binding. However, some decoders require configuration e.g. the DateDecoder (`+decoder="Date"+`). In these cases, the decoder attribute should be defined on the binding, as well as the <jb:decodeParam> child elements for specifying the decode parameters for that decoder. link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/package-summary.html[See the full list of DataDecoder available out-of-the-box].
+. In most cases, Smooks will automatically detect the datatype decoder to be used for a `+<jb:value>+` binding. However, some decoders require configuration e.g. the DateDecoder (`+decoder="Date"+`). In these cases, the decoder attribute should be defined on the binding, as well as the <jb:decodeParam> child elements for specifying the decode parameters for that decoder. link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/package-summary.html[See the full list of DataDecoder available out-of-the-box].
 * `+<jb:wiring property>+`
 . Not required when binding into Collections.
 * Collections
@@ -353,11 +353,11 @@ In most cases, Smooks will automatically detect the datatype type converter to b
 
 A number of date-based type converter implementations are available:
 
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToDateConverterFactory.html[Date]*: Decode/Encode a String to a _java.util.Date_ instance.
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToXmlGregorianCalendarConverterFactory.html[Calendar]*: Decode/Encode a String to a _java.util.Calendar_ instance.
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/SqlDateConverterFactory.html[SqlDate]*: Decode/Encode a String to a _java.sql.Date_ instance.
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/SqlTimeConverterFactory.html[SqlTime]*: Decode/Encode a String to a _java.sql.Time_ instance.
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/SqlTimestampConverterFactory.html[SqlTimestamp]*: Decode/Encode a String to a _java.sql.Timestamp_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToDateConverterFactory.html[Date]*: Decode/Encode a String to a _java.util.Date_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToXmlGregorianCalendarConverterFactory.html[Calendar]*: Decode/Encode a String to a _java.util.Calendar_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/SqlDateConverterFactory.html[SqlDate]*: Decode/Encode a String to a _java.sql.Date_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/SqlTimeConverterFactory.html[SqlTime]*: Decode/Encode a String to a _java.sql.Time_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/SqlTimestampConverterFactory.html[SqlTimestamp]*: Decode/Encode a String to a _java.sql.Timestamp_ instance.
 
 All of these date-based type converter implementations are configured in the same way.
 
@@ -398,13 +398,13 @@ The _locale_ decodeParam value is an underscore separated string, with the first
 
 A number of Number based type converter implementations are available:
 
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToBigDecimalConverterFactory.html[BigDecimalDecoder]*: Decode/Encode a String to a _java.math. BigDecimal_ instance.
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToBigIntegerConverterFactory.html[BigIntegerDecoder]*: Decode/Encode a String to a _java.math. BigInteger_ instance.
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToDoubleConverterFactory.html[DoubleDecoder]*: Decode/Encode a String to a _java.lang.Double_ instance (including primitive).
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToFloatConverterFactory.html[FloatDecoder]*: Decode/Encode a String to a _java.lang.Float_ instance (including primitive).
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToIntegerConverterFactory.html[IntegerDecoder]*: Decode/Encode a String to a _java.lang.Integer_ instance (including primitive).
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToLongConverterFactory.html[LongDecoder]*: Decode/Encode a String to a _java.lang.Long' instance (including primitive)._
-* *link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/engine/converter/StringToShortConverterFactory.html[ShortDecoder]*: Decode/Encode a String to a _java.lang.Short_ instance (including primitive).
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToBigDecimalConverterFactory.html[BigDecimalDecoder]*: Decode/Encode a String to a _java.math. BigDecimal_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToBigIntegerConverterFactory.html[BigIntegerDecoder]*: Decode/Encode a String to a _java.math. BigInteger_ instance.
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToDoubleConverterFactory.html[DoubleDecoder]*: Decode/Encode a String to a _java.lang.Double_ instance (including primitive).
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToFloatConverterFactory.html[FloatDecoder]*: Decode/Encode a String to a _java.lang.Float_ instance (including primitive).
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToIntegerConverterFactory.html[IntegerDecoder]*: Decode/Encode a String to a _java.lang.Integer_ instance (including primitive).
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToLongConverterFactory.html[LongDecoder]*: Decode/Encode a String to a _java.lang.Long' instance (including primitive)._
+* *link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/engine/converter/StringToShortConverterFactory.html[ShortDecoder]*: Decode/Encode a String to a _java.lang.Short_ instance (including primitive).
 
 All of these Number based type converter implementations are configured in the same way.
 
@@ -741,7 +741,7 @@ This can be achieved using Expression Based Bindings (<jb:expression>).
 
 ==== Direct Value Binding
 
-As of Smooks 1.3 the Javabean Cartridge has an new feature called direct value binding. Direct value binding uses the Smooks DataDecoder to create an Object from a selected data element/attribute and add it directly to the bean context.
+As of Smooks 1.3 the JavaBean Cartridge has an new feature called direct value binding. Direct value binding uses the Smooks DataDecoder to create an Object from a selected data element/attribute and add it directly to the bean context.
 
 The *ValueBinder* class is the visitor that does the value binding.
 
@@ -760,10 +760,9 @@ The `+<value>+` has the following attributes:
 
 ===== Example
 
-Taking the "classic" Order message as an example and getting the order number, name and date as Value Objects in the form of an Integer and String.
+Taking the classic Order message as an example and getting the order number, name and date as Value Objects in the form of an Integer and String.
 
-.The Message
-
+.Message
 [source,xml]
 ----
 <order xmlns="http://x">  
@@ -778,8 +777,7 @@ Taking the "classic" Order message as an example and getting the order number, n
  </order>
 ----
 
-.The Configuration
-
+.Configuration
 [source,xml]
 ----
 <?xml version="1.0"?>  
@@ -821,16 +819,16 @@ smooks.addVisitors(customerNumberValue);
 smooks.addVisitors(customerNameValue);  
 
 //And the execution code:   
-JavaResult result = new JavaResult();  
+JavaSink sink = new JavaSink();
 
-smooks.filterSource(new StreamSource(orderMessageStream), result);  
-Integer customerNumber = (Integer) result.getBean("customerNumber");
-String customerName = (String) result.getBean("customerName");
+smooks.filterSource(new StreamSource(orderMessageStream), sink);
+Integer customerNumber = (Integer) sink.getBean("customerNumber");
+String customerName = (String) sink.getBean("customerName");
 ----
 
 === Programmatic Configuration
 
-Java Binding Configuratons can be programmatically added to a Smooks using the link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks-javabean-cartridge/org/smooks/cartridges/javabean/Bean.html[Bean] configuration class.
+Java Binding Configuratons can be programmatically added to a Smooks using the link:https://www.smooks.org/javadoc/v2.0.0/smooks-javabean-cartridge/org/smooks/cartridges/javabean/Bean.html[Bean] configuration class.
 
 This class can be used to programmatically configure a Smooks instance for performing a Java Bindings on a specific class. To populate a graph, you simply create a graph of Bean instances by binding Beans onto Beans. The Bean class uses a Fluent API (all methods return the Bean instance), making it easy to string configurations together to build up a graph of Bean configuration.
 
@@ -911,10 +909,10 @@ smooks.addVisitors(orderBean);
 
 [source,java]
 ----
-JavaResult result = new JavaResult();  
+JavaSink sink = new JavaSink();
 
-smooks.filterSource(new StreamSource(orderMessageStream), result);  
-Order order = (Order) result.getBean("order");
+smooks.filterSource(new StreamSource(orderMessageStream), sink);
+Order order = (Order) sink.getBean("order");
 ----
 
 The API supports factories. You can provide a factory object of the type org.smooks.javabean.factory.Factory, that will be called when a new bean instance needs to be created.
@@ -988,7 +986,7 @@ See the https://github.com/smooks/smooks-examples/tree/v1.0.5/xml-read-write-tra
 
 === Generating the Smooks Binding Configuration
 
-The Javabean Cartridge contains the `+org.smooks.javabean.gen.ConfigGenerator+` utility class that can be used to generate a binding configuration template. This template can then be used as the basis for defining a binding.
+The JavaBean Cartridge contains the `+org.smooks.javabean.gen.ConfigGenerator+` utility class that can be used to generate a binding configuration template. This template can then be used as the basis for defining a binding.
 
 From the commandline:
 
@@ -1062,11 +1060,11 @@ The following is an example of a generated configuration. Note the `+$TODO$+` to
 </smooks-resource-list>
 ----
 
-=== Notes on JavaResult
+=== Notes on JavaSink
 
-Users should note that there is *no guarantee* as to the exact contents of a link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/io/payload/JavaResult.html[JavaResult] instance after calling the Smooks.filterSource method. After calling this method, the JavaResult instance will contain the final contents of the bean context, which can be added to by any visitor.
+Users should note that there is *no guarantee* as to the exact contents of a link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/JavaSink.html[JavaSink] instance after calling the Smooks.filterSource method. After calling this method, the JavaSink instance will contain the final contents of the bean context, which can be added to by any visitor.
 
-You can restrict the Bean set returned in a JavaResult by using a `+<jb:result>+` configuration in the Smooks configuration. In the following example configuration, we tell Smooks to only retain the  "order" bean in the ResultSet:
+You can restrict the Bean set returned in a JavaSink by using a `+<jb:result>+` configuration in the Smooks configuration. In the following example configuration, we tell Smooks to only retain the  "order" bean in the ResultSet:
 
 [source,xml]
 ----
@@ -1091,15 +1089,15 @@ You can restrict the Bean set returned in a JavaResult by using a `+<jb:result>+
         <jb:value property="price" data="order-item/price"/>  
     </jb:bean>  
 
-    <!-- Only retain the "order" bean in the root of any final JavaResult. -->  
+    <!-- Only retain the "order" bean in the root of any final JavaSink. -->
     <jb:result retainBeans="order"/>  
 
 </smooks-resource-list>
 ----
 
-So after applying this configuration, calls to the JavaResult.getBean(String) method for anything other than the "order" bean will return null. This will work fine in cases such as the above example, because the other bean instances are wired into the "order" graph.
+So after applying this configuration, calls to the JavaSink.getBean(String) method for anything other than the "order" bean will return null. This will work fine in cases such as the above example, because the other bean instances are wired into the "order" graph.
 
-Note that as of Smooks v1.2, if a link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/io/payload/JavaSource.html[JavaSource] instance is supplied to the `+Smooks#filterSource+` method (as the filter Source instance), Smooks will use the JavaSource to construct the bean context associated with the link:https://www.smooks.org/javadoc/v2.0.0-RC4/smooks/org/smooks/api/ExecutionContext.html[ExecutionContext] for that Smooks.filterSource invocation. This will mean that some JavaSource bean instances may be visible in the JavaResult.
+Note that as of Smooks v1.2, if a link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/payload/JavaSource.html[JavaSource] instance is supplied to the `+Smooks#filterSource+` method (as the filter Source instance), Smooks will use the JavaSource to construct the bean context associated with the link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/api/ExecutionContext.html[ExecutionContext] for that Smooks.filterSource invocation. This will mean that some JavaSource bean instances may be visible in the JavaSink.
 
 == Maven Coordinates
 
@@ -1109,7 +1107,7 @@ Note that as of Smooks v1.2, if a link:https://www.smooks.org/javadoc/v2.0.0-RC4
 <dependency>
     <groupId>org.smooks.cartridges</groupId>
     <artifactId>smooks-javabean-cartridge</artifactId>
-    <version>2.0.0-RC4</version>
+    <version>2.0.0</version>
 </dependency>    
 ----
 
