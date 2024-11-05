@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
         <smooks.version>2.0.1-SNAPSHOT</smooks.version>
-        <maven.javadoc.plugin.version>3.10.1</maven.javadoc.plugin.version>
+        <maven.javadoc.plugin.version>3.11.1</maven.javadoc.plugin.version>
     </properties>
 
     <modules>
