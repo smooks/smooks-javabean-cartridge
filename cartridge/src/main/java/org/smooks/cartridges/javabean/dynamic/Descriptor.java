@@ -55,6 +55,7 @@ import org.smooks.cartridges.javabean.dynamic.resolvers.AbstractResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultBindingConfigResolver;
 import org.smooks.cartridges.javabean.dynamic.resolvers.DefaultSchemaResolver;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
+import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
 import org.smooks.support.ClassUtils;
@@ -242,7 +243,7 @@ public class Descriptor {
 
         // Now create a Smooks instance for processing configurations for these namespaces...
         ApplicationContextBuilder applicationContextBuilder = ServiceLoader.load(ApplicationContextBuilder.class).iterator().next();
-        Smooks smooks = new Smooks(applicationContextBuilder.withClassLoader(classloader).build());
+        Smooks smooks = new Smooks(applicationContextBuilder.withClassLoader(classloader).withFilterSettings(new DefaultFilterSettings().setMaxNodeDepth(Integer.MAX_VALUE)).build());
 
         for (Namespace namespace : namespaces) {
             InputSource bindingSource = bindingResolver.resolveEntity(namespace.uri, namespace.uri);
@@ -280,11 +281,11 @@ public class Descriptor {
             extractNamespaceDecls(descriptor, namespaces);
         }
 
-        Comparator<Namespace> namspaceSorter = Comparator.comparingInt(o -> o.order);
+        Comparator<Namespace> namespaceSorter = Comparator.comparingInt(o -> o.order);
 
         Namespace[] namespaceArray = new Namespace[namespaces.size()];
         namespaces.toArray(namespaceArray);
-        Arrays.sort(namespaceArray, namspaceSorter);
+        Arrays.sort(namespaceArray, namespaceSorter);
 
         Set<Namespace> orderedNamespaceSet = new LinkedHashSet<>();
         orderedNamespaceSet.addAll(Arrays.asList(namespaceArray));

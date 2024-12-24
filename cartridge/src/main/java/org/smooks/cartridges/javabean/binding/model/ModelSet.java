@@ -52,7 +52,7 @@ import org.smooks.cartridges.javabean.BeanInstanceCreator;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.lookup.CustomResourceConfigSeqLookup;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 import org.smooks.engine.xml.NamespaceManager;
 
 import java.util.LinkedHashMap;
@@ -162,7 +162,7 @@ public class ModelSet {
     }
 
     protected boolean isGlobalParamsConfig(ResourceConfig config) {
-        return ParameterAccessor.GLOBAL_PARAMETERS.equals(config.getSelectorPath().getSelector());
+        return GlobalParamsResourceConfig.GLOBAL_PARAMETERS.equals(config.getSelectorPath().getSelector());
     }
 
     protected void createExpandedModels() {

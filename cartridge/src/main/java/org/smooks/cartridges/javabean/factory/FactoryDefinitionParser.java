@@ -49,7 +49,12 @@ import org.smooks.api.converter.TypeConverterException;
 import org.smooks.engine.lookup.GlobalParamsLookup;
 import org.smooks.support.ClassUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -98,7 +103,7 @@ public interface FactoryDefinitionParser {
 
             String className;
             if (alias == null || alias.isEmpty() || alias.equals(DEFAULT_ALIAS)) {
-                className = applicationContext.getRegistry().lookup(new GlobalParamsLookup(applicationContext.getRegistry())).getParameterValue(GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, String.class, DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
+                className = applicationContext.getRegistry().lookup(new GlobalParamsLookup()).getParameterValue(GLOBAL_DEFAULT_FACTORY_DEFINITION_PARSER_CLASS, DEFAULT_FACTORY_DEFINITION_PARSER_CLASS);
             } else {
                 loadAliasToClassMap();
 

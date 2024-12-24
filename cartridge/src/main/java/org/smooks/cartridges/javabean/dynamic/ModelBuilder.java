@@ -44,7 +44,6 @@ package org.smooks.cartridges.javabean.dynamic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smooks.FilterSettings;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
@@ -52,6 +51,7 @@ import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.delivery.fragment.Fragment;
+import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.assertion.AssertArgument;
 import org.smooks.cartridges.javabean.BeanInstancePopulator;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
@@ -59,7 +59,7 @@ import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
 import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.report.HtmlReportGenerator;
-import org.smooks.engine.resource.config.ParameterAccessor;
+import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.io.source.DOMSource;
 import org.smooks.io.source.ReaderSource;
@@ -221,13 +221,13 @@ public class ModelBuilder {
     }
 
     private void configure() {
-        Smooks smooks = descriptor.getSmooks();
-
+        final Smooks smooks = descriptor.getSmooks();
         smooks.addVisitor(new NamespaceReaper());
         //descriptor.getSmooks().addVisitor(new UnknownElementDataReaper(), "*");
 
-        smooks.setFilterSettings(FilterSettings.newSaxNgSettings().setMaxNodeDepth(Integer.MAX_VALUE));
-        ParameterAccessor.setParameter(BeanInstancePopulator.NOTIFY_POPULATE, "true", smooks);
+        final ResourceConfig globalParamsResourceConfig = new GlobalParamsResourceConfig();
+        globalParamsResourceConfig.setParameter(BeanInstancePopulator.NOTIFY_POPULATE, "true");
+        smooks.addResourceConfig(globalParamsResourceConfig);
 
         // Create the execution context so as to force resolution of the config...
         smooks.createExecutionContext();
