@@ -709,7 +709,7 @@ The following example demonstrates the principle:
 
 Note above how we always define the `+decoder+` attribute for a Virtual Model (Map). This is because Smooks has no way of auto-detecting the decode type for data binding to a Map. So, if you need typed values bound into your Virtual Model, you need to specify an appropriate decoder. If the decoder is not specified in this case, Smooks will simply bind the data into the Virtual Model as a String.
 
-Take a look at the https://github.com/smooks/smooks-examples/tree/v1.0.5[model-driven-basic
+Take a look at the https://github.com/smooks/smooks-examples/tree/v6[model-driven-basic
 and model-driven-basic-virtual examples].
 
 ===== Wildcard Bindings
@@ -963,7 +963,7 @@ Order order = xmlBinding.fromXML(new StreamSource(inputReader), Order.class);
 xmlBinding.toXML(order, outputWriter);
 ----
 
-See the https://github.com/smooks/smooks-examples/tree/v1.0.5/xml-read-write[xml-read-write]
+See the https://github.com/smooks/smooks-examples/tree/v6/xml-read-write[xml-read-write]
 example.
 
 ==== Transforming XML Messages Using XMLBinding
@@ -985,7 +985,7 @@ Order order = xmlBindingV1.fromXML(new StreamSource(inputReader), Order.class);
 xmlBindingV2.toXML(order, outputWriter);
 ----
 
-See the https://github.com/smooks/smooks-examples/tree/v1.0.5/xml-read-write-transform[xml-read-write-transform] example.
+See the https://github.com/smooks/smooks-examples/tree/v6/xml-read-write-transform[xml-read-write-transform] example.
 
 === Generating the Smooks Binding Configuration
 
@@ -1110,7 +1110,7 @@ Note that as of Smooks v1.2, if a link:https://www.smooks.org/javadoc/v2.0.0/smo
 <dependency>
     <groupId>org.smooks.cartridges</groupId>
     <artifactId>smooks-javabean-cartridge</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
 </dependency>    
 ----
 
