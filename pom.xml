@@ -75,6 +75,31 @@
         </testResources>
         <plugins>
             <plugin>
+                <groupId>org.simplify4u.plugins</groupId>
+                <artifactId>pgpverify-maven-plugin</artifactId>
+                <version>1.18.2</version>
+                <configuration>
+                    <scope>compile</scope>
+                    <keysMapLocations>
+                        <keysMapLocation>/pgp-keys-map.list</keysMapLocation>
+                    </keysMapLocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.simplify4u</groupId>
+                        <artifactId>pgp-keys-map</artifactId>
+                        <version>2024.11.03</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.7.0</version>
