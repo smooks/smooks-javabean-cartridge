@@ -47,7 +47,7 @@
                       xmlns:dmb="https://www.smooks.org/xsd/smooks/dmb-1.5.xsd"
                       xmlns:aa="http://www.acme.com/xsd/aaa.xsd">
 
-    <jb:bean beanId="aaa" class="org.smooks.cartridges.javabean.dynamic.AAA" createOnElement="aa:aaa">
+    <jb:bean beanId="aaa" class="org.smooks.cartridges.javabean.dynamic.ModelBuilderTestCase$AAA" createOnElement="aa:aaa">
         <jb:value property="doubleProperty" data="aaa/value/@property1" />
         <jb:value property="intProperty" data="aaa/value/@property2" />
     </jb:bean>

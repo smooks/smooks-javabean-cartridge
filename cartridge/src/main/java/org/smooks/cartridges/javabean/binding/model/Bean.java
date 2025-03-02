@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.binding.model;
 
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.cartridges.javabean.BeanInstanceCreator;
+import org.smooks.cartridges.javabean.BeanProducer;
 import org.smooks.cartridges.javabean.BeanRuntimeInfo;
 
 import java.util.ArrayList;
@@ -57,23 +57,23 @@ import java.util.Map;
  */
 public class Bean {
 
-    protected BeanInstanceCreator creator;
+    protected BeanProducer beanProducer;
     protected String beanId;
     protected boolean cloneable = false;
     protected Bean wiredInto;
     protected List<Binding> bindings = new ArrayList<>();
 
-    public Bean(BeanInstanceCreator creator) {
-        this.creator = creator;
-        this.beanId = creator.getBeanId();
+    public Bean(BeanProducer beanProducer) {
+        this.beanProducer = beanProducer;
+        this.beanId = beanProducer.getBeanId();
     }
 
     public ResourceConfig getConfig() {
-        return creator.getConfig();
+        return beanProducer.getResourceConfig();
     }
 
-    public BeanInstanceCreator getCreator() {
-        return creator;
+    public BeanProducer getBeanProducer() {
+        return beanProducer;
     }
 
     public String getBeanId() {
@@ -120,7 +120,7 @@ public class Bean {
             throw new IllegalStateException("Illegal call to clone a Bean instance that is not cloneable.");
         }
 
-        Bean beanClone = new Bean(creator).wiredInto(parentBean);
+        Bean beanClone = new Bean(beanProducer).wiredInto(parentBean);
 
         for (Binding binding : bindings) {
             Binding bindingClone = (Binding) binding.clone();
@@ -157,11 +157,11 @@ public class Bean {
     }
 
     public Class<?> getBeanClass() {
-        return creator.getBeanRuntimeInfo().getPopulateType();
+        return beanProducer.getBeanRuntimeInfo().getPopulateType();
     }
 
     public boolean isCollection() {
-        BeanRuntimeInfo.Classification classification = creator.getBeanRuntimeInfo().getClassification();
+        BeanRuntimeInfo.Classification classification = beanProducer.getBeanRuntimeInfo().getClassification();
         return (classification == BeanRuntimeInfo.Classification.COLLECTION_COLLECTION || classification == BeanRuntimeInfo.Classification.ARRAY_COLLECTION);
     }
 

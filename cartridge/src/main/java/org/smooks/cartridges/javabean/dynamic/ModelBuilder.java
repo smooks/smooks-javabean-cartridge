@@ -53,7 +53,7 @@ import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.delivery.fragment.Fragment;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.cartridges.javabean.dynamic.visitor.NamespaceReaper;
 import org.smooks.cartridges.javabean.dynamic.visitor.UnknownElementDataReaper;
@@ -226,7 +226,7 @@ public class ModelBuilder {
         //descriptor.getSmooks().addVisitor(new UnknownElementDataReaper(), "*");
 
         final ResourceConfig globalParamsResourceConfig = new GlobalParamsResourceConfig();
-        globalParamsResourceConfig.setParameter(BeanInstancePopulator.NOTIFY_POPULATE, "true");
+        globalParamsResourceConfig.setParameter(BeanValueBinder.NOTIFY_POPULATE, "true");
         smooks.addResourceConfig(globalParamsResourceConfig);
 
         // Create the execution context so as to force resolution of the config...

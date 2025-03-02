@@ -9,8 +9,8 @@
     <xs:element name="bean" substitutionGroup="smooks:abstract-resource-config" type="jb:BeanVisitor">
         <xs:annotation>
             <xs:documentation xml:lang="en">
-                Javabean Bindings Configuration.
-                <h3>Bean Instance Creation</h3>
+                JavaBean Bindings Configuration.
+                <h3>Bean Producer</h3>
                 Instances of the class specified in the
                 "class" attribute are created and bound into
                 the bean context under the ID specified by
@@ -69,6 +69,72 @@
             </xs:choice>
         </xs:sequence>
     </xs:group>
+
+    <xs:element name="jaxb" substitutionGroup="smooks:abstract-resource-config" type="jb:JaxbBeanVisitor">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Unmarshalls the targeted event and its child events into JAXB-derived Java objects. One should exercise caution
+                as to which event is targeted since, unlike the "bean" visitor, this visitor accumulates the child
+                events into memory.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="JaxbBeanVisitor">
+        <xs:complexContent>
+            <xs:extension base="smooks:element-visitor">
+                <xs:sequence>
+                    <xs:element name="objectFactories" type="jb:ObjectFactories" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="beanId" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The ID under which the created bean is to be bound in the bean context.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="class" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The fully qualified name of the JAXB mapped class.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="retain" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Retain the bean in Smooks BeanContext after the creating fragment has been processed.
+                            <p/>
+                            Default the value is 'false'.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="createOnElement" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The selector targeting the event to be bound to the JAXB class.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ObjectFactories">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                List of factory class names that create objects from XML schema element declarations.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="objectFactory" maxOccurs="unbounded" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        A fully qualified class name of a factory that create objects from XML schema element declarations.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="BeanVisitor">
         <xs:complexContent>

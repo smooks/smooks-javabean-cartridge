@@ -67,6 +67,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "comment",
     "items"
 })
+@XmlRootElement(name = "purchaseOrder")
 public class POType {
 
     @XmlElement(required = true)

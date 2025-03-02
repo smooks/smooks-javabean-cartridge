@@ -44,6 +44,7 @@ package org.smooks.cartridges.javabean.dynamic;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.smooks.cartridges.javabean.dynamic.serialize.DefaultNamespace;
 import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -68,6 +69,52 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ModelBuilderTestCase {
 
     public static final String NS_DESCRIPTOR = "META-INF/services/org/smooks/cartridges/javabean/dynamic/ns-descriptors.properties";
+
+    @DefaultNamespace(uri = "http://www.acme.com/xsd/aaa.xsd", prefix = "aaa")
+    public static class AAA {
+
+        private Double doubleProperty;
+        private Double intProperty;
+
+        public Double getDoubleProperty() {
+            return doubleProperty;
+        }
+
+        public void setDoubleProperty(Double doubleProperty) {
+            this.doubleProperty = doubleProperty;
+        }
+
+        public Double getIntProperty() {
+            return intProperty;
+        }
+
+        public void setIntProperty(Double intProperty) {
+            this.intProperty = intProperty;
+        }
+    }
+
+    @DefaultNamespace(uri = "http://www.acme.com/xsd/bbb.xsd", prefix = "bbb")
+    public static class BBB {
+
+        private List<AAA> aaas;
+        private Float floatProperty;
+
+        public List<AAA> getAaas() {
+            return aaas;
+        }
+
+        public void setAaas(List<AAA> aaas) {
+            this.aaas = aaas;
+        }
+
+        public float getFloatProperty() {
+            return floatProperty;
+        }
+
+        public void setFloatProperty(Float floatProperty) {
+            this.floatProperty = floatProperty;
+        }
+    }
 
     @Test
     public void test_1_schema() throws SAXException, IOException {

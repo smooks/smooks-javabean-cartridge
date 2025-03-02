@@ -121,8 +121,8 @@ public class BeanRuntimeInfo {
         runtimeInfoMap.put(beanId, beanRuntimeInfo);
     }
 
-    public static BeanRuntimeInfo getBeanRuntimeInfo(String beanId, ApplicationContext appContext) {
-        Map<String, BeanRuntimeInfo> runtimeInfoMap = getRuntimeInfoMap(appContext);
+    public static BeanRuntimeInfo getBeanRuntimeInfo(String beanId, ApplicationContext applicationContext) {
+        Map<String, BeanRuntimeInfo> runtimeInfoMap = getRuntimeInfoMap(applicationContext);
 
         return runtimeInfoMap.get(beanId);
     }
@@ -203,12 +203,12 @@ public class BeanRuntimeInfo {
     }
 
     @SuppressWarnings("unchecked")
-    protected static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext appContext) {
-        Map<String, BeanRuntimeInfo> runtimeInfoMap = (Map<String, BeanRuntimeInfo>) appContext.getRegistry().lookup(CONTEXT_KEY);
+    protected static Map<String, BeanRuntimeInfo> getRuntimeInfoMap(ApplicationContext applicationContext) {
+        Map<String, BeanRuntimeInfo> runtimeInfoMap = applicationContext.getRegistry().lookup(CONTEXT_KEY);
 
         if (runtimeInfoMap == null) {
             runtimeInfoMap = new HashMap<>();
-            appContext.getRegistry().registerObject(CONTEXT_KEY, runtimeInfoMap);
+            applicationContext.getRegistry().registerObject(CONTEXT_KEY, runtimeInfoMap);
         }
 
         return runtimeInfoMap;

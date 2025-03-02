@@ -43,28 +43,28 @@
 package org.smooks.cartridges.javabean.binding.model;
 
 import org.smooks.api.resource.config.ResourceConfig;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public abstract class Binding {
 
-    protected BeanInstancePopulator populator;
+    protected BeanValueBinder beanValueBinder;
     protected Bean parentBean;
     protected String property;
 
-    public Binding(BeanInstancePopulator populator) {
-        this.populator = populator;
-        this.property = populator.getProperty();
+    public Binding(BeanValueBinder beanValueBinder) {
+        this.beanValueBinder = beanValueBinder;
+        this.property = beanValueBinder.getProperty();
     }
 
     public ResourceConfig getConfig() {
-        return populator.getConfig();
+        return beanValueBinder.getConfig();
     }
 
-    public BeanInstancePopulator getPopulator() {
-        return populator;
+    public BeanValueBinder getBeanValueBinder() {
+        return beanValueBinder;
     }
 
     public String getProperty() {

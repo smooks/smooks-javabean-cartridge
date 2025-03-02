@@ -78,12 +78,12 @@ public class BeanMapExpressionEvaluator extends MVELExpressionEvaluator implemen
         super(expression);
     }
 
-    public boolean eval(ExecutionContext context) throws ExpressionEvaluationException {
-        return (Boolean) getValue(context);
+    public boolean eval(ExecutionContext executionContext) throws ExpressionEvaluationException {
+        return (Boolean) getValue(executionContext);
     }
 
-    public Object getValue(ExecutionContext context) throws ExpressionEvaluationException {
-        Map<String, Object> beans = context.getBeanContext().getBeanMap();
+    public Object getValue(ExecutionContext executionContext) throws ExpressionEvaluationException {
+        Map<String, Object> beans = executionContext.getBeanContext().getBeanMap();
 
         Object value = exec(beans);
 

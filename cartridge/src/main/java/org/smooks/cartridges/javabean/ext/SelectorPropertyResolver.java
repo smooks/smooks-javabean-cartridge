@@ -47,7 +47,7 @@ import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
@@ -61,7 +61,7 @@ import javax.xml.namespace.QName;
  * Some binding selectors can be of the form "order/customer/@customerNumber", where the
  * last token in the selector represents an attribute on the customer element (for example).  This
  * extension visitor translates this type of selector into "order/customer" plus a new property
- * on the BeanInstancePopulator config named "valueAttributeName" containing a value of
+ * on the BeanValueBinder config named "valueAttributeName" containing a value of
  * "customerNumber".
  *
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -84,9 +84,9 @@ public class SelectorPropertyResolver implements DOMVisitBefore {
                 String valueAttributeName = valueAttributeQName.getLocalPart();
                 String valueAttributePrefix = valueAttributeQName.getPrefix();
 
-                resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, valueAttributeName);
+                resourceConfig.setParameter(BeanValueBinder.VALUE_ATTRIBUTE_NAME, valueAttributeName);
                 if (valueAttributePrefix != null && !valueAttributePrefix.trim().isEmpty()) {
-                    resourceConfig.setParameter(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
+                    resourceConfig.setParameter(BeanValueBinder.VALUE_ATTRIBUTE_PREFIX, valueAttributePrefix);
                 }
             }
         }

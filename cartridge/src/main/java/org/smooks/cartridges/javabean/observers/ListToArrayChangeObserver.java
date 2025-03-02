@@ -47,7 +47,7 @@ import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.bean.repository.BeanId;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 
 /**
  * List to array change event listener.
@@ -61,13 +61,13 @@ import org.smooks.cartridges.javabean.BeanInstancePopulator;
 public class ListToArrayChangeObserver implements BeanContextLifecycleObserver {
 
     protected String property;
-    protected BeanInstancePopulator populator;
+    protected BeanValueBinder beanValueBinder;
     protected BeanId watchedBean;
 
-    public ListToArrayChangeObserver(BeanId watchedBean, String property, BeanInstancePopulator populator) {
+    public ListToArrayChangeObserver(BeanId watchedBean, String property, BeanValueBinder beanValueBinder) {
         this.watchedBean = watchedBean;
         this.property = property;
-        this.populator = populator;
+        this.beanValueBinder = beanValueBinder;
     }
 
     /* (non-Javadoc)
@@ -78,7 +78,7 @@ public class ListToArrayChangeObserver implements BeanContextLifecycleObserver {
             ExecutionContext executionContext = event.getExecutionContext();
 
             // Set the array on the object, via the populator...
-            populator.setPropertyValue(property, event.getBean(), executionContext, event.getSource());
+            beanValueBinder.setPropertyValue(property, event.getBean(), executionContext, event.getSource());
             // Remove this observer...
             executionContext.getBeanContext().removeObserver(this);
         }

@@ -42,7 +42,7 @@
  */
 package org.smooks.cartridges.javabean.binding.model;
 
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -52,9 +52,9 @@ public class WiredBinding extends Binding {
     protected String wiredBeanId;
     protected Bean wiredBean;
 
-    public WiredBinding(BeanInstancePopulator populator) {
-        super(populator);
-        this.wiredBeanId = populator.getWireBeanId();
+    public WiredBinding(BeanValueBinder beanValueBinder) {
+        super(beanValueBinder);
+        this.wiredBeanId = beanValueBinder.getWireBeanId();
     }
 
     public String getWiredBeanId() {
@@ -71,6 +71,6 @@ public class WiredBinding extends Binding {
 
     @Override
     public Object clone() {
-        return new WiredBinding(getPopulator());
+        return new WiredBinding(getBeanValueBinder());
     }
 }
