@@ -66,7 +66,7 @@ public abstract class AbstractCachingFactoryDefinitionParser implements FactoryD
             factory = createFactory(factoryDefinition);
 
             if (factory == null) {
-                throw new NullPointerException("Null was returned by the createFactory method.");
+                throw new NullPointerException("Null was returned by the createFactory method");
             }
 
             // Make sure that we always return the same factory

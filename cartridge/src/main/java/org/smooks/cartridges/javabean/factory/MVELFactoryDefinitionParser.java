@@ -54,7 +54,7 @@ public class MVELFactoryDefinitionParser extends AbstractCachingFactoryDefinitio
 
     @Override
     protected Factory<?> createFactory(String factoryDefinition) {
-        return new MVELFactory<Object>(factoryDefinition);
+        return new MVELFactory<>(factoryDefinition);
     }
 
 }

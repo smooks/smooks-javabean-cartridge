@@ -42,19 +42,19 @@
  */
 package org.smooks.cartridges.javabean.binding.model;
 
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class DataBinding extends Binding {
 
-    public DataBinding(BeanInstancePopulator populator) {
-        super(populator);
+    public DataBinding(BeanValueBinder beanValueBinder) {
+        super(beanValueBinder);
     }
 
     @Override
     public Object clone() {
-        return new DataBinding(getPopulator());
+        return new DataBinding(getBeanValueBinder());
     }
 }

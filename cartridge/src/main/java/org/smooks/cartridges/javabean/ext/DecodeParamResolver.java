@@ -85,7 +85,7 @@ public class DecodeParamResolver implements DOMVisitBefore {
                 String reType = "_" + UUID.randomUUID();
 
                 // Need to retype the populator configuration so as to get the
-                // value binding BeanInstancePopulator to lookup the new decoder
+                // value binding BeanValueBinder to lookup the new decoder
                 // config that we're creating here...
                 populatorConfig.removeParameter("type"); // Need to remove because we only want 1
                 populatorConfig.setParameter("type", reType);

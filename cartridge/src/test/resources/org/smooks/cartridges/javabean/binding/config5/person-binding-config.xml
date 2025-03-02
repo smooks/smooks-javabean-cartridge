@@ -45,7 +45,7 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
-    <jb:bean beanId="person" class="org.smooks.cartridges.javabean.binding.config5.Person" createOnElement="/person">
+    <jb:bean beanId="person" class="org.smooks.cartridges.javabean.binding.XMLBindingTestCase$Person" createOnElement="/person">
         <jb:value property="name" data="/person/@name"/>
         <jb:value property="age" data="/person/@age"/>
     </jb:bean>

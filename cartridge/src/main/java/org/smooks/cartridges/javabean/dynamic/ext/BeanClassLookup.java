@@ -47,9 +47,12 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
+import org.smooks.cartridges.javabean.BeanProducer;
+import org.smooks.engine.resource.config.DefaultConfigSearch;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * Bean class lookup visitor.
@@ -62,6 +65,8 @@ import org.w3c.dom.Element;
  */
 public class BeanClassLookup implements DOMVisitBefore {
 
+    private static final String BEAN_CLASS_CONFIG = "beanClass";
+
     public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
         // The current config on the stack must be <dmb:writer>...
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
@@ -73,17 +78,29 @@ public class BeanClassLookup implements DOMVisitBefore {
                 throw new SmooksConfigException("One of the 'beanClass' or 'beanId' attributes must be configured on the <dmb:writer> configuration.");
             }
 
-            ResourceConfig beanCreatorConfig = BeanConfigUtil.findBeanCreatorConfig(beanId, executionContext);
+            ResourceConfig beanCreatorConfig = findBeanCreatorConfig(beanId, executionContext);
             if (beanCreatorConfig == null) {
                 throw new SmooksConfigException("Cannot find <jb:bean> configuration for beanId '" + beanId + "' for <dmb:writer>.  Reordered <dmb:writer> after <jb:bean> config.");
             }
 
-            String beanClass = beanCreatorConfig.getParameterValue(BeanConfigUtil.BEAN_CLASS_CONFIG, String.class);
+            String beanClass = beanCreatorConfig.getParameterValue(BEAN_CLASS_CONFIG, String.class);
             if (beanClass == null) {
                 throw new SmooksConfigException("Cannot create find BeanWriter for beanId '" + beanId + "'.  The associated <jb:bean> configuration does not define a bean Class name.");
             }
 
-            dmbWriterConfig.setParameter(BeanConfigUtil.BEAN_CLASS_CONFIG, beanClass);
+            dmbWriterConfig.setParameter(BEAN_CLASS_CONFIG, beanClass);
         }
     }
+
+    protected ResourceConfig findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
+        ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
+        List<ResourceConfig> breanProducerResourceConfigs = extensionContext.lookupResourceConfigs(new DefaultConfigSearch().resource(BeanProducer.class.getName()).param("beanId", beanId));
+
+        if (breanProducerResourceConfigs.size() > 1) {
+            throw new SmooksConfigException("Multiple <jb:bean> configurations exist for beanId '" + beanId + "'.  'beanId' values must be unique.");
+        }
+
+        return breanProducerResourceConfigs.get(0);
+    }
+
 }

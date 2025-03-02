@@ -48,8 +48,8 @@ import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.cartridges.javabean.BeanInstanceCreator;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanProducer;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.lookup.CustomResourceConfigSeqLookup;
 import org.smooks.engine.resource.config.GlobalParamsResourceConfig;
@@ -98,7 +98,7 @@ public class ModelSet {
 
     public Bean getModel(Class<?> beanType) {
         for (Bean model : models.values()) {
-            if (model.getCreator().getBeanRuntimeInfo().getPopulateType() == beanType) {
+            if (model.getBeanProducer().getBeanRuntimeInfo().getPopulateType() == beanType) {
                 return model;
             }
         }
@@ -123,27 +123,27 @@ public class ModelSet {
                 javaResource = null;
             }
 
-            if (javaResource instanceof BeanInstanceCreator) {
-                BeanInstanceCreator beanCreator = (BeanInstanceCreator) javaResource;
-                Bean bean = new Bean(beanCreator).setCloneable(true);
+            if (javaResource instanceof BeanProducer) {
+                BeanProducer beanProducer = (BeanProducer) javaResource;
+                Bean bean = new Bean(beanProducer).setCloneable(true);
 
                 baseBeans.put(bean.getBeanId(), bean);
 
                 if (isBindingOnlyConfig == null) {
                     isBindingOnlyConfig = true;
                 }
-            } else if (javaResource instanceof BeanInstancePopulator) {
-                BeanInstancePopulator beanPopulator = (BeanInstancePopulator) javaResource;
-                Bean bean = baseBeans.get(beanPopulator.getBeanId());
+            } else if (javaResource instanceof BeanValueBinder) {
+                BeanValueBinder beanValueBinder = (BeanValueBinder) javaResource;
+                Bean bean = baseBeans.get(beanValueBinder.getBeanId());
 
                 if (bean == null) {
                     throw new SmooksConfigException("Unexpected binding configuration exception.  Unknown parent beanId '' for binding configuration.");
                 }
 
-                if (beanPopulator.isBeanWiring()) {
-                    bean.getBindings().add(new WiredBinding(beanPopulator));
+                if (beanValueBinder.isBeanWiring()) {
+                    bean.getBindings().add(new WiredBinding(beanValueBinder));
                 } else {
-                    bean.getBindings().add(new DataBinding(beanPopulator));
+                    bean.getBindings().add(new DataBinding(beanValueBinder));
                 }
             } else if (isNonBindingResource(javaResource) && !isGlobalParamsConfig(resourceConfig)) {
                 // The user has configured something other than a bean binding config.

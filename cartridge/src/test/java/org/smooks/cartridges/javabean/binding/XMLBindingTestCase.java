@@ -44,7 +44,6 @@ package org.smooks.cartridges.javabean.binding;
 
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
-import org.smooks.cartridges.javabean.binding.config5.Person;
 import org.smooks.cartridges.javabean.binding.model.ModelSet;
 import org.smooks.cartridges.javabean.binding.ordermodel.Order;
 import org.smooks.cartridges.javabean.binding.xml.XMLBinding;
@@ -62,6 +61,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class XMLBindingTestCase {
+
+    public static class Person {
+
+        private String name;
+        private Integer age;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+    }
 
     @Test
     public void test_no_namespaces() throws IOException, SAXException {

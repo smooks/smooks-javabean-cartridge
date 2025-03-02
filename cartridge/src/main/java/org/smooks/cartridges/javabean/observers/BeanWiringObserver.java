@@ -48,7 +48,7 @@ import org.smooks.api.bean.lifecycle.BeanContextLifecycleEvent;
 import org.smooks.api.bean.lifecycle.BeanContextLifecycleObserver;
 import org.smooks.api.bean.lifecycle.BeanLifecycle;
 import org.smooks.api.bean.repository.BeanId;
-import org.smooks.cartridges.javabean.BeanInstancePopulator;
+import org.smooks.cartridges.javabean.BeanValueBinder;
 
 import java.lang.annotation.Annotation;
 
@@ -63,11 +63,11 @@ public class BeanWiringObserver implements BeanContextLifecycleObserver {
     protected Class<?> watchedBeanType;
     protected Class<? extends Annotation> watchedBeanAnnotation;
     protected BeanId watchingBeanId;
-    protected BeanInstancePopulator populator;
+    protected BeanValueBinder beanValueBinder;
 
-    public BeanWiringObserver(BeanId watchingBean, BeanInstancePopulator populator) {
+    public BeanWiringObserver(BeanId watchingBean, BeanValueBinder beanValueBinder) {
         this.watchingBeanId = watchingBean;
-        this.populator = populator;
+        this.beanValueBinder = beanValueBinder;
     }
 
     public BeanWiringObserver watchedBeanId(BeanId watchedBeanId) {
@@ -103,7 +103,7 @@ public class BeanWiringObserver implements BeanContextLifecycleObserver {
             }
 
             ExecutionContext executionContext = event.getExecutionContext();
-            populator.populateAndSetPropertyValue(bean, executionContext.getBeanContext(), watchingBeanId, executionContext, event.getSource());
+            beanValueBinder.populateAndSetPropertyValue(bean, executionContext.getBeanContext(), watchingBeanId, executionContext, event.getSource());
         } else if (beanId == watchingBeanId && lifecycle == BeanLifecycle.REMOVE) {
             BeanContext beanContext = event.getExecutionContext().getBeanContext();
 

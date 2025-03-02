@@ -44,7 +44,6 @@ package org.smooks.cartridges.javabean;
 
 import org.smooks.Smooks;
 import org.smooks.api.Registry;
-import org.smooks.api.converter.TypeConverter;
 import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.delivery.ContentHandlerBinding;
 import org.smooks.api.resource.config.ResourceConfig;
@@ -60,7 +59,12 @@ import org.smooks.engine.resource.config.DefaultResourceConfig;
 import org.smooks.support.ClassUtils;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Programmatic Bean Configurator.
@@ -153,7 +157,7 @@ public class Bean extends BindingAppender {
     protected static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = null;
 
     protected final Registry registry;
-    protected final BeanInstanceCreator beanInstanceCreator;
+    protected final BeanProducer beanProducer;
     protected final Class<?> beanClass;
     protected final String createOnElement;
     protected final List<Binding> bindings = new ArrayList<>();
@@ -222,7 +226,7 @@ public class Bean extends BindingAppender {
         this.beanClass = beanClass;
         this.createOnElement = createOnElement;
         this.registry = registry;
-        beanInstanceCreator = new BeanInstanceCreator(beanId, beanClass, factory);
+        beanProducer = new BeanProducer(beanId, beanClass, factory);
     }
 
     /**
@@ -344,15 +348,15 @@ public class Bean extends BindingAppender {
         AssertArgument.isNotNull(dataSelector, "dataSelector");
         // dataDecoder can be null
 
-        BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
+        BeanValueBinder beanValueBinder = new BeanValueBinder();
         ResourceConfig populatorResourceConfig = new DefaultResourceConfig(dataSelector, registry.lookup(new NamespaceManagerLookup()).orElse(new Properties()));
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorResourceConfig);
 
         // Configure the populator visitor...
-        beanInstancePopulator.setBeanId(getBeanId());
-        beanInstancePopulator.setValueAttributeName(populatorResourceConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
-        beanInstancePopulator.setValueAttributePrefix(populatorResourceConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, String.class));
+        beanValueBinder.setBeanId(getBeanId());
+        beanValueBinder.setValueAttributeName(populatorResourceConfig.getParameterValue(BeanValueBinder.VALUE_ATTRIBUTE_NAME, String.class));
+        beanValueBinder.setValueAttributePrefix(populatorResourceConfig.getParameterValue(BeanValueBinder.VALUE_ATTRIBUTE_PREFIX, String.class));
 
         Method bindingMethod = getBindingMethod(bindingMember, beanClass);
         if (bindingMethod != null) {
@@ -367,16 +371,16 @@ public class Bean extends BindingAppender {
             }
 
             if (bindingMethod.getName().equals(bindingMember)) {
-                beanInstancePopulator.setSetterMethod(bindingMethod.getName());
+                beanValueBinder.setSetterMethod(bindingMethod.getName());
             } else {
-                beanInstancePopulator.setProperty(bindingMember);
+                beanValueBinder.setProperty(bindingMember);
             }
         } else {
-            beanInstancePopulator.setProperty(bindingMember);
+            beanValueBinder.setProperty(bindingMember);
         }
-        beanInstancePopulator.setTypeConverterFactory(typeConverterFactory);
+        beanValueBinder.setTypeConverterFactory(typeConverterFactory);
 
-        bindings.add(new Binding(populatorResourceConfig.getSelectorPath().getSelector(), beanInstancePopulator, false));
+        bindings.add(new Binding(populatorResourceConfig.getSelectorPath().getSelector(), beanValueBinder, false));
 
         return this;
     }
@@ -398,24 +402,24 @@ public class Bean extends BindingAppender {
         AssertArgument.isNotNull(bindingMember, "bindingMember");
         AssertArgument.isNotNull(bean, "bean");
 
-        BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
+        BeanValueBinder beanValueBinder = new BeanValueBinder();
 
         // Configure the populator visitor...
-        beanInstancePopulator.setBeanId(getBeanId());
-        beanInstancePopulator.setWireBeanId(bean.getBeanId());
+        beanValueBinder.setBeanId(getBeanId());
+        beanValueBinder.setWireBeanId(bean.getBeanId());
         Method bindingMethod = getBindingMethod(bindingMember, beanClass);
 
         if (bindingMethod != null) {
             if (bindingMethod.getName().equals(bindingMember)) {
-                beanInstancePopulator.setSetterMethod(bindingMethod.getName());
+                beanValueBinder.setSetterMethod(bindingMethod.getName());
             } else {
-                beanInstancePopulator.setProperty(bindingMember);
+                beanValueBinder.setProperty(bindingMember);
             }
         } else {
-            beanInstancePopulator.setProperty(bindingMember);
+            beanValueBinder.setProperty(bindingMember);
         }
 
-        bindings.add(new Binding(createOnElement, beanInstancePopulator, false));
+        bindings.add(new Binding(createOnElement, beanValueBinder, false));
         wirings.add(bean);
 
         return this;
@@ -438,13 +442,13 @@ public class Bean extends BindingAppender {
         assertNotProcessed();
         AssertArgument.isNotNull(bean, "bean");
 
-        BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
+        BeanValueBinder beanValueBinder = new BeanValueBinder();
 
         // Configure the populator visitor...
-        beanInstancePopulator.setBeanId(getBeanId());
-        beanInstancePopulator.setWireBeanId(bean.getBeanId());
+        beanValueBinder.setBeanId(getBeanId());
+        beanValueBinder.setWireBeanId(bean.getBeanId());
 
-        bindings.add(new Binding(createOnElement, beanInstancePopulator, true));
+        bindings.add(new Binding(createOnElement, beanValueBinder, true));
         wirings.add(bean);
 
         return this;
@@ -476,18 +480,18 @@ public class Bean extends BindingAppender {
         AssertArgument.isNotNull(dataSelector, "dataSelector");
         // dataDecoder can be null
 
-        BeanInstancePopulator beanInstancePopulator = new BeanInstancePopulator();
+        BeanValueBinder beanValueBinder = new BeanValueBinder();
         ResourceConfig populatorResourceConfig = new DefaultResourceConfig(dataSelector, new Properties());
 
         SelectorPropertyResolver.resolveSelectorTokens(populatorResourceConfig);
 
         // Configure the populator visitor...
-        beanInstancePopulator.setBeanId(getBeanId());
-        beanInstancePopulator.setValueAttributeName(populatorResourceConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_NAME, String.class));
-        beanInstancePopulator.setValueAttributePrefix(populatorResourceConfig.getParameterValue(BeanInstancePopulator.VALUE_ATTRIBUTE_PREFIX, String.class));
-        beanInstancePopulator.setTypeConverterFactory(typeConverterFactory);
+        beanValueBinder.setBeanId(getBeanId());
+        beanValueBinder.setValueAttributeName(populatorResourceConfig.getParameterValue(BeanValueBinder.VALUE_ATTRIBUTE_NAME, String.class));
+        beanValueBinder.setValueAttributePrefix(populatorResourceConfig.getParameterValue(BeanValueBinder.VALUE_ATTRIBUTE_PREFIX, String.class));
+        beanValueBinder.setTypeConverterFactory(typeConverterFactory);
 
-        bindings.add(new Binding(populatorResourceConfig.getSelectorPath().getSelector(), beanInstancePopulator, true));
+        bindings.add(new Binding(populatorResourceConfig.getSelectorPath().getSelector(), beanValueBinder, true));
 
         return this;
     }
@@ -509,7 +513,7 @@ public class Bean extends BindingAppender {
 
         List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
         // Add the create bean visitor...
-        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanInstanceCreator, createOnElement, registry);
+        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanProducer, createOnElement, registry);
         ResourceConfig beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getResourceConfig();
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanId", getBeanId());
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());
@@ -523,9 +527,9 @@ public class Bean extends BindingAppender {
 
         // Add the populate bean visitors...
         for (Binding binding : bindings) {
-            ContentHandlerBinding<Visitor> beanInstancePopulatorBinding = new DefaultContentHandlerBinding<>(binding.beanInstancePopulator, binding.selector, registry);
-            beanInstancePopulatorBinding.getResourceConfig().setParameter("beanId", getBeanId());
-            visitorBindings.add(beanInstancePopulatorBinding);
+            ContentHandlerBinding<Visitor> beanValueBinderContentHandlerBinding = new DefaultContentHandlerBinding<>(binding.valueBinder, binding.selector, registry);
+            beanValueBinderContentHandlerBinding.getResourceConfig().setParameter("beanId", getBeanId());
+            visitorBindings.add(beanValueBinderContentHandlerBinding);
             if (binding.assertTargetIsCollection) {
                 assertBeanClassIsCollection();
             }
@@ -567,7 +571,7 @@ public class Bean extends BindingAppender {
      * Assert that the beanClass associated with this configuration is an array or Collection.
      */
     protected void assertBeanClassIsCollection() {
-        BeanRuntimeInfo beanRuntimeInfo = beanInstanceCreator.getBeanRuntimeInfo();
+        BeanRuntimeInfo beanRuntimeInfo = beanProducer.getBeanRuntimeInfo();
 
         if (beanRuntimeInfo.getClassification() != BeanRuntimeInfo.Classification.COLLECTION_COLLECTION && beanRuntimeInfo.getClassification() != BeanRuntimeInfo.Classification.ARRAY_COLLECTION) {
             throw new IllegalArgumentException("Invalid call to a Collection/array Bean.bindTo method for a non Collection/Array target.  Binding target type '" + beanRuntimeInfo.getPopulateType().getName() + "' (beanId '" + getBeanId() + "').  Use one of the Bean.bindTo methods that specify a 'bindingMember' argument.");
@@ -582,12 +586,12 @@ public class Bean extends BindingAppender {
 
     protected static class Binding {
         protected final String selector;
-        protected final BeanInstancePopulator beanInstancePopulator;
+        protected final BeanValueBinder valueBinder;
         protected final boolean assertTargetIsCollection;
 
-        protected Binding(String selector, BeanInstancePopulator beanInstancePopulator, boolean assertTargetIsCollection) {
+        protected Binding(String selector, BeanValueBinder valueBinder, boolean assertTargetIsCollection) {
             this.selector = selector;
-            this.beanInstancePopulator = beanInstancePopulator;
+            this.valueBinder = valueBinder;
             this.assertTargetIsCollection = assertTargetIsCollection;
         }
     }

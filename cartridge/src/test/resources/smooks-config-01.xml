@@ -45,7 +45,7 @@
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd">
 
     <resource-config selector="a">
-        <resource>org.smooks.cartridges.javabean.DOMVisitor</resource>
+        <resource>org.smooks.cartridges.javabean.BeanMapExpressionEvaluatorTestCase$DOMVisitor</resource>
         <condition evaluator="org.smooks.cartridges.javabean.BeanMapExpressionEvaluator">
             <!--
             !aBean.containsKey("a") || aBean.a == "hello"

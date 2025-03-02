@@ -479,7 +479,7 @@ Note that if mappings are required, you must also explicitly specify the enumera
 
 ==== Bean Retention
 
-By default, all but the first bean configured in the Smooks configuration are removed from the BeanContext after the fragment that created the bean (createOnElement) is processed i.e. the bean is added to the BeanContext on the start/visitBefore of the createOnElement fragment, and is removed from the BeanContext at the end/visitAfter. By default, this rule applies to all but the first bean configured in the Smooks configuration i.e. *by default, the first bean is the only bean that is retained* in the BeanContext, and so can be accessed after the message has been processed.
+By default, all but the first bean configured in the Smooks configuration are removed from the BeanContext after the fragment that created the bean (createOnElement) is processed i.e. the bean is added to the BeanContext on the start/visitBefore of the createOnElement fragment, and is removed from the bean context at the end/visitAfter. By default, this rule applies to all but the first bean configured in the Smooks configuration i.e. *by default, the first bean is the only bean that is retained* in the BeanContext, and so can be accessed after the message has been processed.
 
 To change this default behavior, use the *retain* configuration attribute on the `+<jb:bean>+` element. This attribute allows you to manually control bean retention within the Smooks BeanContext.
 
@@ -744,9 +744,7 @@ This can be achieved using Expression Based Bindings (<jb:expression>).
 
 ==== Direct Value Binding
 
-As of Smooks 1.3 the JavaBean Cartridge has an new feature called direct value binding. Direct value binding uses the Smooks DataDecoder to create an Object from a selected data element/attribute and add it directly to the bean context.
-
-The *ValueBinder* class is the visitor that does the value binding.
+Direct value binding uses the Smooks `TypeConverter` to create an object from a selected data element/attribute and add it directly to the bean context. The `org.smooks.cartridges.javabean.ValueBinder` class is the visitor binding the value.
 
 ===== Configuration
 
@@ -1067,7 +1065,7 @@ The following is an example of a generated configuration. Note the `+$TODO$+` to
 
 Users should note that there is *no guarantee* as to the exact contents of a link:https://www.smooks.org/javadoc/v2.0.0/smooks/org/smooks/io/JavaSink.html[JavaSink] instance after calling the Smooks.filterSource method. After calling this method, the JavaSink instance will contain the final contents of the bean context, which can be added to by any visitor.
 
-You can restrict the Bean set returned in a JavaSink by using a `+<jb:result>+` configuration in the Smooks configuration. In the following example configuration, we tell Smooks to only retain the  "order" bean in the ResultSet:
+You can restrict the Bean set returned in a `JavaSink` by using a `<jb:result>` configuration in the Smooks configuration. In the following example configuration, we tell Smooks to only retain the  "order" bean in the ResultSet:
 
 [source,xml]
 ----

@@ -45,8 +45,11 @@ package org.smooks.cartridges.javabean;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
+import org.smooks.api.SmooksException;
 import org.smooks.api.expression.ExpressionEvaluationException;
+import org.smooks.api.resource.visitor.dom.DOMElementVisitor;
 import org.smooks.io.source.ReaderSource;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -62,6 +65,18 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class BeanMapExpressionEvaluatorTestCase {
+
+    public static class DOMVisitor implements DOMElementVisitor {
+
+        public static boolean visited = false;
+
+        public void visitBefore(Element element, ExecutionContext executionContext) throws SmooksException {
+        }
+
+        public void visitAfter(Element element, ExecutionContext executionContext) throws SmooksException {
+            visited = true;
+        }
+    }
 
 	@Test
     public void test() throws IOException, SAXException {

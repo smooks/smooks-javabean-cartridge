@@ -47,7 +47,6 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.delivery.ContentHandler;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
-import org.smooks.cartridges.javabean.ext.BeanConfigUtil;
 import org.smooks.engine.injector.Scope;
 import org.smooks.engine.lifecycle.PostConstructLifecyclePhase;
 import org.smooks.engine.lookup.LifecycleManagerLookup;
@@ -74,7 +73,7 @@ public class BeanWriterFactory implements ContentHandler {
     @Named("class")
     protected Class<? extends BeanWriter> beanWriterClass;
     @Inject
-    @Named(BeanConfigUtil.BEAN_CLASS_CONFIG)
+    @Named("beanClass")
     protected Class<?> beanClass;
     @Inject
     protected ResourceConfig resourceConfig;
