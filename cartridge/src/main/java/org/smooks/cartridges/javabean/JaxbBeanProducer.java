@@ -99,7 +99,7 @@ public class JaxbBeanProducer extends AbstractBeanProducer implements Parameteri
     }
 
     @Override
-    public void doPostConstruct() throws SmooksConfigException {
+    public void doPostConstruct() {
         List<Class<?>> classesToBeBound = objectFactories.stream().map(of -> {
             try {
                 return Class.forName(of, true, applicationContext.getClassLoader());

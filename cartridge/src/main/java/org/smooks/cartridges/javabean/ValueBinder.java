@@ -256,7 +256,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
      * @throws SmooksConfigException Incorrectly configured resource.
      */
     @PostConstruct
-    public void postConstruct() throws SmooksConfigException {
+    public void postConstruct() {
         isAttribute = valueAttributeName.isPresent();
 
         beanId = applicationContext.getBeanIdStore().register(beanIdName);

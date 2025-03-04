@@ -24,7 +24,7 @@
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
- 
+
     <scm>
         <connection>scm:git:git@github.com:smooks/smooks-javabean-cartridge.git</connection>
         <developerConnection>scm:git:git@github.com:smooks/smooks-javabean-cartridge.git</developerConnection>
@@ -37,7 +37,7 @@
             <email>smooks-dev@googlegroups.com</email>
         </developer>
     </developers>
-         
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.skip>true</gpg.skip>
@@ -235,6 +235,12 @@
             <artifactId>xmlunit-core</artifactId>
             <version>2.10.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.xml.bind</groupId>
+                    <artifactId>jakarta.xml.bind-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
