@@ -286,7 +286,7 @@ public class BeanBindingFunctionalTestCase {
         ExecutionContext execContext = smooks.createExecutionContext();
 
         //execContext.setEventListener(new HtmlReportGenerator("/target/report.html"));
-        smooks.filterSource(execContext, new StreamSource(getInput("order-01.xml")), sink);
+        smooks.filterSource(execContext, new StreamSource<>(getInput("order-01.xml")), sink);
 
         ExtendedOrder order = (ExtendedOrder) sink.getBean("order");
 

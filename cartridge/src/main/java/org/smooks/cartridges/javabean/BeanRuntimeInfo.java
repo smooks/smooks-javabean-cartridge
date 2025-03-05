@@ -224,7 +224,7 @@ public class BeanRuntimeInfo {
         // Check the annotations and see if one of them is the XmlType annotation.  Can't use
         // a type check because XmlType is not in Java5, so need to do a physical name check...
         for (Annotation anno : populateType.getAnnotations()) {
-            isJAXBType = anno.annotationType().getName().equals("javax.xml.bind.annotation.XmlType");
+            isJAXBType = anno.annotationType().getName().equals("jakarta.xml.bind.annotation.XmlType");
             if (isJAXBType) {
                 break;
             }

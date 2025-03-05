@@ -42,6 +42,9 @@
  */
 package org.smooks.cartridges.javabean;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
@@ -58,9 +61,6 @@ import org.smooks.engine.memento.VisitorMemento;
 import org.w3c.dom.Element;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

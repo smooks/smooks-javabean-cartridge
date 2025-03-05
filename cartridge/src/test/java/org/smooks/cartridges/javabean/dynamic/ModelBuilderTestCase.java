@@ -51,8 +51,6 @@ import org.xml.sax.SAXParseException;
 import org.xmlunit.builder.DiffBuilder;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;

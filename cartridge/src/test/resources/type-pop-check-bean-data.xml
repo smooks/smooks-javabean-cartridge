@@ -114,7 +114,7 @@
         <doubleVal>4</doubleVal>
         <charVal>a</charVal>
         <integerVal>5</integerVal>
-        <dateVal>Wed Nov 15 13:45:28 EST 2006</dateVal>
+        <dateVal>Wed Nov 15 13:45:28 America/New_York 2006</dateVal>
         <intValArray>
             <intVal>6</intVal>
             <intVal>7</intVal>
