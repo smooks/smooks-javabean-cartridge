@@ -159,7 +159,7 @@ public class Bean extends BindingAppender {
     protected final Registry registry;
     protected final BeanProducer beanProducer;
     protected final Class<?> beanClass;
-    protected final String createOnElement;
+    protected final String createOn;
     protected final List<Binding> bindings = new ArrayList<>();
     protected final List<Bean> wirings = new ArrayList<>();
 
@@ -196,10 +196,10 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param beanId          The bean ID.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      */
-    public Bean(Class<?> beanClass, String beanId, String createOnElement, Registry registry) {
-        this(beanClass, beanId, createOnElement, null, registry);
+    public Bean(Class<?> beanClass, String beanId, String createOn, Registry registry) {
+        this(beanClass, beanId, createOn, null, registry);
     }
 
     /**
@@ -207,13 +207,13 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param beanId          The bean ID.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      * @param factory         The factory that will create the runtime object
      */
-    public <T> Bean(Class<T> beanClass, String beanId, String createOnElement, Factory<? extends T> factory, Registry registry) {
+    public <T> Bean(Class<T> beanClass, String beanId, String createOn, Factory<? extends T> factory, Registry registry) {
         super(beanId);
         AssertArgument.isNotNull(beanClass, "beanClass");
-        AssertArgument.isNotNull(createOnElement, "createOnElement");
+        AssertArgument.isNotNull(createOn, "createOn");
 
         if (TYPE_CONVERTER_FACTORIES == null) {
             synchronized (Bean.class) {
@@ -224,7 +224,7 @@ public class Bean extends BindingAppender {
         }
 
         this.beanClass = beanClass;
-        this.createOnElement = createOnElement;
+        this.createOn = createOn;
         this.registry = registry;
         beanProducer = new BeanProducer(beanId, beanClass, factory);
     }
@@ -234,10 +234,10 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param beanId          The bean ID.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      */
-    public static Bean newBean(Class<?> beanClass, String beanId, String createOnElement, Registry registry) {
-        return new Bean(beanClass, beanId, createOnElement, registry);
+    public static Bean newBean(Class<?> beanClass, String beanId, String createOn, Registry registry) {
+        return new Bean(beanClass, beanId, createOn, registry);
     }
 
 
@@ -246,11 +246,11 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param beanId          The bean ID.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      * @param factory         The factory that will create the runtime object
      */
-    public static <T> Bean newBean(Class<T> beanClass, String beanId, String createOnElement, Factory<T> factory, Registry registry) {
-        return new Bean(beanClass, beanId, createOnElement, factory, registry);
+    public static <T> Bean newBean(Class<T> beanClass, String beanId, String createOn, Factory<T> factory, Registry registry) {
+        return new Bean(beanClass, beanId, createOn, factory, registry);
     }
 
     /**
@@ -260,12 +260,12 @@ public class Bean extends BindingAppender {
      * supplied in the constructor.  The beanId is generated.
      *
      * @param beanClass       The bean runtime class.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      * @return <code>this</code> Bean configuration instance.
      */
-    public Bean newBean(Class<?> beanClass, String createOnElement) {
+    public Bean newBean(Class<?> beanClass, String createOn) {
         String randomBeanId = UUID.randomUUID().toString();
-        return new Bean(beanClass, randomBeanId, createOnElement, registry);
+        return new Bean(beanClass, randomBeanId, createOn, registry);
     }
 
     /**
@@ -275,12 +275,12 @@ public class Bean extends BindingAppender {
      * supplied in the constructor.  The beanId is generated.
      *
      * @param beanClass       The bean runtime class.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      * @param factory         The factory that will create the runtime object
      * @return <code>this</code> Bean configuration instance.
      */
-    public <T> Bean newBean(Class<T> beanClass, String createOnElement, Factory<T> factory) {
-        return new Bean(beanClass, UUID.randomUUID().toString(), createOnElement, factory, registry);
+    public <T> Bean newBean(Class<T> beanClass, String createOn, Factory<T> factory) {
+        return new Bean(beanClass, UUID.randomUUID().toString(), createOn, factory, registry);
     }
 
     /**
@@ -291,11 +291,11 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param beanId          The beanId.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      * @return <code>this</code> Bean configuration instance.
      */
-    public Bean newBean(Class<?> beanClass, String beanId, String createOnElement) {
-        return new Bean(beanClass, beanId, createOnElement, registry);
+    public Bean newBean(Class<?> beanClass, String beanId, String createOn) {
+        return new Bean(beanClass, beanId, createOn, registry);
     }
 
     /**
@@ -306,12 +306,12 @@ public class Bean extends BindingAppender {
      *
      * @param beanClass       The bean runtime class.
      * @param beanId          The beanId.
-     * @param createOnElement The element selector used to create the bean instance.
+     * @param createOn The element selector used to create the bean instance.
      * @param factory         The factory that will create the runtime object
      * @return <code>this</code> Bean configuration instance.
      */
-    public <T> Bean newBean(Class<T> beanClass, String beanId, String createOnElement, Factory<T> factory) {
-        return new Bean(beanClass, beanId, createOnElement, factory, registry);
+    public <T> Bean newBean(Class<T> beanClass, String beanId, String createOn, Factory<T> factory) {
+        return new Bean(beanClass, beanId, createOn, factory, registry);
     }
 
 
@@ -419,7 +419,7 @@ public class Bean extends BindingAppender {
             beanValueBinder.setProperty(bindingMember);
         }
 
-        bindings.add(new Binding(createOnElement, beanValueBinder, false));
+        bindings.add(new Binding(createOn, beanValueBinder, false));
         wirings.add(bean);
 
         return this;
@@ -448,7 +448,7 @@ public class Bean extends BindingAppender {
         beanValueBinder.setBeanId(getBeanId());
         beanValueBinder.setWireBeanId(bean.getBeanId());
 
-        bindings.add(new Binding(createOnElement, beanValueBinder, true));
+        bindings.add(new Binding(createOn, beanValueBinder, true));
         wirings.add(bean);
 
         return this;
@@ -513,7 +513,7 @@ public class Bean extends BindingAppender {
 
         List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
         // Add the create bean visitor...
-        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanProducer, createOnElement, registry);
+        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanProducer, createOn, registry);
         ResourceConfig beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getResourceConfig();
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanId", getBeanId());
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());

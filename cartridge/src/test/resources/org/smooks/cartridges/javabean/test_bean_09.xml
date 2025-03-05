@@ -42,19 +42,19 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
 	<profiles>
 		<profile base-profile="A" />
 		<profile base-profile="B" />
 	</profiles>
 
-    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOnElement="order" targetProfile="A">
-        <jb:expression property="total" execOnElement="order-item" >1.0 + 1.0</jb:expression>
+    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOn="order" targetProfile="A">
+        <jb:expression property="total" executeOn="order-item" >1.0 + 1.0</jb:expression>
     </jb:bean>
 
-	<jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOnElement="order" targetProfile="B" retain="true">
-        <jb:expression property="total" execOnElement="order-item" >2.0 + 2.0</jb:expression>
+	<jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOn="order" targetProfile="B" retain="true">
+        <jb:expression property="total" executeOn="order-item" >2.0 + 2.0</jb:expression>
     </jb:bean>
 
 

@@ -43,9 +43,9 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-	<jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOnElement="price">
+	<jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOn="price">
 		<jb:value property="price" data="price" decoder="Double">
 			<jb:decodeParam name="valuePreprocess">value.replace("'", "").replace(",", ".")</jb:decodeParam>
 		</jb:value>

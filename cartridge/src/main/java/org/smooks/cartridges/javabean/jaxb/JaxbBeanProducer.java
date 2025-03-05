@@ -40,7 +40,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cartridges.javabean;
+package org.smooks.cartridges.javabean.jaxb;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -55,6 +55,7 @@ import org.smooks.api.resource.visitor.VisitAfterReport;
 import org.smooks.api.resource.visitor.VisitBeforeReport;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cartridges.javabean.AbstractBeanProducer;
 import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.VisitorMemento;

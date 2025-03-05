@@ -43,14 +43,14 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
     <!--
     Create an "example.beans.Order" bean instance when we visit the start of the <order> element.
     Assign the new bean instance to the beanId of "order".
     Wire in the "header" and "orderItems" beans.
     -->
-    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.binding.ordermodel.Order" createOnElement="/order">
+    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.binding.ordermodel.Order" createOn="/order">
         <jb:wiring property="header" beanIdRef="header" />
         <jb:wiring property="orderItems" beanIdRef="orderItems" />
     </jb:bean>
@@ -59,7 +59,7 @@
     Create an ArrayList bean instance when we visit the start of the <order> element.
     This bean is wired into the "order" bean.
     -->
-    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="/order">
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOn="/order">
         <jb:wiring beanIdRef="orderItem" />
     </jb:bean>
 
@@ -67,7 +67,7 @@
     Create an "example.beans.Header" bean instance when we visit the start of the <header> element.
     This bean is wired into the "order" bean.
     -->
-    <jb:bean beanId="header" class="org.smooks.cartridges.javabean.binding.ordermodel.Header" createOnElement="/order/header">
+    <jb:bean beanId="header" class="org.smooks.cartridges.javabean.binding.ordermodel.Header" createOn="/order/header">
         <jb:value property="date" decoder="Date" data="/order/header/date">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
@@ -81,7 +81,7 @@
     Create an "example.beans.OrderItem" bean instance when we visit the start of the <order-item> element.
     This bean is wired into the "orderItems" ArrayList bean.
     -->
-    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.binding.ordermodel.OrderItem" createOnElement="/order/order-items/order-item">
+    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.binding.ordermodel.OrderItem" createOn="/order/order-items/order-item">
         <jb:value property="productId" decoder="Long" data="/order/order-items/order-item/product" />
         <jb:value property="quantity" decoder="Integer" data="/order/order-items/order-item/quantity" />
         <jb:value property="price" decoder="Double" data="/order/order-items/order-item/price" />

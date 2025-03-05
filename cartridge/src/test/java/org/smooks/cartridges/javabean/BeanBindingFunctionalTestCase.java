@@ -298,15 +298,15 @@ public class BeanBindingFunctionalTestCase {
     }
 
     @Test
-    public void test_error_for_no_wireOnElement() throws IOException, SAXException {
+    public void test_error_for_no_wireOn() throws IOException, SAXException {
         try {
             new Smooks(getClass().getResourceAsStream("test_bean_06.xml"));
             fail("Expected SmooksException");
         } catch (SmooksException e) {
-            assertEquals("The bindings attribute 'createOnElement' and wiring attribute 'wireOnElement' are both not set. " +
+            assertEquals("The bindings attribute 'createOn' and wiring attribute 'wireOn' are both not set. " +
                     "One of them must at least be set. If the result of this binding should be a new populated Object then " +
-                    "you need to set the 'createOnElement' bindings attribute. If you want to update an existing object in " +
-                    "the bean context then you must set the 'wireOnElement' attribute.", e.getMessage());
+                    "you need to set the 'createOn' bindings attribute. If you want to update an existing object in " +
+                    "the bean context then you must set the 'wireOn' attribute.", e.getMessage());
         }
     }
 

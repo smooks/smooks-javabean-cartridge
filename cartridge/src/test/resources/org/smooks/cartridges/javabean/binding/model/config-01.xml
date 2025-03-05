@@ -44,14 +44,14 @@
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
                       xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
-                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
     
     <core:namespaces>
         <core:namespace prefix="ord" uri="http://order"/>
         <core:namespace prefix="ordi" uri="http://orderItem"/>
     </core:namespaces>
 
-    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.binding.ordermodel.OrderItem" createOnElement="/ordi:order-item">
+    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.binding.ordermodel.OrderItem" createOn="/ordi:order-item">
         <jb:value property="productId" data="#/ordi:product"/>
         <jb:value property="quantity" data="#/ordi:quantity"/>
         <jb:value property="price" data="#/ordi:price"/>

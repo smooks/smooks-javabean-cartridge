@@ -42,17 +42,17 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="root" class="java.util.ArrayList" createOnElement="root">
+    <jb:bean beanId="root" class="java.util.ArrayList" createOn="root">
         <jb:wiring beanIdRef="a"/>
     </jb:bean>
 
-    <jb:bean beanId="a" class="java.util.ArrayList" createOnElement="a" extendLifecycle="true" retain="true">
+    <jb:bean beanId="a" class="java.util.ArrayList" createOn="a" extendLifecycle="true" retain="true">
     	<jb:wiring beanIdRef="b"/>
 	</jb:bean>
 
-	<jb:bean beanId="b" class="org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$B" createOnElement="b">
+	<jb:bean beanId="b" class="org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$B" createOn="b">
 		<jb:value property="value" data="b" />
 	</jb:bean>
 

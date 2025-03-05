@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:smooks="https://www.smooks.org/xsd/smooks-2.0.xsd"
-           xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
-           targetNamespace="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd" elementFormDefault="qualified">
+           xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd"
+           targetNamespace="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd" elementFormDefault="qualified">
     <xs:import namespace="https://www.smooks.org/xsd/smooks-2.0.xsd"/>
     <xs:annotation>
         <xs:documentation xml:lang="en">Smooks Java Binding Configuration</xs:documentation>
@@ -16,7 +16,7 @@
                 the bean context under the ID specified by
                 the "beanId" attribute. The bean instance is
                 created (and bound) when the element event
-                specified in the "createOnElement" attribute
+                specified in the "createOn" attribute
                 is encountered in the Source data event
                 stream.
                 <h3>Bean Property/Member Population</h3>
@@ -70,7 +70,7 @@
         </xs:sequence>
     </xs:group>
 
-    <xs:element name="jaxb" substitutionGroup="smooks:abstract-resource-config" type="jb:JaxbBeanVisitor">
+    <xs:element name="jaxb-unmarshaller" substitutionGroup="smooks:abstract-resource-config" type="jb:JaxbBeanVisitor">
         <xs:annotation>
             <xs:documentation xml:lang="en">
                 Unmarshalls the targeted event and its child events into JAXB-derived Java objects. One should exercise caution
@@ -108,10 +108,36 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="createOnElement" type="xs:string">
+                <xs:attribute name="createOn" type="xs:string">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
                             The selector targeting the event to be bound to the JAXB class.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="jaxb-marshaller" substitutionGroup="smooks:abstract-reader" type="jb:JaxbBeanReader">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Unmarshalls the targeted event and its child events into JAXB-derived Java objects. One should exercise caution
+                as to which event is targeted since, unlike the "bean" visitor, this visitor accumulates the child
+                events into memory.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="JaxbBeanReader">
+        <xs:complexContent>
+            <xs:extension base="smooks:abstract-reader">
+                <xs:sequence>
+                    <xs:element name="objectFactories" type="jb:ObjectFactories" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="class" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            The fully qualified name of the JAXB mapped class.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
@@ -162,7 +188,7 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="createOnElement" type="xs:string">
+                <xs:attribute name="createOn" type="xs:string">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
                             The Source data event stream element
@@ -185,7 +211,7 @@
                             bean context under the specified
                             "beanId".
                             <p/>
-                            If the createOnElement is not set then
+                            If the createOn is not set then
                             no bean will be created. The existing
                             bean in the bean context will be used to
                             do the value binding, expression binding
@@ -328,7 +354,7 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="wireOnElement" type="xs:string">
+        <xs:attribute name="wireOn" type="xs:string">
             <xs:annotation>
                 <xs:documentation xml:lang="en">
                     The Source data event stream element event to
@@ -370,7 +396,7 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="execOnElement" type="xs:string">
+                <xs:attribute name="executeOn" type="xs:string">
                     <xs:annotation>
                         <xs:documentation xml:lang="en">
                             The Source data event stream element event to use to control the execution of the expression

@@ -45,7 +45,7 @@
 <smooks-resource-list
 	xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
 	xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd"
-	xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+	xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
 	<core:namespaces>
 		<core:namespace prefix="y" uri="http://y" />
@@ -53,17 +53,17 @@
 	</core:namespaces>
 
     <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder">
-        <jb:wiring property="header" beanIdRef="headerBean" wireOnElement="order" />
-        <jb:wiring property="orderItems" beanIdRef="orderItemList" wireOnElement="order" />
-        <jb:wiring property="orderItems" beanIdRef="orderItemArray" wireOnElement="order" />
+        <jb:wiring property="header" beanIdRef="headerBean" wireOn="order" />
+        <jb:wiring property="orderItems" beanIdRef="orderItemList" wireOn="order" />
+        <jb:wiring property="orderItems" beanIdRef="orderItemArray" wireOn="order" />
         <!-- Sum the order item totals into the order total as we pass each order-item -->
-        <jb:expression property="total" execOnElement="order-item" >
+        <jb:expression property="total" executeOn="order-item" >
             order.total + (orderItem.price * orderItem.quantity);
         </jb:expression>
     </jb:bean>
 
     <jb:bean beanId="headerBean" class="org.smooks.cartridges.javabean.Header">
-        <jb:wiring property="order" beanIdRef="order" wireOnElement="order" />
+        <jb:wiring property="order" beanIdRef="order" wireOn="order" />
         <jb:value property="date" data="x:header/y:date" decoder="Date">
             <jb:decodeParam name="format">EEE MMM dd HH:mm:ss z yyyy</jb:decodeParam>
             <jb:decodeParam name="locale-language">en</jb:decodeParam>
@@ -74,15 +74,15 @@
         <jb:value property="privatePerson" data="header/privatePerson" decoder="Boolean" default="true" />
     </jb:bean>
 
-    <jb:bean beanId="headerBeanHash" class="java.util.HashMap" createOnElement="x:header">
+    <jb:bean beanId="headerBeanHash" class="java.util.HashMap" createOn="x:header">
         <jb:value data="header/*" />
     </jb:bean>
 
     <jb:bean beanId="orderItemList" class="java.util.ArrayList">
-        <jb:wiring beanIdRef="orderItem" wireOnElement="order" />
+        <jb:wiring beanIdRef="orderItem" wireOn="order" />
     </jb:bean>
 
-    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOnElement="order-item">
+    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOn="order-item">
         <jb:wiring property="order" beanIdRef="order" />
         <jb:value property="productId" data="order-item/product" decoder="Long" />
         <jb:value property="quantity" data="order-item/quantity" decoder="Integer" />

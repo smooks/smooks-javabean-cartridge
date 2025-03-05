@@ -45,7 +45,10 @@ package org.smooks.cartridges.javabean;
 import org.junit.jupiter.api.Test;
 import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
+import org.smooks.cartridges.javabean.jaxb.model.Items;
 import org.smooks.cartridges.javabean.jaxb.model.POType;
+import org.smooks.cartridges.javabean.jaxb.model.USAddress;
+import org.smooks.cartridges.javabean.jaxb.model.USState;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.io.sink.StringSink;
 import org.smooks.io.source.JavaSource;
@@ -55,9 +58,17 @@ import org.smooks.support.StreamUtils;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -325,8 +336,8 @@ public class FunctionalTestCase {
     }
 
     @Test
-    public void testJaxbBinding() throws IOException, SAXException {
-        Smooks smooks = new Smooks(getClass().getResourceAsStream("jaxb-config.xml"));
+    public void testJaxbUnmarshaller() throws IOException, SAXException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("jaxb-unmarshaller-config.xml"));
 
         JavaSink javaSink = new JavaSink();
         smooks.filterSource(new StringSource(StreamUtils.readStreamAsString(getClass().getResourceAsStream("jaxb/po.xml"), "UTF-8")), javaSink);
@@ -337,5 +348,72 @@ public class FunctionalTestCase {
         assertEquals("8 Oak Avenue", poType.getBillTo().getStreet());
         assertEquals(3, poType.getItems().getItem().size());
         assertEquals("The Mummy (1959)", poType.getItems().getItem().get(1).getProductName());
+    }
+
+    @Test
+    public void testJaxbMarshaller() throws IOException, SAXException, DatatypeConfigurationException {
+        Smooks smooks = new Smooks(getClass().getResourceAsStream("jaxb-marshaller-config.xml"));
+
+        StringSink stringSink = new StringSink();
+
+        USAddress shipTo = new USAddress();
+        shipTo.setToName("Alice Smith");
+        shipTo.setStreet("123 Maple Street");
+        shipTo.setCity("Cambridge");
+        shipTo.setState(USState.MA);
+        shipTo.setZipCode(12345);
+        shipTo.setCountry("US");
+
+        USAddress billTo = new USAddress();
+        billTo.setToName("Robert Smith");
+        billTo.setStreet("8 Oak Avenue");
+        billTo.setCity("Cambridge");
+        billTo.setState(USState.MA);
+        billTo.setZipCode(12345);
+        billTo.setCountry("US");
+
+        Items.Item nosferatu = new Items.Item();
+        nosferatu.setProductName("Nosferatu - Special Edition (1929)");
+        nosferatu.setQuantity((short) 5);
+        nosferatu.setPrice(BigDecimal.valueOf(19.99));
+        nosferatu.setPartNumber("242-NO");
+
+        Items.Item theMummy = new Items.Item();
+        theMummy.setProductName("The Mummy (1959)");
+        theMummy.setQuantity((short) 3);
+        theMummy.setPrice(BigDecimal.valueOf(19.98));
+        theMummy.setPartNumber("242-MU");
+
+        Items.Item godzillaAndMothra = new Items.Item();
+        godzillaAndMothra.setProductName("Godzilla and Mothra: Battle for Earth/Godzilla vs. King Ghidora");
+        godzillaAndMothra.setQuantity((short) 3);
+        godzillaAndMothra.setPrice(BigDecimal.valueOf(27.95));
+        godzillaAndMothra.setPartNumber("242-GZ");
+
+        Items items = new Items();
+        items.getItem().add(nosferatu);
+        items.getItem().add(theMummy);
+        items.getItem().add(godzillaAndMothra);
+
+        POType poType = new POType();
+        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance()
+                .newXMLGregorianCalendar(new GregorianCalendar(1999, Calendar.OCTOBER, 20));
+        xmlGregorianCalendar.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+        poType.setOrderDate(xmlGregorianCalendar);
+        poType.setShipTo(shipTo);
+        poType.setBillTo(billTo);
+        poType.setItems(items);
+
+        JavaSource javaSource = new JavaSource(poType);
+
+        smooks.filterSource(javaSource, stringSink);
+
+        String expected = StreamUtils.readStreamAsString(getClass().getResourceAsStream("jaxb/po.xml"), "UTF-8");
+        assertFalse(DiffBuilder.compare(expected).
+                withTest(stringSink.getResult()).
+                ignoreComments().
+                ignoreWhitespace().
+                build().
+                hasDifferences());
     }
 }

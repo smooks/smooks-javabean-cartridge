@@ -42,11 +42,11 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="orderItem" class="java.util.HashMap" createOnElement="order">
+    <jb:bean beanId="orderItem" class="java.util.HashMap" createOn="order">
         <jb:value data="order-item/*" />
-        <jb:expression property="total" initVal="new Double(100.0)" execOnElement="order-item" >
+        <jb:expression property="total" initVal="new Double(100.0)" executeOn="order-item" >
             orderItem.total + (orderItem.price * orderItem.quantity);
         </jb:expression>
     </jb:bean>

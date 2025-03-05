@@ -43,9 +43,9 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 	                  
-	<jb:bean beanId="theBean" class="java.util.HashMap" createOnElement="#document">
+	<jb:bean beanId="theBean" class="java.util.HashMap" createOn="#document">
 		<jb:value property="attr1" data="test1/attr1" />
 	</jb:bean>
 	

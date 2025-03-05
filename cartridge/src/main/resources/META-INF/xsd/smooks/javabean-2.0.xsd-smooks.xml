@@ -42,27 +42,20 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" 
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-	<jb:bean beanId="header" class="org.smooks.cartridges.javabean.FunctionalTestCase$Header" createOn="#document">
-		<jb:expression property="netAmount" initVal="50" executeOn="items/item">
-            += (orderItem.quantity * orderItem.price)
-        </jb:expression>
-        <jb:expression property="netAmountObj" initVal="50" executeOn="items/item">
-            -= (orderItem.quantity * orderItem.price)
-        </jb:expression>
-        <jb:expression property="tax">
-            this.netAmount * 0.2
-        </jb:expression>
-        <jb:expression property="totalAmount">
-            this.netAmount + this.tax
-        </jb:expression>
-	</jb:bean>
+    <import file="jaxb-marshaller.xsd-smooks.xml"/>
+    <import file="jaxb-unmarshaller.xsd-smooks.xml"/>
+    <import file="bean.xsd-smooks.xml"/>
+    <import file="bean-value.xsd-smooks.xml"/>
+    <import file="bean-wiring.xsd-smooks.xml"/>
+    <import file="bean-expression.xsd-smooks.xml"/>
+    <import file="value.xsd-smooks.xml"/>
+    <import file="result.xsd-smooks.xml"/>
 
-	<jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.FunctionalTestCase$OrderItem" createOn="items/item">
-		<jb:value property="quantity" data="item/units" />
-		<jb:value property="price" data="item/price" />
-	</jb:bean>
+    <resource-config selector="jb:bean/jb:*">
+        <resource>org.smooks.cartridges.javabean.ext.PropertyChecker</resource>
+    </resource-config>
 
 </smooks-resource-list>

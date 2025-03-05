@@ -51,7 +51,7 @@ import org.w3c.dom.Element;
 /**
  * @author <a href="mailto:maurice.zeijen@smies.com">maurice.zeijen@smies.com</a>
  */
-public class WireOnElementChecker implements DOMVisitBefore {
+public class WireOnChecker implements DOMVisitBefore {
 
     /* (non-Javadoc)
      * @see org.smooks.delivery.dom.DOMVisitBefore#visitBefore(org.w3c.dom.Element, org.smooks.api.ExecutionContext)
@@ -60,22 +60,22 @@ public class WireOnElementChecker implements DOMVisitBefore {
             throws SmooksException {
 
         if (!isCreateOnElementSet(element) && !isWireOnElementSet(element)) {
-            throw new SmooksConfigException("The bindings attribute 'createOnElement' and wiring attribute 'wireOnElement' " +
+            throw new SmooksConfigException("The bindings attribute 'createOn' and wiring attribute 'wireOn' " +
                     "are both not set. One of them must at least be set. If the result of this binding should be a new populated Object " +
-                    "then you need to set the 'createOnElement' bindings attribute. If you want to update an existing object in the bean " +
-                    "context then you must set the 'wireOnElement' attribute.");
+                    "then you need to set the 'createOn' bindings attribute. If you want to update an existing object in the bean " +
+                    "context then you must set the 'wireOn' attribute.");
         }
 
     }
 
     protected boolean isCreateOnElementSet(Element element) {
-        String createOnElement = ((Element) element.getParentNode()).getAttribute("createOnElement");
-        return !createOnElement.isEmpty();
+        String createOn = ((Element) element.getParentNode()).getAttribute("createOn");
+        return !createOn.isEmpty();
     }
 
     protected boolean isWireOnElementSet(Element element) {
-        String wireOnElement = element.getAttribute("wireOnElement");
-        return !wireOnElement.isEmpty();
+        String wireOn = element.getAttribute("wireOn");
+        return !wireOn.isEmpty();
     }
 
 

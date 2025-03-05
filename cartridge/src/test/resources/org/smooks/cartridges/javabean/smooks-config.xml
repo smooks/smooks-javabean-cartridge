@@ -43,7 +43,7 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd" 
+	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd"
 	                  xmlns:core="https://www.smooks.org/xsd/smooks/smooks-core-1.6.xsd">
 	                  
 	<core:namespaces>
@@ -51,7 +51,7 @@
 		<core:namespace prefix="f" uri="http://www.blah" />
 	</core:namespaces>
 	
-	<jb:bean beanId="theBean" class="java.util.HashMap" createOnElement="#document">
+	<jb:bean beanId="theBean" class="java.util.HashMap" createOn="#document">
 		<jb:value property="attr1" data="test1/@e:attr1" />
 		<jb:value property="attr2" data="test1/@f:attr2" />
 	</jb:bean>

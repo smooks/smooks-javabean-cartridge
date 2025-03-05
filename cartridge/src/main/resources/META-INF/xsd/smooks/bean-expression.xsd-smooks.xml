@@ -1,9 +1,8 @@
-<?xml version="1.0"?>
 <!--
   ========================LICENSE_START=================================
   smooks-javabean-cartridge
   %%
-  Copyright (C) 2020 Smooks
+  Copyright (C) 2020 - 2025 Smooks
   %%
   Licensed under the terms of the Apache License Version 2.0, or
   the GNU Lesser General Public License version 3.0 or later.
@@ -41,10 +40,38 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   =========================LICENSE_END==================================
   -->
-
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:jaxb beanId="purchaseOrder" class="org.smooks.cartridges.javabean.jaxb.model.POType" createOnElement="/purchaseOrder"/>
+    <resource-config selector="jb:bean/expression">
+        <!-- Clone the BeanInstanceCreator config for the BeanValueBinder... -->
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.CloneResourceConfig</resource>
+        <param name="resource">org.smooks.cartridges.javabean.BeanValueBinder</param>
+        <param name="unset">beanClass,extendLifecycle</param>
+    </resource-config>
+    <resource-config selector="jb:bean/expression">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">executeOn</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+    <resource-config selector="jb:bean/expression">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">property</param>
+    </resource-config>
+    <resource-config selector="jb:bean/expression">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">setterMethod</param>
+    </resource-config>
+    <resource-config selector="jb:bean/expression">
+        <resource>org.smooks.cartridges.javabean.ext.InitValExpressionSetter</resource>
+        <param name="initValAttrib">initVal</param>
+    </resource-config>
+    <resource-config selector="jb:bean/expression">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromText</resource>
+        <param name="mapTo">expression</param>
+    </resource-config>
+    <resource-config selector="jb:bean/expression">
+        <resource>org.smooks.cartridges.javabean.ext.SelectorPropertyResolver</resource>
+    </resource-config>
 
 </smooks-resource-list>
