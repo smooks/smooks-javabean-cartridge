@@ -81,7 +81,7 @@ public class BeanWriterFactory implements ContentHandler {
     protected ApplicationContext appContext;
 
     @PostConstruct
-    public void createBeanWriter() {
+    public void postConstruct() {
         try {
             BeanWriter beanWriter = beanWriterClass.newInstance();
             appContext.getRegistry().lookup(new LifecycleManagerLookup()).applyPhase(beanWriter, new PostConstructLifecyclePhase(new Scope(appContext.getRegistry(), resourceConfig, beanWriter)));

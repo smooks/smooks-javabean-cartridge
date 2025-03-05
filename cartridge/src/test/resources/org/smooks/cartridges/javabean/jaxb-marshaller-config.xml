@@ -43,26 +43,9 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-	<jb:bean beanId="header" class="org.smooks.cartridges.javabean.FunctionalTestCase$Header" createOn="#document">
-		<jb:expression property="netAmount" initVal="50" executeOn="items/item">
-            += (orderItem.quantity * orderItem.price)
-        </jb:expression>
-        <jb:expression property="netAmountObj" initVal="50" executeOn="items/item">
-            -= (orderItem.quantity * orderItem.price)
-        </jb:expression>
-        <jb:expression property="tax">
-            this.netAmount * 0.2
-        </jb:expression>
-        <jb:expression property="totalAmount">
-            this.netAmount + this.tax
-        </jb:expression>
-	</jb:bean>
+    <jb:jaxb-marshaller class="org.smooks.cartridges.javabean.jaxb.model.POType"/>
 
-	<jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.FunctionalTestCase$OrderItem" createOn="items/item">
-		<jb:value property="quantity" data="item/units" />
-		<jb:value property="price" data="item/price" />
-	</jb:bean>
 
 </smooks-resource-list>

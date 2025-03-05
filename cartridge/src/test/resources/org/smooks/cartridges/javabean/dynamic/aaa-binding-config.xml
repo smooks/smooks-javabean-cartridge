@@ -43,11 +43,11 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd"
                       xmlns:dmb="https://www.smooks.org/xsd/smooks/dmb-1.5.xsd"
                       xmlns:aa="http://www.acme.com/xsd/aaa.xsd">
 
-    <jb:bean beanId="aaa" class="org.smooks.cartridges.javabean.dynamic.ModelBuilderTestCase$AAA" createOnElement="aa:aaa">
+    <jb:bean beanId="aaa" class="org.smooks.cartridges.javabean.dynamic.ModelBuilderTestCase$AAA" createOn="aa:aaa">
         <jb:value property="doubleProperty" data="aaa/value/@property1" />
         <jb:value property="intProperty" data="aaa/value/@property2" />
     </jb:bean>

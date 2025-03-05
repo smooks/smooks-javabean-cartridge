@@ -43,9 +43,9 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 	                  
-	<jb:bean beanId="xbean" class="org.smooks.cartridges.javabean.FunctionalTestCase$X" createOnElement="#document">
+	<jb:bean beanId="xbean" class="org.smooks.cartridges.javabean.FunctionalTestCase$X" createOn="#document">
 		<jb:value property="val1" data="x/a" default="123" />
         <jb:value property="val2" data="x/b" default="987" />
         <jb:value property="val3" data="x/c" default="99.65" />

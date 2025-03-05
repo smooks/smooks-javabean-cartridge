@@ -93,12 +93,12 @@ public class MapToSelectorFromContextAwareAttribute implements DOMVisitBefore {
 
         String foundBeanId = DomUtils.getAttributeValue(element, "beanId");
         if (foundBeanId != null) {
-            BASE_BEANS.put(foundBeanId, DomUtils.getAttributeValue(element, "createOnElement"));
+            BASE_BEANS.put(foundBeanId, DomUtils.getAttributeValue(element, "createOn"));
         }
 
         String absoluteSelector;
-        if (value.startsWith("#") && element.getParentNode() != null && element.getParentNode().getAttributes().getNamedItem("createOnElement") != null) {
-            String contextSelector = element.getParentNode().getAttributes().getNamedItem("createOnElement").getNodeValue();
+        if (value.startsWith("#") && element.getParentNode() != null && element.getParentNode().getAttributes().getNamedItem("createOn") != null) {
+            String contextSelector = element.getParentNode().getAttributes().getNamedItem("createOn").getNodeValue();
             absoluteSelector = contextSelector + value.substring(1);
         } else {
             absoluteSelector = value;

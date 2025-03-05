@@ -7,6 +7,11 @@ image:https://img.shields.io/badge/group-user-red?logo=Gmail[email group,link=ht
 image:https://img.shields.io/badge/group-dev-red?logo=Gmail[email group,link=https://groups.google.com/g/smooks-dev]
 image:https://img.shields.io/badge/chat-on%20gitter-46bc99.svg[Gitter chat,link=https://gitter.im/smooks/smooks]
 
+== Requirements
+
+* Java 8 starting from JavaBean Cartridge v2.0.0
+* Java 11 or higher starting from JavaBean Cartridge v3.0.0
+
 // tag::smooks-javabean-cartridge[]
 Smooks can map a Java object graph to another Java object graph. This mapping is accomplished through events, which means no intermediate object is constructed for populating the target Java object graph. In other words, the source Java object graph is turned into a stream of events that are bound to the target Java object graph.
 

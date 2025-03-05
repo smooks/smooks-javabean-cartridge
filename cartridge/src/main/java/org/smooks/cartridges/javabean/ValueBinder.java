@@ -86,7 +86,7 @@ import java.util.stream.Stream;
  * <h3>XML Schema & Namespace</h3>
  * The Value Binder XML configuration schema is in the following XML Schema Namespace:
  * <p/>
- * <a href="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"><b>https://www.smooks.org/xsd/smooks/javabean-1.6.xsd</b></a>
+ * <a href="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd"><b>https://www.smooks.org/xsd/smooks/javabean-2.0.xsd</b></a>
  * <p/>
  * The value binder element is '&lt;value&gt;'. Take a look in the schema for all
  * the configuration attributes.
@@ -114,7 +114,7 @@ import java.util.stream.Stream;
  * <h4>The Binding Configuration</h4>
  * <pre>
  * &lt;?xml version=&quot;1.0&quot;?&gt;
- * &lt;smooks-resource-list xmlns=&quot;https://www.smooks.org/xsd/smooks-1.2.xsd&quot; xmlns:jb=&quot;https://www.smooks.org/xsd/smooks/javabean-1.6.xsd&quot;&gt;
+ * &lt;smooks-resource-list xmlns=&quot;https://www.smooks.org/xsd/smooks-1.2.xsd&quot; xmlns:jb=&quot;https://www.smooks.org/xsd/smooks/javabean-2.0.xsd&quot;&gt;
  *
  *    &lt;jb:value
  *       beanId=&quot;customerName&quot;
@@ -256,7 +256,7 @@ public class ValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVisitor
      * @throws SmooksConfigException Incorrectly configured resource.
      */
     @PostConstruct
-    public void postConstruct() throws SmooksConfigException {
+    public void postConstruct() {
         isAttribute = valueAttributeName.isPresent();
 
         beanId = applicationContext.getBeanIdStore().register(beanIdName);

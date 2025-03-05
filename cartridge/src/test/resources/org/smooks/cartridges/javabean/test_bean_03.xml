@@ -42,9 +42,9 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="orderItemList" class="com.X[]" createOnElement="order">
+    <jb:bean beanId="orderItemList" class="com.X[]" createOn="order">
         <!-- Should get an error for specifying a wiring property when the class is an array -->
         <jb:wiring property="x" beanIdRef="orderItem" />
     </jb:bean>

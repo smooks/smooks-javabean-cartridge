@@ -50,7 +50,8 @@
 
 package org.smooks.cartridges.javabean.jaxb.model;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class Adapter2
     extends XmlAdapter<String, Short>
@@ -58,14 +59,14 @@ public class Adapter2
 
 
     public Short unmarshal(String value) {
-        return (javax.xml.bind.DatatypeConverter.parseShort(value));
+        return (DatatypeConverter.parseShort(value));
     }
 
     public String marshal(Short value) {
         if (value == null) {
             return null;
         }
-        return (javax.xml.bind.DatatypeConverter.printShort(value));
+        return (DatatypeConverter.printShort(value));
     }
 
 }

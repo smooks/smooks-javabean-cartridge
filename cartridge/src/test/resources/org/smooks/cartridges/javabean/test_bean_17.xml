@@ -42,17 +42,17 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOnElement="order">
+    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOn="order">
         <jb:wiring property="orderItems" beanIdRef="orderItems" />
     </jb:bean>
 
-    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOnElement="order-items">
+    <jb:bean beanId="orderItems" class="java.util.ArrayList" createOn="order-items">
         <jb:wiring beanType="org.smooks.cartridges.javabean.OrderItem" />
     </jb:bean>
 
-    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOnElement="order-item,end"> <!-- The instance created on "end" should not get wired into the list because the wiring should finish after the order-items element has passed -->
+    <jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.OrderItem" createOn="order-item,end"> <!-- The instance created on "end" should not get wired into the list because the wiring should finish after the order-items element has passed -->
         <jb:value property="productId" data="order-item/product" decoder="Long" />
         <jb:value property="quantity" data="order-item/quantity" decoder="Integer" />
         <jb:value property="price" data="order-item/price" decoder="Double" />

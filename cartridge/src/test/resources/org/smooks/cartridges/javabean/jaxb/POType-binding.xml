@@ -43,9 +43,9 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="purchaseOrder" class="org.smooks.cartridges.javabean.jaxb.model.POType" createOnElement="/purchaseOrder">
+    <jb:bean beanId="purchaseOrder" class="org.smooks.cartridges.javabean.jaxb.model.POType" createOn="/purchaseOrder">
         <jb:value property="orderDate" data="#/@orderDate" decoder="XMLGregorianCalendar">
             <jb:decodeParam name="format">yyyy-MM-dd</jb:decodeParam>
         </jb:value>
@@ -54,7 +54,7 @@
         <jb:wiring property="items" beanIdRef="items"/>
     </jb:bean>
 
-    <jb:bean beanId="shipTo" class="org.smooks.cartridges.javabean.jaxb.model.USAddress" createOnElement="/purchaseOrder/shipTo">
+    <jb:bean beanId="shipTo" class="org.smooks.cartridges.javabean.jaxb.model.USAddress" createOn="/purchaseOrder/shipTo">
         <jb:value property="country" data="#/@country"/>
         <jb:value property="toName" data="#/name"/>
         <jb:value property="street" data="#/street"/>
@@ -63,7 +63,7 @@
         <jb:value property="zipCode" data="#/zip"/>
     </jb:bean>
 
-    <jb:bean beanId="billTo" class="org.smooks.cartridges.javabean.jaxb.model.USAddress" createOnElement="/purchaseOrder/billTo">
+    <jb:bean beanId="billTo" class="org.smooks.cartridges.javabean.jaxb.model.USAddress" createOn="/purchaseOrder/billTo">
         <jb:value property="country" data="#/@country"/>
         <jb:value property="toName" data="#/name"/>
         <jb:value property="street" data="#/street"/>
@@ -72,15 +72,15 @@
         <jb:value property="zipCode" data="#/zip"/>
     </jb:bean>
 
-    <jb:bean beanId="items" class="org.smooks.cartridges.javabean.jaxb.model.Items" createOnElement="/purchaseOrder/items">
+    <jb:bean beanId="items" class="org.smooks.cartridges.javabean.jaxb.model.Items" createOn="/purchaseOrder/items">
         <jb:wiring property="item" beanIdRef="itemsList"/>
     </jb:bean>
 
-    <jb:bean beanId="itemsList" class="java.util.List" createOnElement="/purchaseOrder/items" factory="items.getItem()">
+    <jb:bean beanId="itemsList" class="java.util.List" createOn="/purchaseOrder/items" factory="items.getItem()">
         <jb:wiring beanIdRef="item"/>
     </jb:bean>
 
-    <jb:bean beanId="item" class="org.smooks.cartridges.javabean.jaxb.model.Items$Item" createOnElement="/purchaseOrder/items/item">
+    <jb:bean beanId="item" class="org.smooks.cartridges.javabean.jaxb.model.Items$Item" createOn="/purchaseOrder/items/item">
         <jb:value property="partNumber" data="/purchaseOrder/items/item/@partNum"/>
         <jb:value property="productName" data="#/productName"/>
         <jb:value property="quantity" data="#/quantity"/>

@@ -42,12 +42,12 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
     <!-- TODO:
             THIS IS A CONFIGURATION TEMPLATE!!  It is not the finished article.
 
-            1. For each <jb:bindings> element, set the createOnElement attribute to the event element that should
+            1. For each <jb:bindings> element, set the createOn attribute to the event element that should
                be used to create the bean instance.
             2. Update the <jb:value data> attributes to select the event element/attribute supplying the binding
                data for that bean property.
@@ -60,7 +60,7 @@
             4. Double-check the binding config elements (<jb:value> and <jb:wiring>), making sure all Java properties
                have been covered in the generated configuration.
 
-            Determining appropriate values for the <jb:bean createOnElement> and <jb:value data> attributes can
+            Determining appropriate values for the <jb:bean createOn> and <jb:value data> attributes can
             sometimes be difficult, especially for non XML Sources (Java etc).  The Html Reporting tool can be a great
             help here because it helps you visualise the input message model (against which the selectors will be
             applied) as seen by Smooks.  So, first off, generate a report using your Source data, but with an empty
@@ -72,7 +72,7 @@
 
     <#list classConfigs as classConfig>
 
-    <jb:bean beanId="${classConfig.beanId}" class="${classConfig.beanClass.name}<#if classConfig.array>[]</#if>" createOnElement="$TODO$">
+    <jb:bean beanId="${classConfig.beanId}" class="${classConfig.beanClass.name}<#if classConfig.array>[]</#if>" createOn="$TODO$">
     <#list classConfig.bindings as binding>
         <#if binding.wiring>
         <jb:wiring <#if binding.boundToProperty>property="${binding.property.name}" </#if>beanIdRef="${binding.selector}" />

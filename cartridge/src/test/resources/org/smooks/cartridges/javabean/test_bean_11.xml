@@ -42,15 +42,15 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOnElement="order">
-        <jb:expression property="total" execOnElement="order-item" >1.0 + 1.0</jb:expression>
+    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOn="order">
+        <jb:expression property="total" executeOn="order-item" >1.0 + 1.0</jb:expression>
     </jb:bean>
 
-	<jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOnElement="order">
+	<jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOn="order">
 		<condition evaluator="org.smooks.cartridges.javabean.BeanMapExpressionEvaluator">false</condition>
-        <jb:expression property="total" execOnElement="order-item" >2.0 + 2.0</jb:expression>
+        <jb:expression property="total" executeOn="order-item" >2.0 + 2.0</jb:expression>
     </jb:bean>
     
 </smooks-resource-list>

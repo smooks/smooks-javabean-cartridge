@@ -375,8 +375,8 @@ public class XMLBinding extends AbstractBinding {
     }
 
     protected XMLSerializationNode constructNodePath(SelectorPath selectorPath, List<XMLElementSerializationNode> graphRoots) {
-        if (selectorPath == null || selectorPath.size() == 0) {
-            throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOnElement, data, executeOnElement attributes etc.).");
+        if (selectorPath == null || selectorPath.isEmpty()) {
+            throw new IllegalStateException("Invalid binding configuration.  All <jb:bean> configuration elements must specify fully qualified selector paths (createOn, data, executeOn attributes etc.).");
         }
 
         SelectorStep rootSelectorStep = selectorPath.get(1);

@@ -42,14 +42,14 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-	<jb:bean beanId="total" class="org.smooks.cartridges.javabean.ExpressionBindingTestCase$Total" createOnElement="numbers" >
-		<jb:expression property="total" execOnElement="number" initVal="10">
+	<jb:bean beanId="total" class="org.smooks.cartridges.javabean.ExpressionBindingTestCase$Total" createOn="numbers" >
+		<jb:expression property="total" executeOn="number" initVal="10">
 			+= new Integer(_VALUE);
 		</jb:expression>
 
-		<jb:expression property="csv" execOnElement="number/@id" initVal="''">
+		<jb:expression property="csv" executeOn="number/@id" initVal="''">
 			var csv = total.csv;
 			if(csv.length() > 0) {
 				csv += ',';

@@ -255,7 +255,7 @@ public class BeanValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVis
      * @throws SmooksConfigException Incorrectly configured resource.
      */
     @PostConstruct
-    public void postConstruct() throws SmooksConfigException {
+    public void postConstruct() {
         buildId();
 
         beanRuntimeInfo = BeanRuntimeInfo.getBeanRuntimeInfo(beanIdName, applicationContext);

@@ -42,14 +42,14 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
     <params>
         <param name="factory.definition.parser.class">org.smooks.cartridges.javabean.factory.MVELFactoryDefinitionParser</param>
     </params>
 
 
-    <jb:bean beanId="order" class="java.util.Map" factory="org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory.newMap()" createOnElement="order">
+    <jb:bean beanId="order" class="java.util.Map" factory="org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory.newMap()" createOn="order">
     </jb:bean>
 
 </smooks-resource-list>

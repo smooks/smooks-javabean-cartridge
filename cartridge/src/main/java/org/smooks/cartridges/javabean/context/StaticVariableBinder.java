@@ -88,7 +88,7 @@ public class StaticVariableBinder implements ElementVisitor {
     protected ApplicationContext appContext;
 
     @PostConstruct
-    public void postConstruct() throws SmooksConfigException {
+    public void postConstruct() {
         beanId = appContext.getBeanIdStore().getBeanId(STATVAR);
 
         if (beanId == null) {

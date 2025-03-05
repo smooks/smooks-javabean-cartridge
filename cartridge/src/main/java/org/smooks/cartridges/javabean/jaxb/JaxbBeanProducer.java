@@ -40,8 +40,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * =========================LICENSE_END==================================
  */
-package org.smooks.cartridges.javabean;
+package org.smooks.cartridges.javabean.jaxb;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
@@ -52,15 +55,13 @@ import org.smooks.api.resource.visitor.VisitAfterReport;
 import org.smooks.api.resource.visitor.VisitBeforeReport;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.assertion.AssertArgument;
+import org.smooks.cartridges.javabean.AbstractBeanProducer;
 import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.VisitorMemento;
 import org.w3c.dom.Element;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,7 +100,7 @@ public class JaxbBeanProducer extends AbstractBeanProducer implements Parameteri
     }
 
     @Override
-    public void doPostConstruct() throws SmooksConfigException {
+    public void doPostConstruct() {
         List<Class<?>> classesToBeBound = objectFactories.stream().map(of -> {
             try {
                 return Class.forName(of, true, applicationContext.getClassLoader());

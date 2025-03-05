@@ -42,9 +42,9 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOnElement="order">
+    <jb:bean beanId="order" class="org.smooks.cartridges.javabean.ExtendedOrder" createOn="order">
         <!-- Should get an error for not specifying the property because the target is not a List/Array -->
         <jb:wiring beanIdRef="headerBean" />
     </jb:bean>

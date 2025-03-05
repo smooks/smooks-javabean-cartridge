@@ -43,15 +43,15 @@
   -->
 
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd"
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd"
                       xmlns:dmb="https://www.smooks.org/xsd/smooks/dmb-1.5.xsd">
 
-    <jb:bean beanId="bbb" class="org.smooks.cartridges.javabean.dynamic.ModelBuilderTestCase$BBB" createOnElement="root">
+    <jb:bean beanId="bbb" class="org.smooks.cartridges.javabean.dynamic.ModelBuilderTestCase$BBB" createOn="root">
         <jb:wiring property="aaas" beanIdRef="aaas" />
         <jb:value property="floatProperty" data="bbb/value/@property" />
     </jb:bean>
 
-    <jb:bean beanId="aaas" class="java.util.ArrayList" createOnElement="root">
+    <jb:bean beanId="aaas" class="java.util.ArrayList" createOn="root">
         <jb:wiring beanIdRef="aaa" />
     </jb:bean>
 

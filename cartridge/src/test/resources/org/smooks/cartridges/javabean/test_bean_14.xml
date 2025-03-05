@@ -42,18 +42,18 @@
   =========================LICENSE_END==================================
   -->
 
-<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
+<smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd" xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
     
-    <jb:bean beanId="default_order" class="java.util.Map" factory="default:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory#newMap" createOnElement="order" retain="true">
+    <jb:bean beanId="default_order" class="java.util.Map" factory="default:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory#newMap" createOn="order" retain="true">
     </jb:bean>
 
-    <jb:bean beanId="mvel_order" class="java.util.Map" factory="mvel:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory.newMap()" createOnElement="order" retain="true">
+    <jb:bean beanId="mvel_order" class="java.util.Map" factory="mvel:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory.newMap()" createOn="order" retain="true">
     </jb:bean>
 
-    <jb:bean beanId="mvel_class_order" class="java.util.Map" factory="org.smooks.cartridges.javabean.factory.MVELFactoryDefinitionParser:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory.newMap()" createOnElement="order" retain="true">
+    <jb:bean beanId="mvel_class_order" class="java.util.Map" factory="org.smooks.cartridges.javabean.factory.MVELFactoryDefinitionParser:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory.newMap()" createOn="order" retain="true">
     </jb:bean>
 
-    <jb:bean beanId="basic_order" class="java.util.Map" factory="basic:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory#newMap" createOnElement="order" retain="true">
+    <jb:bean beanId="basic_order" class="java.util.Map" factory="basic:org.smooks.cartridges.javabean.BeanBindingFunctionalTestCase$MapFactory#newMap" createOn="order" retain="true">
     </jb:bean>
 
 </smooks-resource-list>

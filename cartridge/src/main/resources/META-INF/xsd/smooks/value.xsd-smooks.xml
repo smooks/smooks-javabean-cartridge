@@ -1,9 +1,8 @@
-<?xml version="1.0"?>
 <!--
   ========================LICENSE_START=================================
   smooks-javabean-cartridge
   %%
-  Copyright (C) 2020 Smooks
+  Copyright (C) 2020 - 2025 Smooks
   %%
   Licensed under the terms of the Apache License Version 2.0, or
   the GNU Lesser General Public License version 3.0 or later.
@@ -41,28 +40,36 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   =========================LICENSE_END==================================
   -->
-
 <smooks-resource-list xmlns="https://www.smooks.org/xsd/smooks-2.0.xsd"
-	                  xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
+                      xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-2.0.xsd">
 
-	<jb:bean beanId="header" class="org.smooks.cartridges.javabean.FunctionalTestCase$Header" createOn="#document">
-		<jb:expression property="netAmount" initVal="50" executeOn="items/item">
-            += (orderItem.quantity * orderItem.price)
-        </jb:expression>
-        <jb:expression property="netAmountObj" initVal="50" executeOn="items/item">
-            -= (orderItem.quantity * orderItem.price)
-        </jb:expression>
-        <jb:expression property="tax">
-            this.netAmount * 0.2
-        </jb:expression>
-        <jb:expression property="totalAmount">
-            this.netAmount + this.tax
-        </jb:expression>
-	</jb:bean>
-
-	<jb:bean beanId="orderItem" class="org.smooks.cartridges.javabean.FunctionalTestCase$OrderItem" createOn="items/item">
-		<jb:value property="quantity" data="item/units" />
-		<jb:value property="price" data="item/price" />
-	</jb:bean>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
+        <param name="resource">org.smooks.cartridges.javabean.ValueBinder</param>
+    </resource-config>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">data</param>
+        <param name="mapTo">selector</param>
+    </resource-config>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">beanId</param>
+    </resource-config>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">decoder</param>
+        <param name="mapTo">type</param>
+    </resource-config>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.engine.resource.config.loader.xml.extension.MapToResourceConfigFromAttribute</resource>
+        <param name="attribute">default</param>
+    </resource-config>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.cartridges.javabean.ext.SelectorPropertyResolver</resource>
+    </resource-config>
+    <resource-config selector="smooks-resource-list/jb:value">
+        <resource>org.smooks.cartridges.javabean.ext.DecodeParamResolver</resource>
+    </resource-config>
 
 </smooks-resource-list>
