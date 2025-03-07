@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.converter.TypeConverterException;
 import org.smooks.engine.lookup.GlobalParamsLookup;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.util.Collections;
 import java.util.HashMap;

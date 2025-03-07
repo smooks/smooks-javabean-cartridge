@@ -58,7 +58,7 @@ import org.smooks.cartridges.javabean.dynamic.serialize.BeanWriter;
 import org.smooks.engine.DefaultFilterSettings;
 import org.smooks.engine.resource.config.xpath.IndexedSelectorPath;
 import org.smooks.engine.resource.config.xpath.step.NamedSelectorStep;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

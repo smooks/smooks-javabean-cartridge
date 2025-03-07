@@ -51,7 +51,7 @@ import org.smooks.api.converter.TypeConverterException;
 import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.resource.config.Configurable;
 import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import javax.inject.Inject;
 import java.util.Properties;

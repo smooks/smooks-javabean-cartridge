@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;

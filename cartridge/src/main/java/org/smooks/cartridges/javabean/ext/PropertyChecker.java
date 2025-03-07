@@ -46,8 +46,8 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.support.ClassUtils;
 import org.smooks.support.DomUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.w3c.dom.Element;
 
 import java.util.Collection;

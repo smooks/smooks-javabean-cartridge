@@ -47,7 +47,7 @@ import org.smooks.Smooks;
 import org.smooks.api.ExecutionContext;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.io.source.StreamSource;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

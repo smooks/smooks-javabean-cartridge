@@ -79,8 +79,8 @@ import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.memento.TextAccumulatorMemento;
 import org.smooks.engine.memento.TextAccumulatorVisitorMemento;
-import org.smooks.support.ClassUtils;
 import org.smooks.support.DomUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Element;
 
