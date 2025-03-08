@@ -44,7 +44,7 @@ package org.smooks.cartridges.javabean;
 
 import org.smooks.api.ApplicationContext;
 import org.smooks.api.SmooksConfigException;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

@@ -71,7 +71,7 @@ import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup
 import org.smooks.engine.resource.config.xpath.step.AttributeSelectorStep;
 import org.smooks.engine.resource.config.xpath.step.ElementSelectorStep;
 import org.smooks.io.source.StringSource;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;

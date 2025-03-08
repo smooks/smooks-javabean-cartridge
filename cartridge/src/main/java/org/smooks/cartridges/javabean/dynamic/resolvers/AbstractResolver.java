@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.dynamic.resolvers;
 
 import org.smooks.cartridges.javabean.dynamic.Descriptor;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

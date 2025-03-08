@@ -42,20 +42,11 @@
  */
 package org.smooks.cartridges.javabean.converter;
 
-import org.smooks.api.ApplicationContext;
-import org.smooks.api.SmooksConfigException;
 import org.smooks.api.converter.TypeConverter;
-import org.smooks.api.converter.TypeConverterException;
-import org.smooks.api.converter.TypeConverterFactory;
-import org.smooks.api.resource.config.Configurable;
 import org.smooks.engine.expression.MVELExpressionEvaluator;
-import org.smooks.engine.lookup.converter.NameTypeConverterFactoryLookup;
-import org.smooks.support.ClassUtils;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Data Preprocesses Decoder.

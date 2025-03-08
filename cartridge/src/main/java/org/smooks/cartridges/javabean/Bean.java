@@ -56,7 +56,7 @@ import org.smooks.engine.delivery.DefaultContentHandlerBinding;
 import org.smooks.engine.lookup.NamespaceManagerLookup;
 import org.smooks.engine.lookup.converter.SourceTargetTypeConverterFactoryLookup;
 import org.smooks.engine.resource.config.DefaultResourceConfig;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

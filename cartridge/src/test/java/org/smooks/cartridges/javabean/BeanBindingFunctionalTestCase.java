@@ -49,7 +49,7 @@ import org.smooks.api.ExecutionContext;
 import org.smooks.api.SmooksException;
 import org.smooks.io.sink.JavaSink;
 import org.smooks.io.source.StreamSource;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -222,11 +222,11 @@ public class BeanBindingFunctionalTestCase {
             assertTrue(order == order.getOrderItemsArray()[0].getOrder());
             assertEquals(8.9d, order.getOrderItemsArray()[0].getPrice(), 0d);
             assertEquals(111, order.getOrderItemsArray()[0].getProductId());
-            assertEquals(new Integer(2), order.getOrderItemsArray()[0].getQuantity());
+            assertEquals(2, order.getOrderItemsArray()[0].getQuantity());
             assertTrue(order == order.getOrderItemsArray()[1].getOrder());
             assertEquals(5.2d, order.getOrderItemsArray()[1].getPrice(), 0d);
             assertEquals(222, order.getOrderItemsArray()[1].getProductId());
-            assertEquals(new Integer(7), order.getOrderItemsArray()[1].getQuantity());
+            assertEquals(7, order.getOrderItemsArray()[1].getQuantity());
         }
     }
 

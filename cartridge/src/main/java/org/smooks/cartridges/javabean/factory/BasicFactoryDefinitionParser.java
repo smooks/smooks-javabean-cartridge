@@ -43,7 +43,7 @@
 package org.smooks.cartridges.javabean.factory;
 
 import org.smooks.api.ExecutionContext;
-import org.smooks.support.ClassUtils;
+import org.smooks.support.classpath.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
