@@ -47,7 +47,7 @@ import org.smooks.api.SmooksConfigException;
 import org.smooks.api.SmooksException;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.visitor.dom.DOMVisitBefore;
-import org.smooks.cartridges.javabean.BeanProducer;
+import org.smooks.cartridges.javabean.BeanInstanceProducer;
 import org.smooks.engine.resource.config.DefaultConfigSearch;
 import org.smooks.engine.resource.config.loader.xml.extension.ExtensionContext;
 import org.w3c.dom.Element;
@@ -94,7 +94,7 @@ public class BeanClassLookup implements DOMVisitBefore {
 
     protected ResourceConfig findBeanCreatorConfig(String beanId, ExecutionContext executionContext) {
         ExtensionContext extensionContext = executionContext.get(ExtensionContext.EXTENSION_CONTEXT_TYPED_KEY);
-        List<ResourceConfig> breanProducerResourceConfigs = extensionContext.lookupResourceConfigs(new DefaultConfigSearch().resource(BeanProducer.class.getName()).param("beanId", beanId));
+        List<ResourceConfig> breanProducerResourceConfigs = extensionContext.lookupResourceConfigs(new DefaultConfigSearch().resource(BeanInstanceProducer.class.getName()).param("beanId", beanId));
 
         if (breanProducerResourceConfigs.size() > 1) {
             throw new SmooksConfigException("Multiple <jb:bean> configurations exist for beanId '" + beanId + "'.  'beanId' values must be unique.");

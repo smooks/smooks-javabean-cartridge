@@ -46,12 +46,12 @@
                       xmlns:jb="https://www.smooks.org/xsd/smooks/javabean-1.6.xsd">
 
     <!--
-        Bean Instance Creator Resource...
+        BeanInstanceProducer Resource...
     -->
 
     <resource-config selector="jb:bean">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.cartridges.javabean.BeanInstanceCreator</param>
+        <param name="resource">org.smooks.cartridges.javabean.BeanInstanceProducer</param>
     </resource-config>
 
     <resource-config selector="jb:bean">
@@ -60,7 +60,7 @@
         <param name="mapTo">selector</param>
 
         <!--
-        	If not set then the $void selector is used to make sure that the  BeanInstanceCreator gets
+        	If not set then the $void selector is used to make sure that the  BeanInstanceProducer gets
             initialized but never executed on an element.
         -->
         <param name="defaultValue">none</param>
@@ -98,12 +98,12 @@
     </resource-config>
 
     <!--
-        Bean Instance Populator Resource (Value)...
+        BeanValueBinder Resource (Value)...
     -->
     <resource-config selector="jb:bean/value">
-        <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
+        <!-- Clone the BeanInstanceProducer config for the BeanValueBinder... -->
         <resource>org.smooks.engine.resource.config.loader.xml.extension.CloneResourceConfig</resource>
-        <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
+        <param name="resource">org.smooks.cartridges.javabean.BeanInstanceProducer</param>
         <param name="unset">beanClass,extendLifecycle,selector</param>
     </resource-config>
 
@@ -148,13 +148,13 @@
     </resource-config>
 
     <!--
-        Bean Instance Populator Resource (Wiring)...
+        BeanValueBinder Resource (Wiring)...
     -->
 
     <resource-config selector="jb:bean/wiring">
-        <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
+        <!-- Clone the BeanInstanceProducer config for the BeanValueBinder... -->
         <resource>org.smooks.engine.resource.config.loader.xml.extension.CloneResourceConfig</resource>
-        <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
+        <param name="resource">org.smooks.cartridges.javabean.BeanValueBinder</param>
         <param name="unset">beanClass</param>
     </resource-config>
 
@@ -193,7 +193,7 @@
     </resource-config>
 
     <resource-config selector="jb:bean/wiring">
-        <resource>org.smooks.cartridges.javabean.ext.WireOnChecker</resource>
+        <resource>org.smooks.cartridges.javabean.ext.WireOnElementChecker</resource>
     </resource-config>
 
     <resource-config selector="jb:bean/wiring">
@@ -201,15 +201,14 @@
     </resource-config>
 
     <!--
-        Bean Instance Populator Resource (Expression)...
+        BeanValueBinder Resource (Expression)...
     -->
 
     <resource-config selector="jb:bean/expression">
-        <!-- Clone the BeanInstanceCreator config for the BeanInstancePopulator... -->
+        <!-- Clone the BeanInstanceProducer config for the BeanValueBinder... -->
         <resource>org.smooks.engine.resource.config.loader.xml.extension.CloneResourceConfig</resource>
-        <param name="resource">org.smooks.cartridges.javabean.BeanInstancePopulator</param>
-        <param name="unset">beanClass</param>
-        <param name="unset">extendLifecycle</param>
+        <param name="resource">org.smooks.cartridges.javabean.BeanValueBinder</param>
+        <param name="unset">beanClass,extendLifecycle</param>
     </resource-config>
 
     <resource-config selector="jb:bean/expression">
@@ -243,7 +242,7 @@
     </resource-config>
 
     <!--
-        Bean Instance Populator Resource (Expression)...
+        BeanValueBinder Resource (Expression)...
     -->
 
     <resource-config selector="jb:bean/jb:*">

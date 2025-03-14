@@ -55,7 +55,7 @@ import org.smooks.api.resource.visitor.VisitAfterReport;
 import org.smooks.api.resource.visitor.VisitBeforeReport;
 import org.smooks.api.resource.visitor.sax.ng.ParameterizedVisitor;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cartridges.javabean.AbstractBeanProducer;
+import org.smooks.cartridges.javabean.AbstractBeanInstanceProducer;
 import org.smooks.engine.bean.lifecycle.DefaultBeanContextLifecycleEvent;
 import org.smooks.engine.delivery.fragment.NodeFragment;
 import org.smooks.engine.memento.VisitorMemento;
@@ -67,11 +67,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @VisitBeforeReport(summary = "Created <b>${resource.parameters.beanId!'undefined'}</b> bean instance. Associated lifecycle if wired to another bean.",
-        detailTemplate = "reporting/JaxbBeanProducerReport_Before.html")
+        detailTemplate = "reporting/JaxbBeanInstanceProducerReport_Before.html")
 @VisitAfterReport(condition = "parameters.containsKey('setOn') || parameters.beanClass.value.endsWith('[]')",
         summary = "Ended bean lifecycle. Set bean on any targets.",
-        detailTemplate = "reporting/JaxbBeanProducerReport_After.html")
-public class JaxbBeanProducer extends AbstractBeanProducer implements ParameterizedVisitor {
+        detailTemplate = "reporting/JaxbBeanInstanceProducerReport_After.html")
+public class JaxbBeanInstanceProducer extends AbstractBeanInstanceProducer implements ParameterizedVisitor {
 
     @Inject
     protected List<String> objectFactories = new ArrayList<>();
@@ -82,7 +82,7 @@ public class JaxbBeanProducer extends AbstractBeanProducer implements Parameteri
     /**
      * Public default constructor.
      */
-    public JaxbBeanProducer() {
+    public JaxbBeanInstanceProducer() {
     }
 
     /**
@@ -91,7 +91,7 @@ public class JaxbBeanProducer extends AbstractBeanProducer implements Parameteri
      * @param beanId    The beanId under which the bean instance is registered in the bean context.
      * @param beanClass The bean runtime class.
      */
-    public <T> JaxbBeanProducer(String beanId, Class<T> beanClass) {
+    public <T> JaxbBeanInstanceProducer(String beanId, Class<T> beanClass) {
         AssertArgument.isNotNull(beanId, "beanId");
         AssertArgument.isNotNull(beanClass, "beanClass");
 

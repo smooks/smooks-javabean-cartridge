@@ -45,7 +45,7 @@
 
     <resource-config selector="jb:bean">
         <resource>org.smooks.engine.resource.config.loader.xml.extension.NewResourceConfig</resource>
-        <param name="resource">org.smooks.cartridges.javabean.BeanProducer</param>
+        <param name="resource">org.smooks.cartridges.javabean.BeanInstanceProducer</param>
     </resource-config>
     <resource-config selector="jb:bean">
         <resource>org.smooks.cartridges.javabean.MapToSelectorFromContextAwareAttribute</resource>

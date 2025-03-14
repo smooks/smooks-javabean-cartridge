@@ -63,8 +63,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractBeanProducer implements Producer, PostFragmentLifecycle {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractBeanProducer.class);
+public abstract class AbstractBeanInstanceProducer implements Producer, PostFragmentLifecycle {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractBeanInstanceProducer.class);
 
     protected String id;
 
@@ -119,7 +119,7 @@ public abstract class AbstractBeanProducer implements Producer, PostFragmentLife
 
     protected void buildId() {
         StringBuilder idBuilder = new StringBuilder();
-        idBuilder.append(BeanProducer.class.getName());
+        idBuilder.append(BeanInstanceProducer.class.getName());
         idBuilder.append("#");
         idBuilder.append(beanIdName);
 

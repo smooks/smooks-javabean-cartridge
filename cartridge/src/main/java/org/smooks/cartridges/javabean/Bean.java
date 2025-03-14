@@ -157,7 +157,7 @@ public class Bean extends BindingAppender {
     protected static volatile Set<TypeConverterFactory<?, ?>> TYPE_CONVERTER_FACTORIES = null;
 
     protected final Registry registry;
-    protected final BeanProducer beanProducer;
+    protected final BeanInstanceProducer beanInstanceProducer;
     protected final Class<?> beanClass;
     protected final String createOn;
     protected final List<Binding> bindings = new ArrayList<>();
@@ -226,7 +226,7 @@ public class Bean extends BindingAppender {
         this.beanClass = beanClass;
         this.createOn = createOn;
         this.registry = registry;
-        beanProducer = new BeanProducer(beanId, beanClass, factory);
+        beanInstanceProducer = new BeanInstanceProducer(beanId, beanClass, factory);
     }
 
     /**
@@ -513,7 +513,7 @@ public class Bean extends BindingAppender {
 
         List<ContentHandlerBinding<Visitor>> visitorBindings = new ArrayList<>();
         // Add the create bean visitor...
-        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanProducer, createOn, registry);
+        ContentHandlerBinding<Visitor> beanInstanceCreateBinding = new DefaultContentHandlerBinding<>(beanInstanceProducer, createOn, registry);
         ResourceConfig beanInstanceCreatorSmooksResourceConfiguration = beanInstanceCreateBinding.getResourceConfig();
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanId", getBeanId());
         beanInstanceCreatorSmooksResourceConfiguration.setParameter("beanClass", beanClass.getName());
@@ -571,7 +571,7 @@ public class Bean extends BindingAppender {
      * Assert that the beanClass associated with this configuration is an array or Collection.
      */
     protected void assertBeanClassIsCollection() {
-        BeanRuntimeInfo beanRuntimeInfo = beanProducer.getBeanRuntimeInfo();
+        BeanRuntimeInfo beanRuntimeInfo = beanInstanceProducer.getBeanRuntimeInfo();
 
         if (beanRuntimeInfo.getClassification() != BeanRuntimeInfo.Classification.COLLECTION_COLLECTION && beanRuntimeInfo.getClassification() != BeanRuntimeInfo.Classification.ARRAY_COLLECTION) {
             throw new IllegalArgumentException("Invalid call to a Collection/array Bean.bindTo method for a non Collection/Array target.  Binding target type '" + beanRuntimeInfo.getPopulateType().getName() + "' (beanId '" + getBeanId() + "').  Use one of the Bean.bindTo methods that specify a 'bindingMember' argument.");
