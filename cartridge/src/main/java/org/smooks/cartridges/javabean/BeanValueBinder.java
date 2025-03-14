@@ -520,12 +520,12 @@ public class BeanValueBinder implements BeforeVisitor, AfterVisitor, ChildrenVis
                         // It's a JAXB collection type.  If the wired in bean is created by a factory then it's most
                         // probable that there's no need to set the collection because the JAXB type is creating it lazily
                         // in the getter method.  So... we're going to ignore this.
-                        List<BeanProducer> beanProducers = applicationContext.getRegistry().lookup(registryEntries -> registryEntries.values().stream().filter(v -> v instanceof BeanProducer).
-                                map(BeanProducer.class::cast).
+                        List<BeanInstanceProducer> beanInstanceProducers = applicationContext.getRegistry().lookup(registryEntries -> registryEntries.values().stream().filter(v -> v instanceof BeanInstanceProducer).
+                                map(BeanInstanceProducer.class::cast).
                                 filter(bp -> bp.getBeanId().equals(wireBeanIdName.get())).
                                 filter(bp -> bp.getBeanFactoryDefinition().orElse(null) != null).
                                 collect(Collectors.toList()));
-                        if (!beanProducers.isEmpty()) {
+                        if (!beanInstanceProducers.isEmpty()) {
                             throwException = false;
                         }
                     }

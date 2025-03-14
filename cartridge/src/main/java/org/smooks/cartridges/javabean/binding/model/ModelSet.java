@@ -48,7 +48,7 @@ import org.smooks.api.converter.TypeConverterFactory;
 import org.smooks.api.delivery.ContentHandlerFactory;
 import org.smooks.api.resource.config.ResourceConfig;
 import org.smooks.api.resource.config.ResourceConfigSeq;
-import org.smooks.cartridges.javabean.BeanProducer;
+import org.smooks.cartridges.javabean.BeanInstanceProducer;
 import org.smooks.cartridges.javabean.BeanValueBinder;
 import org.smooks.engine.lookup.ContentHandlerFactoryLookup;
 import org.smooks.engine.lookup.CustomResourceConfigSeqLookup;
@@ -98,7 +98,7 @@ public class ModelSet {
 
     public Bean getModel(Class<?> beanType) {
         for (Bean model : models.values()) {
-            if (model.getBeanProducer().getBeanRuntimeInfo().getPopulateType() == beanType) {
+            if (model.getBeanInstanceProducer().getBeanRuntimeInfo().getPopulateType() == beanType) {
                 return model;
             }
         }
@@ -123,9 +123,9 @@ public class ModelSet {
                 javaResource = null;
             }
 
-            if (javaResource instanceof BeanProducer) {
-                BeanProducer beanProducer = (BeanProducer) javaResource;
-                Bean bean = new Bean(beanProducer).setCloneable(true);
+            if (javaResource instanceof BeanInstanceProducer) {
+                BeanInstanceProducer beanInstanceProducer = (BeanInstanceProducer) javaResource;
+                Bean bean = new Bean(beanInstanceProducer).setCloneable(true);
 
                 baseBeans.put(bean.getBeanId(), bean);
 

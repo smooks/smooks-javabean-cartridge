@@ -71,11 +71,11 @@ import java.util.List;
 import java.util.Optional;
 
 @VisitBeforeReport(summary = "Created <b>${resource.parameters.beanId!'undefined'}</b> bean instance. Associated lifecycle if wired to another bean.",
-        detailTemplate = "reporting/BeanProducerReport_Before.html")
+        detailTemplate = "reporting/BeanInstanceProducerReport_Before.html")
 @VisitAfterReport(condition = "parameters.containsKey('setOn') || parameters.beanClass.value.endsWith('[]')",
         summary = "Ended bean lifecycle. Set bean on any targets.",
-        detailTemplate = "reporting/BeanProducerReport_After.html")
-public class BeanProducer extends AbstractBeanProducer implements BeforeVisitor, AfterVisitor, ContentDeliveryConfigLifecycle {
+        detailTemplate = "reporting/BeanInstanceProducerReport_After.html")
+public class BeanInstanceProducer extends AbstractBeanInstanceProducer implements BeforeVisitor, AfterVisitor, ContentDeliveryConfigLifecycle {
 
     public static final String INIT_VAL_EXPRESSION = "initValExpression";
 
@@ -90,7 +90,7 @@ public class BeanProducer extends AbstractBeanProducer implements BeforeVisitor,
     /**
      * Public default constructor.
      */
-    public BeanProducer() {
+    public BeanInstanceProducer() {
     }
 
     /**
@@ -99,7 +99,7 @@ public class BeanProducer extends AbstractBeanProducer implements BeforeVisitor,
      * @param beanId    The beanId under which the bean instance is registered in the bean context.
      * @param beanClass The bean runtime class.
      */
-    public BeanProducer(String beanId, Class<?> beanClass) {
+    public BeanInstanceProducer(String beanId, Class<?> beanClass) {
         this(beanId, beanClass, null);
     }
 
@@ -109,7 +109,7 @@ public class BeanProducer extends AbstractBeanProducer implements BeforeVisitor,
      * @param beanId    The beanId under which the bean instance is registered in the bean context.
      * @param beanClass The bean runtime class.
      */
-    public <T> BeanProducer(String beanId, Class<T> beanClass, Factory<? extends T> factory) {
+    public <T> BeanInstanceProducer(String beanId, Class<T> beanClass, Factory<? extends T> factory) {
         AssertArgument.isNotNull(beanId, "beanId");
         AssertArgument.isNotNull(beanClass, "beanClass");
 

@@ -53,7 +53,7 @@ import org.smooks.api.resource.config.ResourceConfigSeq;
 import org.smooks.api.resource.config.xpath.SelectorPath;
 import org.smooks.api.resource.config.xpath.SelectorStep;
 import org.smooks.assertion.AssertArgument;
-import org.smooks.cartridges.javabean.BeanProducer;
+import org.smooks.cartridges.javabean.BeanInstanceProducer;
 import org.smooks.cartridges.javabean.BeanValueBinder;
 import org.smooks.cartridges.javabean.binding.AbstractBinding;
 import org.smooks.cartridges.javabean.binding.BeanSerializationException;
@@ -291,7 +291,7 @@ public class XMLBinding extends AbstractBinding {
                 }
             } else if (binding instanceof WiredBinding) {
                 Bean wiredBean = ((WiredBinding) binding).getWiredBean();
-                XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getBeanProducer().getResourceConfig().getSelectorPath());
+                XMLElementSerializationNode node = (XMLElementSerializationNode) serializer.findNode(wiredBean.getBeanInstanceProducer().getResourceConfig().getSelectorPath());
 
                 if (node != null) {
                     if (isCollection) {
@@ -315,8 +315,8 @@ public class XMLBinding extends AbstractBinding {
         Collection<Bean> beanModels = beanModelSet.getModels().values();
 
         for (Bean model : beanModels) {
-            BeanProducer beanProducer = model.getBeanProducer();
-            SelectorPath selectorPath = beanProducer.getResourceConfig().getSelectorPath();
+            BeanInstanceProducer beanInstanceProducer = model.getBeanInstanceProducer();
+            SelectorPath selectorPath = beanInstanceProducer.getResourceConfig().getSelectorPath();
             XMLElementSerializationNode createNode = (XMLElementSerializationNode) findNode(graphs, selectorPath);
 
             // Only create serializers for routed elements...
@@ -324,10 +324,10 @@ public class XMLBinding extends AbstractBinding {
                 createNode = ((XMLElementSerializationNode) createNode.clone());
                 createNode.setParent(null);
 
-                Class<?> beanClass = beanProducer.getBeanRuntimeInfo().getPopulateType();
+                Class<?> beanClass = beanInstanceProducer.getBeanRuntimeInfo().getPopulateType();
                 if (!Collection.class.isAssignableFrom(beanClass)) {
                     // Ignore Collections... don't allow them to be serialized.... not enough type info.
-                    serializers.put(beanClass, new RootNodeSerializer(beanProducer.getBeanId(), createNode));
+                    serializers.put(beanClass, new RootNodeSerializer(beanInstanceProducer.getBeanId(), createNode));
                     addNamespaceAttributes(createNode);
                 }
             }
@@ -362,7 +362,7 @@ public class XMLBinding extends AbstractBinding {
                 javaResource = null;
             }
 
-            if (javaResource instanceof BeanProducer) {
+            if (javaResource instanceof BeanInstanceProducer) {
                 assertSelectorOK(resourceConfig);
                 constructNodePath(resourceConfig.getSelectorPath(), graphRoots);
             } else if (javaResource instanceof BeanValueBinder) {
